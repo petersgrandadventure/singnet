@@ -1,0 +1,9 @@
+FROM agent_base
+
+MAINTAINER Christian Jensen <christian@jensenbox.com>
+
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /agent
+ADD . /agent
+RUN ls -l
