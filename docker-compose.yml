@@ -21,7 +21,7 @@ services:
       links:
         - agent
       environment:
-        - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY
+        - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
       command: python agent-web.py
 
     geth:
