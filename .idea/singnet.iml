@@ -5,9 +5,10 @@
       <sourceFolder url="file://$MODULE_DIR$/agent/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/agent-web/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/agent" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/agent-web" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/local" />
     </content>
-    <orderEntry type="jdk" jdkName="Remote Python 3.6.2 Docker (agent_developer:latest)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.6.2 Docker Compose (agent-web at [/home/christian/Documents/projects/singnet/docker-compose.yml])" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">

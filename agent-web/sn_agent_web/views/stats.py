@@ -4,7 +4,7 @@ import logging
 import jsonrpcclient
 from aiohttp_jinja2 import template
 
-from sn_agent.network import NetworkSettings
+from sn_agent_web.settings import WebSettings
 
 logger = logging.getLogger(__file__)
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__file__)
 async def index(request):
     logger.debug('Stats page requested')
 
-    settings = NetworkSettings()
+    settings = WebSettings()
 
     net_version = jsonrpcclient.request(settings.ETH_CLIENT, 'admin_nodeInfo')
     eth_client_modules = jsonrpcclient.request(settings.ETH_CLIENT, 'rpc_modules')

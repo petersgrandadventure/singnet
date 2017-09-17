@@ -3,11 +3,11 @@ import os
 
 import aiohttp_session
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
-from sn_agent_ui.settings import UISettings
+from sn_agent_web.settings import WebSettings
 
 
 def setup_session(app):
-    settings = UISettings()
+    settings = WebSettings()
     secret_key = base64.urlsafe_b64decode(settings.COOKIE_SECRET)
     aiohttp_session.setup(app, EncryptedCookieStorage(secret_key))
 

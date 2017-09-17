@@ -7,3 +7,4 @@ node_modules/
 .idea
 __pycache__/
 agent/src/sn_agent_ui/static/vendor/
+/geth-data/
