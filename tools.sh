@@ -61,7 +61,7 @@ function install_docker {
     #https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
     apt-get remove docker docker-engine docker.io
     apt-get update
-    apt-get install apt-transport-https ca-certificates curl software-properties-common linux-image-extra-$(uname -r) linux-image-extra-virtual
+    apt-get install apt-transport-https ca-certificates curl software-properties-common linux-image-extra-$(uname -r)
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
     apt-key fingerprint 0EBFCD88
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"

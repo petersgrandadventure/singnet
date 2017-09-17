@@ -4,9 +4,12 @@ import aiohttp_jinja2
 import jinja2
 from aiohttp_jinja2 import APP_KEY as JINJA2_APP_KEY
 
+from sn_agent_web.settings import WebSettings
+
 THIS_DIR = Path(__file__).parent
 BASE_DIR = THIS_DIR.parent
 
+settings = WebSettings()
 
 @jinja2.contextfilter
 def reverse_url(context, name, **parts):
@@ -54,12 +57,8 @@ def static_url(context, static_file_path):
     :param static_file_path: path to static file under static route
     :return: roughly just "<static_root_url>/<static_file_path>"
     """
-    app = context['app']
-    try:
-        static_url = app['static_root_url']
-    except KeyError:
-        raise RuntimeError('app does not define a static root url "static_root_url"')
-    return '{}/{}'.format(static_url.rstrip('/'), static_file_path.lstrip('/'))
+
+    return '{}/{}'.format(settings.STATIC_ROOT_URL.rstrip('/'), static_file_path.lstrip('/'))
 
 
 def setup_jinja(app):
