@@ -32,7 +32,7 @@ services:
         - "30303:30303"
       volumes:
         - ./geth-data:/geth-data
-      command: geth --datadir=/geth-data --metrics --shh --rpc --rpcaddr 0.0.0.0 --ws --wsaddr 0.0.0.0 --nat none --verbosity 5 --vmdebug --dev --debug --pprof
+      command: geth --datadir=/geth-data --metrics --shh --rpc --rpcaddr 0.0.0.0 --ws --wsaddr 0.0.0.0 --nat none --verbosity 5 --vmdebug --dev --maxpeers 0 --gasprice 0 --debug --pprof
       deploy:
           resources:
             limits:
