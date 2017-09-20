@@ -1,5 +1,9 @@
 import logging
 from abc import ABC, abstractmethod
+from sn_agent.ontology.service_descriptor import ServiceDescriptor
+from sn_agent.ontology.job_descriptor import JobDescriptor
+
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -11,10 +15,10 @@ class ServiceAdapterABC(ABC):
 
     type_name = "Base"
 
-    def __init__(self, app, ontology_node_id, required_ontology_node_ids) -> None:
+    def __init__(self, app, service: ServiceDescriptor, required_services: List[ServiceDescriptor]) -> None:
         self.app = app
-        self.ontology_node_id = ontology_node_id
-        self.required_ontology_node_ids = required_ontology_node_ids
+        self.service = service
+        self.required_services = required_services
         self.requirements_met = False
         self.available = False
 
@@ -72,8 +76,8 @@ class ServiceAdapterABC(ABC):
             return True
 
         network = self.app['network']
-        for required_ontology_node_id in self.required_ontology_node_ids:
-            providers = network.find_providers(required_ontology_node_id)
+        for required_service in self.required_services:
+            providers = network.find_providers(required_service)
 
             if len(providers) == 0:
                 return False
@@ -86,7 +90,7 @@ class ServiceAdapterABC(ABC):
         return True
 
     @abstractmethod
-    def perform(self, *args, **kwargs):
+    def perform(self, job: JobDescriptor):
         """
         This is where the work gets done, the worker will block here until the work itself is done
         :param args:
