@@ -38,23 +38,31 @@ def setup_service_manager(app):
     service_adapters = []
 
     for section, data in cfg.items():
-        if section == 'opencog' or section == 'jsonrpc':
+        if section == 'opencog':
+
             ontology_node_id = data.get('ontology_node_id')
             if ontology_node_id is None:
                 raise RuntimeError('You must supply a ontology_node_id for each worker')
 
             required_ontology_node_ids = data.get('required_ontology_node_ids')
 
-            if section == 'opencog':
-                host = data['host']
-                port = data['port']
-                service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
+            host = data['host']
+            port = data['port']
 
-            elif section == 'jsonrpc':
-                url = data['url']
-                service_adapter = JsonRpcServiceAdapter(app, ontology_node_id, required_ontology_node_ids, url)
-
+            service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
             service_adapters.append(service_adapter)
+
+        elif section == 'jsonrpcs':
+            for jsonrpc_data in data:
+                ontology_node_id = jsonrpc_data.get('ontology_node_id')
+                if ontology_node_id is None:
+                    raise RuntimeError('You must supply a ontology_node_id for each worker')
+
+                required_ontology_node_ids = jsonrpc_data.get('required_ontology_node_ids')
+
+                url = jsonrpc_data['url']
+                service_adapter = JsonRpcServiceAdapter(app, ontology_node_id, required_ontology_node_ids, url)
+                service_adapters.append(service_adapter)
 
         elif section == 'modules':
             for module_data in data:
@@ -69,7 +77,6 @@ def setup_service_manager(app):
                 name = module_data['name']
                 module_klass = import_string(name)
                 service_adapter = module_klass(app, ontology_node_id, required_ontology_node_ids, name)
-
                 service_adapters.append(service_adapter)
         else:
             raise RuntimeError('Unknown worker type specified: %s' % section)
