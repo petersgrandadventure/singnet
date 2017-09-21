@@ -14,6 +14,23 @@ services:
       links:
         - geth
 
+    agent-test:
+      build: agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
+        - PYTHONPATH=/code
+      working_dir: /code
+      entrypoint: pytest
+
+#    agent-docs:
+#      build: agent
+#      environment:
+#        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+#        - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
+#      working_dir: /code
+#      entrypoint: sphinx-build
+
     agent-web:
       build: agent-web
       ports:
@@ -41,3 +58,7 @@ services:
             reservations:
               cpus: '0.0001'
               memory: 20M
+
+    truffle:
+      build: truffle
+      entrypoint: truffle

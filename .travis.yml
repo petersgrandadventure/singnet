@@ -1,15 +1,17 @@
-# this file is *not* meant to cover or endorse the use of travis, but rather to
-# help confirm pull requests to this project.
+
+sudo: required
+services:
+  - docker
 
 language: python
 python:
   - "3.6"
 
-env:
-  - TOXENV=py36
-
-install:
-  - pip install -r agent/requirements.txt
+before_script:
+  - ./tools.sh run
 
 script:
-  - tox
+  - ./tools.sh test
+
+after_script:
+  - ./tools.sh clean

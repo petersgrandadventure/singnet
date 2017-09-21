@@ -9,6 +9,7 @@
 # Duration constants - durations are in milliseconds
 from abc import ABC
 from datetime import timedelta
+
 from sn_agent.ontology.base import Ontology
 
 ONE_SECOND = timedelta(seconds=1)
@@ -25,6 +26,9 @@ class ServiceDescriptor(ABC):
         return self.__dict__ == other.__dict__
 
     def name(self):
+        if self.ontology is None:
+            raise Exception('Ontology object is None')
+
         name = self.ontology.get_service_name(self.ontology_node_id)
         return name
 

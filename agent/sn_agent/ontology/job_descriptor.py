@@ -6,7 +6,7 @@
 # Distributed under the MIT software license, see LICENSE file.
 #
 
-from sn_agent.ontology.base import Ontology, TEST_SERVICE_NODE_1, TEST_SERVICE_NODE_2, TEST_SERVICE_NODE_3, TEST_SERVICE_NODE_4, TEST_SERVICE_NODE_5
+from sn_agent.ontology.base import TEST_SERVICE_NODE_1, TEST_SERVICE_NODE_2, TEST_SERVICE_NODE_3, TEST_SERVICE_NODE_4, TEST_SERVICE_NODE_5
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
 class JobDescriptor(object):
@@ -19,7 +19,7 @@ class JobDescriptor(object):
 
     def __str__(self):
         description = self.service.name()
-        return '<Job: service %s>' % (description)
+        return '<Job: service %s>' % description
 
     @classmethod
     def get_test_jobs(cls) -> []:
