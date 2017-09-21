@@ -1,8 +1,8 @@
 # SingularityNET
 
-[![Build Status](https://travis-ci.org/jensenbox/singnet.svg?branch=master)](https://travis-ci.org/jensenbox/singnet)
+[![Build Status](https://travis-ci.org/opencog/singnet.svg?branch=master)](https://travis-ci.org/opencog/singnet)
 
-[![Coverage Status](https://coveralls.io/repos/github/jensenbox/singnet/badge.svg?branch=master)](https://coveralls.io/github/jensenbox/singnet?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/opencog/singnet/badge.svg?branch=master)](https://coveralls.io/github/opencog/singnet?branch=master)
 
 [![Documentation Status](https://readthedocs.org/projects/singnet/badge/?version=latest)](http://singnet.readthedocs.io/en/latest/?badge=latest)
 
