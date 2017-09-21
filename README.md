@@ -1,8 +1,10 @@
 # SingularityNET
 
-https://travis-ci.org/jensenbox/singnet.svg?branch=master
+[![Build Status](https://travis-ci.org/jensenbox/singnet.svg?branch=master)](https://travis-ci.org/jensenbox/singnet)
 
-https://travis-ci.org/jensenbox/singnet
+[![Coverage Status](https://coveralls.io/repos/github/jensenbox/singnet/badge.svg?branch=master)](https://coveralls.io/github/jensenbox/singnet?branch=master)
+
+[![Documentation Status](https://readthedocs.org/projects/singnet/badge/?version=latest)](http://singnet.readthedocs.io/en/latest/?badge=latest)
 
 SingularityNET allows multiple AI computing agents to work as a whole to
 provide various services in a distributed and decentralized way.
