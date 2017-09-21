@@ -38,25 +38,25 @@ def setup_service_manager(app):
     service_adapters = []
 
     for section, data in cfg.items():
-        if section == 'opencog':
+        if section == 'opencogs':
+            for opencog_data in data:
+                ontology_node_id = opencog_data.get('ontology_node_id')
+                if ontology_node_id is None:
+                    raise RuntimeError('You must supply a ontology_node_id for each service adapter')
 
-            ontology_node_id = data.get('ontology_node_id')
-            if ontology_node_id is None:
-                raise RuntimeError('You must supply a ontology_node_id for each worker')
+                required_ontology_node_ids = opencog_data.get('required_ontology_node_ids')
 
-            required_ontology_node_ids = data.get('required_ontology_node_ids')
+                host = opencog_data['host']
+                port = opencog_data['port']
 
-            host = data['host']
-            port = data['port']
-
-            service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
-            service_adapters.append(service_adapter)
+                service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
+                service_adapters.append(service_adapter)
 
         elif section == 'jsonrpcs':
             for jsonrpc_data in data:
                 ontology_node_id = jsonrpc_data.get('ontology_node_id')
                 if ontology_node_id is None:
-                    raise RuntimeError('You must supply a ontology_node_id for each worker')
+                    raise RuntimeError('You must supply a ontology_node_id for each service adapter')
 
                 required_ontology_node_ids = jsonrpc_data.get('required_ontology_node_ids')
 
@@ -68,7 +68,7 @@ def setup_service_manager(app):
             for module_data in data:
                 ontology_node_id = module_data.get('ontology_node_id')
                 if ontology_node_id is None:
-                    raise RuntimeError('You must supply a ontology_node_id for each worker')
+                    raise RuntimeError('You must supply a ontology_node_id for each service adapter')
 
                 required_ontology_node_ids = module_data.get('required_ontology_node_ids')
                 if required_ontology_node_ids is None:
@@ -79,7 +79,7 @@ def setup_service_manager(app):
                 service_adapter = module_klass(app, ontology_node_id, required_ontology_node_ids, name)
                 service_adapters.append(service_adapter)
         else:
-            raise RuntimeError('Unknown worker type specified: %s' % section)
+            raise RuntimeError('Unknown service adapter type specified: %s' % section)
 
     service_manager = ServiceManager(service_adapters)
     service_manager.init_all()
