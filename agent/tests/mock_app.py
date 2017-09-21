@@ -22,6 +22,7 @@ class MockApp(dict):
         self['log'] = log
         pass
 
+
 def create_mock_app():
     app = MockApp()
     setup_ontology(app)
@@ -37,5 +38,4 @@ init_test_jobs()
 # Run subsystem tests.
 test_ontology(app)
 test_perform_services(app)
-
 

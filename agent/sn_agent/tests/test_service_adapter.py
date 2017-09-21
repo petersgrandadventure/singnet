@@ -14,7 +14,7 @@ from sn_agent.ontology import DOCUMENT_SUMMARIZER_ID, IMAGE_RECOGNIZER_ID, FACE_
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from sn_agent.service_adapter.base import ServiceAdapterABC
 from sn_agent.ontology import Ontology
-
+from sn_agent.job.job_descriptor import init_test_jobs
 logger = logging.getLogger('test')
 
 
@@ -46,8 +46,10 @@ def test_one_service(app, service_id):
 
 
 def test_perform_services(app):
+    init_test_jobs()
     test_one_service(app, DOCUMENT_SUMMARIZER_ID)
     test_one_service(app, IMAGE_RECOGNIZER_ID)
     test_one_service(app, FACE_RECOGNIZER_ID)
     test_one_service(app, TEXT_SUMMARIZER_ID)
     test_one_service(app, VIDEO_SUMMARIZER_ID)
+

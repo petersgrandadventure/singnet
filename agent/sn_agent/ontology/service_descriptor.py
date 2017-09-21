@@ -34,8 +34,7 @@ class ServiceDescriptor(ABC):
     def name(self):
         if self.ontology is None:
             raise RuntimeError('ServiceDescriptor missing ontology!')
-        else:
-            name = self.ontology.get_service_name(self.ontology_node_id)
+        name = self.ontology.get_service_name(self.ontology_node_id)
         return name
 
     def __str__(self):

@@ -11,3 +11,6 @@ pyaml
 
 # For some reason jsonrpcclient is using this even though we are using the aiohttp implementation - perhaps under the covers?
 requests
+
+pytest
+pytest-cov
