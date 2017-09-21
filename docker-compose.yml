@@ -22,6 +22,7 @@ services:
         - PYTHONPATH=/code
       working_dir: /code
       entrypoint: py.test --cov=sn_agent tests
+#      command: coveralls
 #    agent-docs:
 #      build: agent
 #      environment:
