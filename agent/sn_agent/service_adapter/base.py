@@ -98,3 +98,14 @@ class ServiceAdapterABC(ABC):
         :return:
         """
         raise NotImplementedError()
+
+class ModuleServiceAdapterABC(ServiceAdapterABC):
+    """
+    This is the service adapter base, all other service adapters are based on it.
+    """
+
+    type_name = "ModuleServiceAdapter"
+
+    def __init__(self, app, service: Service, required_services: List[Service], name: str) -> None:
+        super().__init__(app, service, required_services)
+        self.name = name

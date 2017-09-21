@@ -49,6 +49,10 @@ class Ontology(object):
     def add_service(self, node_id, service: Service):
         self.services[node_id] = service
 
+    def get_service(self, node_id) -> Service:
+        service = self.services[node_id]
+        return service
+
     def get_service_name(self, node_id) -> str:
         service = self.services[node_id]
         return service['name']
