@@ -1,5 +1,9 @@
 # SingularityNET
 
+https://travis-ci.org/jensenbox/singnet.svg?branch=master
+
+https://travis-ci.org/jensenbox/singnet
+
 SingularityNET allows multiple AI computing agents to work as a whole to
 provide various services in a distributed and decentralized way.
  
