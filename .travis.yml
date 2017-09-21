@@ -3,15 +3,5 @@ sudo: required
 services:
   - docker
 
-language: python
-python:
-  - "3.6"
-
-before_script:
-  - ./tools.sh run
-
 script:
   - ./tools.sh test
-
-after_script:
-  - ./tools.sh clean
