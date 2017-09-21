@@ -21,7 +21,7 @@ services:
         - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
         - PYTHONPATH=/code
       working_dir: /code
-      entrypoint: py.test --cov=sn_agent tests/
+      entrypoint: py.test --cov-config .coveragerc --cov=sn_agent tests/
 
 #    agent-docs:
 #      build: agent
@@ -58,6 +58,9 @@ services:
             reservations:
               cpus: '0.0001'
               memory: 20M
+
+#    parity:
+#      build: parity
 
     truffle:
       build: truffle
