@@ -1,13 +1,11 @@
+from typing import List
+
 import aiohttp
 from jsonrpcclient.aiohttp_client import aiohttpClient
 
-from sn_agent.service_adapter.base import ServiceAdapterABC
-
+from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
-from sn_agent.ontology.job_descriptor import JobDescriptor
-
-from typing import List
-
+from sn_agent.service_adapter.base import ServiceAdapterABC
 
 
 class JsonRpcServiceAdapter(ServiceAdapterABC):

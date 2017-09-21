@@ -10,7 +10,6 @@
 
 from sn_agent.agent.base import AgentABC
 from sn_agent.network.enum import NetworkStatus
-from sn_agent.ontology.base import OntologyABC
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from enum import Enum
 
