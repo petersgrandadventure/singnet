@@ -1,9 +1,9 @@
-from sn_agent.tests.test_service_adapter import test_perform_services
+import logging
+
+from sn_agent.job.job_descriptor import init_test_jobs
 from sn_agent.ontology import setup_ontology
 from sn_agent.ontology.test import test_ontology
-from sn_agent.job.job_descriptor import init_test_jobs
-
-import logging
+from tests.test_service_adapter import test_perform_services
 
 log = logging.getLogger('test')
 log.setLevel(logging.DEBUG)
