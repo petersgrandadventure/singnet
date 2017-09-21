@@ -38,30 +38,41 @@ def setup_service_manager(app):
     service_adapters = []
 
     for section, data in cfg.items():
-        ontology_node_id = data.get('ontology_node_id')
-        if ontology_node_id is None:
-            raise RuntimeError('You must supply a ontology_node_id for each worker')
+        if section == 'opencog' or section == 'jsonrpc':
+            ontology_node_id = data.get('ontology_node_id')
+            if ontology_node_id is None:
+                raise RuntimeError('You must supply a ontology_node_id for each worker')
 
-        required_ontology_node_ids = data.get('required_ontology_node_ids')
+            required_ontology_node_ids = data.get('required_ontology_node_ids')
 
-        if section == 'opencog':
-            host = data['host']
-            port = data['port']
-            service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
+            if section == 'opencog':
+                host = data['host']
+                port = data['port']
+                service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
 
-        elif section == 'jsonrpc':
-            url = data['url']
-            service_adapter = JsonRpcServiceAdapter(app, ontology_node_id, required_ontology_node_ids, url)
+            elif section == 'jsonrpc':
+                url = data['url']
+                service_adapter = JsonRpcServiceAdapter(app, ontology_node_id, required_ontology_node_ids, url)
 
-        elif section == 'module':
-            name = data['name']
-            module_klass = import_string(name)
-            service_adapter = module_klass(app, ontology_node_id, required_ontology_node_ids, name)
+            service_adapters.append(service_adapter)
 
+        elif section == 'modules':
+            for module_data in data:
+                ontology_node_id = module_data.get('ontology_node_id')
+                if ontology_node_id is None:
+                    raise RuntimeError('You must supply a ontology_node_id for each worker')
+
+                required_ontology_node_ids = module_data.get('required_ontology_node_ids')
+                if required_ontology_node_ids is None:
+                    required_ontology_node_ids = []
+
+                name = module_data['name']
+                module_klass = import_string(name)
+                service_adapter = module_klass(app, ontology_node_id, required_ontology_node_ids, name)
+
+                service_adapters.append(service_adapter)
         else:
             raise RuntimeError('Unknown worker type specified: %s' % section)
-
-        service_adapters.append(service_adapter)
 
     service_manager = ServiceManager(service_adapters)
     service_manager.init_all()
