@@ -13,16 +13,62 @@ Includes contracts, migrations, tests, user interface and webpack build pipeline
 
 ## Install
 
-**Truffle**
-`npm i -g truffle`
+### Truffle
+```bash
+npm i -g truffle
+```
+### Parity
+  **Parity requires Rust version 1.19.0 to build**
+  - Linux:
+    ```bash
+    $ curl https://sh.rustup.rs -sSf | sh
+    ```
 
-**testRPC**
-`npm install -g ethereumjs-testrpc`
+    Parity also requires `gcc`, `g++`, `libssl-dev`/`openssl`, `libudev-dev` and `pkg-config` packages to be installed.
+  - OSX:
+    ```bash
+    $ curl https://sh.rustup.rs -sSf | sh
+    ```
 
+  ##### Download and build Parity
+
+  ```bash
+  # download Parity code
+  $ git clone https://github.com/paritytech/parity
+  $ cd parity
+
+  # build in release mode
+  $ cargo build --release
+  ```
+
+  This will produce an executable in the `./target/release` subdirectory.
+  Note: if cargo fails to parse manifest try:
+
+  ```bash
+  $ ~/.cargo/bin/cargo build --release
+  ```
+
+  #### Start Parity
+  To start Parity manually, just run
+  ```bash
+  $ ./target/release/parity
+  ```
+  and Parity will begin syncing the Ethereum blockchain.
+
+  ##### Hint
+  Add parity to your command list:
+  ```bash
+    cp /target/release/parity /usr/local/bin 
+  ```
+
+### or testRPC
+```bash
+npm install -g ethereumjs-testrpc
+```
 
 ## Build 
 1.  First `cd protocol && npm i`
-2.  `truffle compile` and run on separated tab `testrpc`
+2.  `truffle compile` and run on separated tab `parity` or `testrpc`
 3.  `truffle migrate` to deploy the contracts onto your network of choice (default "development").
 4. Copy the addresses where the contracts have been deployed 
 5. `truffle test`
