@@ -1,9 +1,9 @@
 import logging
 from abc import ABC, abstractmethod
-from sn_agent.ontology.service_descriptor import ServiceDescriptor
-from sn_agent.ontology.job_descriptor import JobDescriptor
-
 from typing import List
+
+from sn_agent.ontology import Service
+from sn_agent.job.job_descriptor import JobDescriptor
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ class ServiceAdapterABC(ABC):
 
     type_name = "Base"
 
-    def __init__(self, app, service: ServiceDescriptor, required_services: List[ServiceDescriptor]) -> None:
+    def __init__(self, app, service: Service, required_services: List[Service]) -> None:
         self.app = app
         self.service = service
         self.required_services = required_services
