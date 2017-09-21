@@ -21,7 +21,7 @@ services:
         - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
         - PYTHONPATH=/code
       working_dir: /code
-      entrypoint: pytest
+      entrypoint: py.test --cov=sn_agent tests/
 
 #    agent-docs:
 #      build: agent

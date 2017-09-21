@@ -5,3 +5,6 @@ services:
 
 script:
   - ./tools.sh test
+
+after_success:
+  - coveralls

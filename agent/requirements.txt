@@ -13,3 +13,4 @@ pyaml
 requests
 
 pytest
+pytest-cov
