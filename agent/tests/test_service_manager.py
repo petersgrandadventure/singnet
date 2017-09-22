@@ -70,6 +70,7 @@ def test_service_manager(app):
 def test_start_stop_services(app):
     print()
     setup_logging()
+    log.debug("")
     log.debug("--- test_start_stop_services ---")
     setup_service_manager(app)
 

@@ -14,7 +14,7 @@ from abc import ABC
 from datetime import timedelta
 from sn_agent.ontology import Ontology
 
-logger = logging.getLogger('test')
+logger = logging.getLogger(__name__)
 
 ONE_SECOND = timedelta(seconds=1)
 ONE_MINUTE = ONE_SECOND * 60

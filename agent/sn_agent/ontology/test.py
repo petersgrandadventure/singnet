@@ -3,7 +3,7 @@ import logging
 from sn_agent.ontology import DOCUMENT_SUMMARIZER_ID, IMAGE_RECOGNIZER_ID, FACE_RECOGNIZER_ID, \
     TEXT_SUMMARIZER_ID, VIDEO_SUMMARIZER_ID
 
-logger = logging.getLogger('test')
+logger = logging.getLogger(__name__)
 
 
 def test_ontology(app):

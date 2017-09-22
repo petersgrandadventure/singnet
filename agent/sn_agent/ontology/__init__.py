@@ -4,8 +4,7 @@ import logging
 
 from sn_agent.ontology.settings import OntologySettings
 
-logger = logging.getLogger('test')
-
+log = logging.getLogger(__name__)
 
 DOCUMENT_SUMMARIZER_ID          = 'deadbeef-aaaa-bbbb-cccc-000000000001'
 WORD_SENSE_DISAMBIGUATER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
@@ -87,7 +86,7 @@ def setup_ontology(app):
     # jobs = []
 
     for section, section_items in cfg.items():
-        logger.debug('parsing section: {0}'.format(section))
+        log.debug('parsing section: {0}'.format(section))
         if section == 'services':
             for service_data in section_items:
                 ontology_node_id = service_data['ontology_node_id']
@@ -102,7 +101,7 @@ def setup_ontology(app):
                 description = service_data['name']
 
                 # Add the rest of the items to the service.
-                logger.debug('adding service {0} - {1}'.format(ontology_node_id, name))
+                log.debug('adding Service to ontology {0} - {1}'.format(ontology_node_id, name))
                 service = Service(ontology_node_id, name, description)
                 service.update(service_data)
 

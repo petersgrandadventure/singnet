@@ -5,7 +5,7 @@ from sn_agent.ontology import setup_ontology
 from sn_agent.ontology.test import test_ontology
 from tests.test_service_adapter import test_perform_services
 
-log = logging.getLogger('test')
+log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 format = logging.Formatter('%(filename)-30sL:%(lineno)3d %(asctime)s %(levelname)-8s: %(message)s', datefmt = '%d-%m-%Y %H:%M:%S')
