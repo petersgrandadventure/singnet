@@ -8,29 +8,35 @@ from sn_agent.utils import import_string
 
 class ServiceManager:
     def __init__(self, service_adapters):
+        self.services_by_id = {}
         self.service_adapters = service_adapters
+        for service_adapter in service_adapters:
+            service_adapter.init()
+            service = service_adapter.service
+            self.services_by_id[service.node_id] = service_adapter
 
     def init_all(self):
         for service_adapter in self.service_adapters:
             service_adapter.init()
 
-    def start(self, service_descriptor):
+    def start(self, service_node_id):
         # Find the service adapters for a given service descriptor and disable them
-        for service_adapter in self.service_adapters:
-            if service_adapter.id == service_descriptor.id:
-                service_adapter.start()
+        service_adapter = self.get_service_adapter_for_id(service_node_id)
+        service_adapter.start()
 
-    def stop(self, service_descriptor):
+    def stop(self, service_node_id):
         # Find the service adapters for a given service descriptor and disable them
-        for service_adapter in self.service_adapters:
-            if service_adapter.id == service_descriptor.id:
-                service_adapter.stop()
+        service_adapter = self.get_service_adapter_for_id(service_node_id)
+        service_adapter.stop()
 
+    def get_service_adapter_for_id(self, service_node_id):
+        service_adapter = self.services_by_id.get(service_node_id)
+        return service_adapter
 
 def setup_service_manager(app):
-    settings_obj = ServiceAdapterSettings()
-
-    config_file = settings_obj.CONFIG_FILE
+    settings = ServiceAdapterSettings()
+    config_file = settings.CONFIG_FILE
+    ontology = app['ontology']
 
     with open(config_file, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
@@ -48,8 +54,8 @@ def setup_service_manager(app):
 
                 host = opencog_data['host']
                 port = opencog_data['port']
-
-                service_adapter = OpenCogServiceAdapter(app, ontology_node_id, required_ontology_node_ids, host, port)
+                service = ontology.get_service(ontology_node_id)
+                service_adapter = OpenCogServiceAdapter(app, service, required_ontology_node_ids, host, port)
                 service_adapters.append(service_adapter)
 
         elif section == 'jsonrpcs':
@@ -61,7 +67,8 @@ def setup_service_manager(app):
                 required_ontology_node_ids = jsonrpc_data.get('required_ontology_node_ids')
 
                 url = jsonrpc_data['url']
-                service_adapter = JsonRpcServiceAdapter(app, ontology_node_id, required_ontology_node_ids, url)
+                service = ontology.get_service(ontology_node_id)
+                service_adapter = JsonRpcServiceAdapter(app, service, required_ontology_node_ids, url)
                 service_adapters.append(service_adapter)
 
         elif section == 'modules':
@@ -76,7 +83,8 @@ def setup_service_manager(app):
 
                 name = module_data['name']
                 module_klass = import_string(name)
-                service_adapter = module_klass(app, ontology_node_id, required_ontology_node_ids, name)
+                service = ontology.get_service(ontology_node_id)
+                service_adapter = module_klass(app, service, required_ontology_node_ids, name)
                 service_adapters.append(service_adapter)
         else:
             raise RuntimeError('Unknown service adapter type specified: %s' % section)

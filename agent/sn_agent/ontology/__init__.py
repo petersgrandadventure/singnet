@@ -7,11 +7,12 @@ from sn_agent.ontology.settings import OntologySettings
 logger = logging.getLogger('test')
 
 
-DOCUMENT_SUMMARIZER_ID  = 'deadbeef-aaaa-bbbb-cccc-000000000001'
-IMAGE_RECOGNIZER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
-FACE_RECOGNIZER_ID      = 'deadbeef-aaaa-bbbb-cccc-000000000003'
-TEXT_SUMMARIZER_ID      = 'deadbeef-aaaa-bbbb-cccc-000000000004'
-VIDEO_SUMMARIZER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000005'
+DOCUMENT_SUMMARIZER_ID          = 'deadbeef-aaaa-bbbb-cccc-000000000001'
+WORD_SENSE_DISAMBIGUATER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
+FACE_RECOGNIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000003'
+TEXT_SUMMARIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000004'
+VIDEO_SUMMARIZER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000005'
+ENTITY_EXTRACTER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000006'
 
 
 class Service(dict):
@@ -20,6 +21,15 @@ class Service(dict):
         self.node_id = node_id
         self.name = name
         self.description = description
+
+    @property
+    def node_id(self):
+        return self.__node_id
+
+    @node_id.setter
+    def node_id(self, node_id):
+        self.__node_id = node_id
+
 
 class Ontology(object):
 

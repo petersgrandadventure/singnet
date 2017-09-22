@@ -32,25 +32,25 @@ jsonrpcs:
 
 modules:
 - module:
-  ontology_node_id: de30de30-aaaa-bbbb-cccc-000000000001
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000001
   name: demo.document_summarizer.DocumentSummarizer
 
 - module:
-  ontology_node_id: de30de30-aaaa-bbbb-cccc-000000000002
-  name: demo.entity_extracter.EntityExtracter
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
+  name: demo.word_sense_disambiguater.WordSenseDisambiguater
 
 - module:
-  ontology_node_id: de30de30-aaaa-bbbb-cccc-000000000003
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000003
   name: demo.face_recognizer.FaceRecognizer
 
 - module:
-  ontology_node_id: de30de30-aaaa-bbbb-cccc-000000000004
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000004
   name: demo.text_summarizer.TextSummarizer
 
 - module:
-  ontology_node_id: de30de30-aaaa-bbbb-cccc-000000000005
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000005
   name: demo.video_summarizer.VideoSummarizer
 
 - module:
-  ontology_node_id: de30de30-aaaa-bbbb-cccc-000000000006
-  name: demo.word_sense_disambiguater.WordSenseDisambiguater
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000006
+  name: demo.entity_extracter.EntityExtracter
