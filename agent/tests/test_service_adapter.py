@@ -63,7 +63,8 @@ def perform_one_service(app, service_id):
 def test_perform_services(app):
     init_test_jobs()
     perform_one_service(app, ontology.DOCUMENT_SUMMARIZER_ID)
-    perform_one_service(app, ontology.IMAGE_RECOGNIZER_ID)
+    perform_one_service(app, ontology.ENTITY_EXTRACTER_ID)
     perform_one_service(app, ontology.FACE_RECOGNIZER_ID)
     perform_one_service(app, ontology.TEXT_SUMMARIZER_ID)
     perform_one_service(app, ontology.VIDEO_SUMMARIZER_ID)
+    perform_one_service(app, ontology.WORD_SENSE_DISAMBIGUATER_ID)

@@ -7,8 +7,8 @@ services:
 
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
-  name: Image Recognizer
-  description: Recognizes objects in images
+  name: Word Sense Disamnbiguater
+  description: Differentiates between different possible grammatical word senses using context
 
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000003
@@ -24,3 +24,29 @@ services:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000005
   name: Video Summarizer
   description: Summarizes videos with a textual description of contents
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000006
+  name: Entity Extracter
+  description: Extracts the entity descriptions from a document
+
+
+- service:
+  ontology_node_id: 613cfd03-14a2-45dd-a94c-3c7798aca958
+  name: Opencog Service One
+  description: Sample Opencog service number one
+
+- service:
+  ontology_node_id: 413cfd03-14a2-45dd-a94c-3c7798aca992
+  name: Opencog Service Two
+  description: Sample Opencog service number two
+
+- service:
+  ontology_node_id: 86717381-0b4c-440f-9ed6-41206fbba0bc
+  name: JSON RPC Service One
+  description: Sample JSON RPC service number one
+
+- service:
+  ontology_node_id: b95fb615-cb03-4d19-bf71-2a892c3d45a8
+  name: JSON RPC Service Two
+  description: Sample JSON RPC service number two

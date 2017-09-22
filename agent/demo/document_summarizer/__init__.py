@@ -11,6 +11,7 @@ from typing import List
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter.base import ModuleServiceAdapterABC
 
+
 class DocumentSummarizer(ModuleServiceAdapterABC):
     type_name = "DocumentSummarizer"
 
