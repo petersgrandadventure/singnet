@@ -1,37 +1,10 @@
 import yaml
 
+from sn_agent.utils import import_string
 from sn_agent.service_adapter.jsonrpc import JsonRpcServiceAdapter
 from sn_agent.service_adapter.opencog import OpenCogServiceAdapter
 from sn_agent.service_adapter.settings import ServiceAdapterSettings
-from sn_agent.utils import import_string
-
-
-class ServiceManager:
-    def __init__(self, service_adapters):
-        self.services_by_id = {}
-        self.service_adapters = service_adapters
-        for service_adapter in service_adapters:
-            service_adapter.init()
-            service = service_adapter.service
-            self.services_by_id[service.node_id] = service_adapter
-
-    def init_all(self):
-        for service_adapter in self.service_adapters:
-            service_adapter.init()
-
-    def start(self, service_node_id):
-        # Find the service adapters for a given service descriptor and disable them
-        service_adapter = self.get_service_adapter_for_id(service_node_id)
-        service_adapter.start()
-
-    def stop(self, service_node_id):
-        # Find the service adapters for a given service descriptor and disable them
-        service_adapter = self.get_service_adapter_for_id(service_node_id)
-        service_adapter.stop()
-
-    def get_service_adapter_for_id(self, service_node_id):
-        service_adapter = self.services_by_id.get(service_node_id)
-        return service_adapter
+from sn_agent.service_adapter.manager import ServiceManager
 
 def setup_service_manager(app):
     settings = ServiceAdapterSettings()
@@ -42,7 +15,6 @@ def setup_service_manager(app):
         cfg = yaml.load(ymlfile)
 
     service_adapters = []
-
     for section, data in cfg.items():
         if section == 'opencogs':
             for opencog_data in data:
@@ -90,4 +62,5 @@ def setup_service_manager(app):
             raise RuntimeError('Unknown service adapter type specified: %s' % section)
 
     service_manager = ServiceManager(service_adapters)
+    service_manager.post_load_initialize()
     app['service_manager'] = service_manager
