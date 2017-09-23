@@ -38,6 +38,7 @@ class ServiceAdapterABC(ABC):
         self.requirements_met = self.has_all_requirements()
 
         logger.info('Service Adapter: %s initialized. Requirements met: %s', self.type_name, self.requirements_met)
+        # print('Service Adapter: %s initialized. Requirements met: %s' % (self.type_name, self.requirements_met))
 
     def has_all_requirements(self):
         """

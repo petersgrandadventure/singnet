@@ -16,21 +16,9 @@ from sn_agent.log import setup_logging
 from sn_agent.service_adapter import setup_service_manager
 from sn_agent import ontology
 import demo
-
+from sn_agent.test.mocks import MockApp
 
 log = logging.getLogger(__name__)
-
-
-
-class MockApp(dict):
-
-    def __init__(self):
-        self['log'] = log
-        self.loop = self.wait_loop
-        pass
-
-    def wait_loop(self):
-        pass
 
 
 @pytest.fixture

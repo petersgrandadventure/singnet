@@ -12,9 +12,10 @@ from sn_agent.ontology.service_descriptor import ServiceDescriptor
 test_jobs = {}
 
 class JobDescriptor(object):
-    def __init__(self, service: ServiceDescriptor, job_parameters: dict):
+    def __init__(self, service: ServiceDescriptor, job_parameters: dict = {}):
         self.service = service
-        self.job_parameters = job_parameters
+        self.job_parameters = []
+        self.job_parameters.append(job_parameters)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -25,6 +26,15 @@ class JobDescriptor(object):
         else:
             description = self.service.name()
         return '<Job: service %s>' % (description)
+
+    def __iter__(self):
+        return self.job_parameters.__iter__()
+
+    def __next__(self):
+        return self.job_parameters.__next__()
+
+    def append_job_item(self, job_item: dict):
+        self.job_parameters.append(job_item)
 
     @classmethod
     def get_test_jobs(cls, service_id) -> []:
