@@ -101,7 +101,8 @@ def setup_ontology(app):
                 description = service_data['name']
 
                 # Add the rest of the items to the service.
-                log.debug('adding Service to ontology {0} - {1}'.format(ontology_node_id, name))
+                log.debug("adding Service to ontology %s - %s", ontology_node_id, name)
+                # print("adding Service to ontology {0} - {1}".format(ontology_node_id, name))
                 service = Service(ontology_node_id, name, description)
                 service.update(service_data)
 

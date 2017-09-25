@@ -12,9 +12,11 @@ from sn_agent.ontology.service_descriptor import ServiceDescriptor
 test_jobs = {}
 
 class JobDescriptor(object):
-    def __init__(self, service: ServiceDescriptor, job_parameters: dict):
+    def __init__(self, service: ServiceDescriptor, job_parameters: dict = None):
         self.service = service
-        self.job_parameters = job_parameters
+        self.job_parameters = []
+        if not job_parameters is None:
+            self.job_parameters.append(job_parameters)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -25,6 +27,23 @@ class JobDescriptor(object):
         else:
             description = self.service.name()
         return '<Job: service %s>' % (description)
+
+    def __iter__(self):
+        return self.job_parameters.__iter__()
+    def __next__(self):
+        return self.job_parameters.__next__()
+
+    def __delitem__(self, key):
+        self.job_parameters.__delitem__(key)
+    def __getitem__(self, key):
+        return self.job_parameters.__getitem__(key)
+    def __setitem__(self, key, value):
+        self.job_parameters.__setitem__(key, value)
+
+
+
+    def append_job_item(self, job_item: dict):
+        self.job_parameters.append(job_item)
 
     @classmethod
     def get_test_jobs(cls, service_id) -> []:
@@ -42,11 +61,11 @@ def init_test_jobs():
     job_parameters = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'http://test.com/outputs/test_output.txt'}
+                        'output_url': 'tests/output/test_output.txt'}
     job_parameters_2 = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input_2.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'http://test.com/outputs/test_output_2.txt'}
+                        'output_url': 'tests/output/test_output_2.txt'}
 
     service_id = ontology.DOCUMENT_SUMMARIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
