@@ -12,6 +12,7 @@ from sn_agent.service_adapter.base import ModuleServiceAdapterABC
 from sn_agent.service_adapter.manager import ServiceManager
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from sn_agent import ontology
+import os
 
 import logging
 
@@ -76,6 +77,12 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
     def perform(self, job: JobDescriptor):
         log.debug("      summarizing document")
 
+        # Make sure we have a directory.
+        directory = os.path.dirname(TEST_OUTPUT_DIRECTORY)
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+
+        # Perform the sub-jobs...
         word_job = self.sub_adapter_job(self.word_sense_disambiguater, 'word', job)
         self.word_sense_disambiguater.perform(word_job)
 
@@ -91,6 +98,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         entity_job = self.sub_adapter_job(self.entity_extracter, 'entity', job)
         self.entity_extracter.perform(entity_job)
 
+        # Now copy the outputs of each of the sub-jobs...
         item_count = 0
         for job_item in job:
             output_file_name = self.transform_output_url('document', item_count, job_item['output_url'])
