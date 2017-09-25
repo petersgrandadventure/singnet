@@ -22,7 +22,7 @@ class ServiceManager:
             service_adapter.post_load_initialize(self)
 
     def start(self, service_node_id):
-        # Find the service adapters for a given service descriptor and disable them
+        # Find the service adapters for a given service descriptor and enable them
         service_adapter = self.get_service_adapter_for_id(service_node_id)
         service_adapter.start()
 

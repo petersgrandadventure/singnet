@@ -91,7 +91,7 @@ class ServiceAdapterABC(ABC):
         :param kwargs:
         :return:
         """
-        raise NotImplementedError()
+        pass
 
 class ModuleServiceAdapterABC(ServiceAdapterABC):
     """

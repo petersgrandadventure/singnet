@@ -39,9 +39,7 @@ def app():
 # Perform a single service
 def perform_one_service(app, service_manager, service_id):
     log.debug("  test_one_service")
-    service = ServiceDescriptor(service_id)
     service_adapter = service_manager.get_service_adapter_for_id(service_id)
-    # service_adapter = MockServiceAdapter(app, service)
     test_jobs = JobDescriptor.get_test_jobs(service_id)
     log.debug("    Testing jobs")
     job = None
@@ -57,6 +55,22 @@ def perform_one_service(app, service_manager, service_id):
 
     assert not exception_caught
 
+def start_stop_start_one_service(app, service_manager, service_id):
+    log.debug("  start_stop_start_one_service")
+    service_adapter = service_manager.get_service_adapter_for_id(service_id)
+    try:
+        exception_caught = False
+        service_adapter.start()
+        service_adapter.stop()
+        service_adapter.start()
+    except RuntimeError as execption:
+        exception_caught = True
+        log.error("    Exception caught %s", execption)
+        log.debug("    Error starting or stopping %s", service_adapter)
+
+    assert not exception_caught
+
+
 # Tests
 
 # Test performance of services - all of them
@@ -70,10 +84,16 @@ def test_perform_services(app):
     assert(not app['service_manager'] is None)
     service_manager = app['service_manager']
 
-
     perform_one_service(app, service_manager, ontology.DOCUMENT_SUMMARIZER_ID)
     perform_one_service(app, service_manager, ontology.ENTITY_EXTRACTER_ID)
     perform_one_service(app, service_manager, ontology.FACE_RECOGNIZER_ID)
     perform_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
     perform_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
     perform_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)
+
+    start_stop_start_one_service(app, service_manager, ontology.DOCUMENT_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.ENTITY_EXTRACTER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.FACE_RECOGNIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)
