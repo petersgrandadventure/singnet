@@ -11,6 +11,10 @@ from typing import List
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter.base import ModuleServiceAdapterABC
 
+import logging
+
+log = logging.getLogger(__name__)
+
 class TextSummarizer(ModuleServiceAdapterABC):
     type_name = "TextSummarizer"
 
@@ -18,5 +22,11 @@ class TextSummarizer(ModuleServiceAdapterABC):
         super().__init__(app, service_ontology_node, required_service_nodes, name)
 
     def perform(self, job: JobDescriptor):
-        pass
+        item_count = 0
+        for job_item in job:
+            file_name = job[item_count]['output_url']
+            file = open(file_name, 'w')
+            file.write("text:\n")
+            file.write("    Farmer Jones and her husband, Henry, are standing in a field\n")
+            file.close()
 

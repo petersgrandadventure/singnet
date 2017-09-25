@@ -11,6 +11,10 @@ from typing import List
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter.base import ModuleServiceAdapterABC
 
+import logging
+
+log = logging.getLogger(__name__)
+
 class EntityExtracter(ModuleServiceAdapterABC):
     type_name = "EntityExtracter"
 
@@ -18,5 +22,14 @@ class EntityExtracter(ModuleServiceAdapterABC):
         super().__init__(app, service_ontology_node, required_service_nodes, name)
 
     def perform(self, job: JobDescriptor):
-        pass
+        item_count = 0
+        for job_item in job:
+            file_name = job[item_count]['output_url']
+            file = open(file_name, 'w')
+            file.write("entity:\n")
+            file.write("    pig\n")
+            file.write("    farmer\n")
+            file.write("    tractor\n")
+            file.write("    cornfield\n")
+            file.close()
 
