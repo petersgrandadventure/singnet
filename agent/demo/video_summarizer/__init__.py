@@ -19,4 +19,3 @@ class VideoSummarizer(ModuleServiceAdapterABC):
 
     def perform(self, job: JobDescriptor):
         pass
-

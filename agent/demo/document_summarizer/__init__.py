@@ -61,4 +61,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
                 raise RuntimeError("Bad output type %s for job %s" % (output_type, self))
             entity_job_item['output_url'] = sub_adapter_output_url
             entity_job.append_job_item(entity_job_item)
+
+            self.entity_extracter.perform(entity_job)
+
             item_count += 1
