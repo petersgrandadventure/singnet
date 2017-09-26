@@ -7,8 +7,12 @@ set -o nounset
 
 case "$1" in
 
-run)
+up)
     docker-compose up --build --force-recreate
+    ;;
+
+run)
+    docker-compose run agent run
     ;;
 
 clean)
@@ -28,12 +32,13 @@ create-web-cookie)
     ;;
 
 docs)
-    docker-compose run agent-docs
+    docker-compose create --build --force-recreate agent
+    docker-compose run agent docs
     ;;
 
 test)
-    docker-compose create --build --force-recreate agent-test
-    docker-compose run agent-test
+    docker-compose create --build --force-recreate agent
+    docker-compose run agent test
     ;;
 
 *) echo 'No operation specified'
