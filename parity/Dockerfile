@@ -2,4 +2,5 @@ FROM parity/parity:stable
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN ls -lar
+WORKDIR /parity
+ADD . /parity

@@ -2,6 +2,7 @@
 version: "3"
 
 services:
+
     agent:
       build: agent
       environment:
@@ -12,6 +13,7 @@ services:
         - "8000:8000"
       volumes:
         - ./agent-data:/data
+
       working_dir: /code
       entrypoint: ./run.sh
       command: noop
@@ -22,34 +24,41 @@ services:
         - "8080:8080"
       environment:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
+        - PYTHONPATH=/code
+      working_dir: /code
       entrypoint: ./run.sh
       command: noop
 
-#    geth:
-#      build: geth
-#      ports:
-#        - "8545:8545"
-#        - "8546:8546"
-#        - "30303:30303"
-#      volumes:
-#        - ./geth-data:/geth-data
-#      entrypoint: ./run.sh
-#      command: noop
-#      deploy:
-#          resources:
-#            limits:
-#              cpus: '0.001'
-#              memory: 50M
-#            reservations:
-#              cpus: '0.0001'
-#              memory: 20M
+    geth:
+      build: geth
+      ports:
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+      volumes:
+        - ./geth-data:/data
+      deploy:
+          resources:
+            limits:
+              cpus: '0.001'
+              memory: 50M
+            reservations:
+              cpus: '0.0001'
+              memory: 20M
 
-#    parity:
-#      build: parity
-#      entrypoint: ./run.sh
-#      command: noop
-#
-#    truffle:
-#      build: truffle
-#      entrypoint: ./run.sh
-#      command: noop
+      working_dir: /geth
+      entrypoint: ./run.sh
+      command: noop
+
+    parity:
+      build: parity
+      volumes:
+        - ./parity-data:/data
+
+      working_dir: /parity
+      entrypoint: ./run.sh
+      command: noop
+
+    truffle:
+      build: truffle
+      entrypoint: truffle

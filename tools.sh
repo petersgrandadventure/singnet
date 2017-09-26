@@ -7,8 +7,12 @@ set -o nounset
 
 case "$1" in
 
-run)
+up)
     docker-compose up --build --force-recreate
+    ;;
+
+run)
+    docker-compose run agent run
     ;;
 
 clean)
