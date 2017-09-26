@@ -1,11 +1,9 @@
 .DS_Store
 *.egg-info/
-.tox/
-local
-local/
 .cache
-node_modules/
 .idea
 __pycache__/
-agent/src/sn_agent_ui/static/vendor/
 /geth-data/
+/parity-data/
+/agent-data/
+/agent-web-data/

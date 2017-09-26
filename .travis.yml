@@ -4,7 +4,4 @@ services:
   - docker
 
 script:
-  - ./tools.sh test
-
-after_success:
-  - coveralls
+  - docker-compose run agent travis-test
