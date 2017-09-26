@@ -1,3 +1,5 @@
+
+from abc import abstractmethod
 from sn_agent.network.base import NetworkABC
 from sn_agent.network.enum import NetworkStatus
 from sn_agent.network.geth.poller import setup_poller
@@ -36,25 +38,29 @@ class GethNetwork(NetworkABC):
         super().__init__(app)
         setup_poller(app)
 
+    @abstractmethod
     def join(self) -> bool:
         """
         Agent calls this the first time to connect to the network. An Private and Public key should be returned
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def leave(self) -> bool:
         """
         Should this do something in the blockchain or just delete the public and private keys?
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def status(self) -> bool:
         """
         Determine what the current network status is (joined or not joined)
         :return:
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def get_ontology(self):
         """
         Asks for the latest ontology from wherever it is stored.
@@ -62,6 +68,7 @@ class GethNetwork(NetworkABC):
         """
         raise NotImplementedError()
 
+    @abstractmethod
     def advertise(self, agent_id: str, service: ServiceDescriptor) -> bool:
         """
         Given an ontology, advertise it as a service that the agent provides
@@ -69,8 +76,9 @@ class GethNetwork(NetworkABC):
         :param service:
         :return:
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def deadvertise(self, agent_id: str, service: ServiceDescriptor) -> bool:
         """
         Remove the advertisement of the service for a given agent
@@ -78,31 +86,35 @@ class GethNetwork(NetworkABC):
         :param service:
         :return:
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def find_providers(self, service: ServiceDescriptor) -> list:
         """
         Called by the UI as well as find_provider - should return a list that contains information about all the providers that have indicated that they can proved the designated service
         :param service:
         :return:
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def ask_agent_if_can_perform(self, agent_id, service: ServiceDescriptor) -> bool:
         """
         :param agent_id:
         :param service:
         :return:
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def ask_agent_to_perform(self, agent_id, service: ServiceDescriptor, json_content) -> bool:
         """
 
         :return:
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def ask_agent_for_their_providers(self, agent_id, service: ServiceDescriptor) -> list:
         """
         This is used for creating the tree of services behind a given ontology
@@ -111,7 +123,7 @@ class GethNetwork(NetworkABC):
         :param service:
         :return:
         """
-        raise NotImplementedError()
+        pass
 
     def can_i_perform(self, service: ServiceDescriptor) -> bool:
         """
@@ -120,6 +132,7 @@ class GethNetwork(NetworkABC):
         :param service:
         :return:
         """
+        pass
 
     def perform(self, service: ServiceDescriptor, json_content) -> bool:
         """
@@ -129,3 +142,4 @@ class GethNetwork(NetworkABC):
         :param json_content:
         :return:
         """
+        pass

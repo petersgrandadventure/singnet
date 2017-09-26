@@ -8,7 +8,7 @@ from aiohttp_session import get_session
 from jinja2.utils import import_string
 from settings import Settings
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @template('network/index.jinja')

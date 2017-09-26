@@ -6,7 +6,7 @@ from aiohttp.web_exceptions import HTTPFound
 from aiohttp_jinja2 import template
 from aiohttp_session import get_session
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @template('jobs/index.jinja')

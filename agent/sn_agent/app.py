@@ -11,7 +11,7 @@ from sn_agent.ontology import setup_ontology
 from sn_agent.routes import setup_routes
 from sn_agent.service_adapter import setup_service_manager
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 def create_app():

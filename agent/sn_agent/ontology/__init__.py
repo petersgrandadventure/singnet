@@ -4,14 +4,14 @@ import logging
 
 from sn_agent.ontology.settings import OntologySettings
 
-logger = logging.getLogger('test')
+log = logging.getLogger(__name__)
 
-
-DOCUMENT_SUMMARIZER_ID  = 'deadbeef-aaaa-bbbb-cccc-000000000001'
-IMAGE_RECOGNIZER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
-FACE_RECOGNIZER_ID      = 'deadbeef-aaaa-bbbb-cccc-000000000003'
-TEXT_SUMMARIZER_ID      = 'deadbeef-aaaa-bbbb-cccc-000000000004'
-VIDEO_SUMMARIZER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000005'
+DOCUMENT_SUMMARIZER_ID          = 'deadbeef-aaaa-bbbb-cccc-000000000001'
+WORD_SENSE_DISAMBIGUATER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
+FACE_RECOGNIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000003'
+TEXT_SUMMARIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000004'
+VIDEO_SUMMARIZER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000005'
+ENTITY_EXTRACTER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000006'
 
 
 class Service(dict):
@@ -20,6 +20,15 @@ class Service(dict):
         self.node_id = node_id
         self.name = name
         self.description = description
+
+    @property
+    def node_id(self):
+        return self.__node_id
+
+    @node_id.setter
+    def node_id(self, node_id):
+        self.__node_id = node_id
+
 
 class Ontology(object):
 
@@ -49,6 +58,10 @@ class Ontology(object):
     def add_service(self, node_id, service: Service):
         self.services[node_id] = service
 
+    def get_service(self, node_id) -> Service:
+        service = self.services[node_id]
+        return service
+
     def get_service_name(self, node_id) -> str:
         service = self.services[node_id]
         return service['name']
@@ -73,7 +86,7 @@ def setup_ontology(app):
     # jobs = []
 
     for section, section_items in cfg.items():
-        logger.debug('parsing section: {0}'.format(section))
+        log.debug('parsing section: {0}'.format(section))
         if section == 'services':
             for service_data in section_items:
                 ontology_node_id = service_data['ontology_node_id']
@@ -88,7 +101,8 @@ def setup_ontology(app):
                 description = service_data['name']
 
                 # Add the rest of the items to the service.
-                logger.debug('adding service {0} - {1}'.format(ontology_node_id, name))
+                log.debug("adding Service to ontology %s - %s", ontology_node_id, name)
+                # print("adding Service to ontology {0} - {1}".format(ontology_node_id, name))
                 service = Service(ontology_node_id, name, description)
                 service.update(service_data)
 
