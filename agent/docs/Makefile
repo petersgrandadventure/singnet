@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = SingularityNETAgent
-SOURCEDIR     = .
+SOURCEDIR     = source
 BUILDDIR      = /data/html_docs
 
 # Put it first so that "make" without argument is like "make help".

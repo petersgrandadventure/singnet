@@ -1,6 +1,11 @@
 Welcome to SingularityNET Agent's documentation!
 ================================================
 
+.. toctree::
+   :maxdepth: 3
+   :caption: Contents:
+
+   intro
 
 Welcome to the SingularNET docs
 
