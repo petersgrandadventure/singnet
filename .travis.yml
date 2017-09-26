@@ -6,6 +6,8 @@ python:
 env:
   global:
     - PYTHONPATH=$PYTHONPATH:$(pwd)
+    - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+    - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
 
 before_install:
   - cd agent
