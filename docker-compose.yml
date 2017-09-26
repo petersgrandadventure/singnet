@@ -9,9 +9,6 @@ services:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
         - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
         - PYTHONPATH=/code
-        - TRAVIS=${TRAVIS}
-        - TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
-        - TRAVIS_BRANCH=${TRAVIS_BRANCH}
       ports:
         - "8000:8000"
       volumes:

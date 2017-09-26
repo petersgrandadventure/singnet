@@ -12,7 +12,7 @@ up)
     ;;
 
 run)
-    docker-compose run agent run
+    docker-compose run --service-ports agent run
     ;;
 
 clean)

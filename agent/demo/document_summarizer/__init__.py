@@ -5,8 +5,7 @@
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
-
-
+from demo.document_summarizer.settings import DocumentSummarizerSettings
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter.base import ModuleServiceAdapterABC
 from sn_agent.service_adapter.manager import ServiceManager
@@ -19,7 +18,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-TEST_OUTPUT_DIRECTORY = "tests/output/"
 
 
 class DocumentSummarizer(ModuleServiceAdapterABC):
@@ -28,6 +26,12 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
     def __init__(self, app, service_ontology_node, required_service_nodes, name: str):
         super().__init__(app, service_ontology_node, required_service_nodes, name)
         self.app = app
+
+        self.settings = DocumentSummarizerSettings()
+        directory = self.settings.TEST_OUTPUT_DIRECTORY
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
     def post_load_initialize(self, service_manager: ServiceManager):
         self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
@@ -39,9 +43,9 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
     def transform_output_url(self, sub_adapter: str, item_count: int, output_url: str):
         last_part = output_url.split("/")[-1]
         if last_part == "":
-            output_url = TEST_OUTPUT_DIRECTORY + sub_adapter + ".out"
+            output_url = self.settings.TEST_OUTPUT_DIRECTORY + sub_adapter + ".out"
         else:
-            output_url = TEST_OUTPUT_DIRECTORY + sub_adapter + "_" + last_part
+            output_url = self.settings.TEST_OUTPUT_DIRECTORY + sub_adapter + "_" + last_part
         return output_url
 
     def sub_adapter_job(self, sub_adapter: ModuleServiceAdapterABC,  tag: str, job: JobDescriptor):
@@ -78,7 +82,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         log.debug("      summarizing document")
 
         # Make sure we have a directory.
-        directory = os.path.dirname(TEST_OUTPUT_DIRECTORY)
+        directory = self.settings.TEST_OUTPUT_DIRECTORY
         if not os.path.exists(directory):
             os.mkdir(directory)
 
