@@ -27,7 +27,7 @@ test)
 
 travis-test)
     run_tests
-#    coveralls
+    coveralls
     ;;
 
 *) echo 'No operation specified'
