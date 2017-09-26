@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/opencog/singnet.svg?branch=master)](https://travis-ci.org/opencog/singnet)
 
-[![Coverage Status](https://coveralls.io/repos/github/opencog/singnet/badge.svg?branch=master)](https://coveralls.io/github/opencog/singnet?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/opencog/singnet/badge.svg)](https://coveralls.io/github/opencog/singnet)
 
 [![Documentation Status](https://readthedocs.org/projects/singnet/badge/?version=latest)](http://singnet.readthedocs.io/en/latest/?badge=latest)
 
