@@ -13,7 +13,7 @@ install:
   - pip install -r agent/requirements.txt
 
 script:
-  - py.test --verbose --cov-config .coveragerc --cov=sn_agent agent/tests
+  - py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
 
 after_success:
   - coveralls
