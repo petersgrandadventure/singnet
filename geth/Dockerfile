@@ -11,6 +11,3 @@ apt-get update && \
 apt-get -y -qq install geth solc && \
 apt-get clean && \
 rm -rf /var/lib/apt/lists/*
-
-WORKDIR /geth
-ADD . /geth

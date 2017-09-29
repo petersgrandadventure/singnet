@@ -5,14 +5,49 @@ set -o verbose
 set -o xtrace
 set -o nounset
 
+function recreate_agent_image {
+    docker-compose create --build --force-recreate agent
+}
+
 case "$1" in
 
-up)
+demo)
     docker-compose up --build --force-recreate
     ;;
 
-run)
-    docker-compose run --service-ports agent run
+agent)
+    recreate_agent_image
+    docker-compose run --service-ports agent ./agent.sh run
+    ;;
+
+agent-docs)
+    recreate_agent_image
+    docker-compose run agent ./agent.sh docs
+    ;;
+
+agent-test)
+    recreate_agent_image
+    docker-compose run agent ./agent.sh test
+    ;;
+
+agent-web)
+    docker-compose run --service-ports agent-web ./agent-web.sh run
+    ;;
+
+geth)
+    docker-compose run --service-ports geth geth --datadir=/geth-data --metrics --shh --rpc --rpcaddr 0.0.0.0 --ws --wsaddr 0.0.0.0 --nat none --verbosity 5 --vmdebug --dev --maxpeers 0 --gasprice 0 --debug --pprof
+    ;;
+
+solc)
+    docker-compose run --service-ports geth solc --help
+    ;;
+
+parity)
+    docker-compose run --service-ports parity parity --help
+    ;;
+
+truffle)
+    docker-compose run --service-ports truffle truffle --help
     ;;
 
 clean)
@@ -31,15 +66,7 @@ create-web-cookie)
     docker-compose run agent-web-cookie
     ;;
 
-docs)
-    docker-compose create --build --force-recreate agent
-    docker-compose run agent docs
-    ;;
 
-test)
-    docker-compose create --build --force-recreate agent
-    docker-compose run agent test
-    ;;
 
 *) echo 'No operation specified'
     exit 0;

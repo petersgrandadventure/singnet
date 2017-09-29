@@ -11,3 +11,4 @@ __pycache__/
 /parity-data/
 /agent-data/
 /agent-web-data/
+/agent/app.log
