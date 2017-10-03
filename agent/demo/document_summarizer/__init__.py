@@ -25,9 +25,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
     def __init__(self, app, service_ontology_node, required_service_nodes, name: str):
         super().__init__(app, service_ontology_node, required_service_nodes, name)
         self.app = app
-
         self.settings = DocumentSummarizerSettings()
-        print("self.app.loop ", self.app.loop)
 
     def post_load_initialize(self, service_manager: ServiceManager):
         self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
