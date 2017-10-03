@@ -27,6 +27,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         self.app = app
 
         self.settings = DocumentSummarizerSettings()
+        print("self.app.loop ", self.app.loop)
 
     def post_load_initialize(self, service_manager: ServiceManager):
         self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
@@ -85,7 +86,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         if not os.path.exists(directory):
             os.mkdir(directory)
 
-        # Perform the sub-jobs...
+        # Create new job descriptors for the sub-services...
         word_job = self.sub_adapter_job('word', self.word_sense_disambiguater, job)
         face_job = self.sub_adapter_job('face', self.face_recognizer, job)
         text_job = self.sub_adapter_job('text', self.text_summarizer, job)
@@ -107,13 +108,16 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         async def extract_entities():
             self.entity_extracter.perform(entity_job)
 
-        loop = asyncio.get_event_loop()
+        # Gather all the subservice tasks to process them asynchronously.
+        loop = self.app.loop
         sub_services = [
             asyncio.ensure_future(disambiguate_words(), loop=loop),
             asyncio.ensure_future(recognize_faces(), loop=loop),
             asyncio.ensure_future(summarize_text(), loop=loop),
             asyncio.ensure_future(summarize_video(), loop=loop),
             asyncio.ensure_future(extract_entities(), loop=loop)]
+
+        # Wait until the sub-service tasks all complete.
         loop.run_until_complete(asyncio.gather(*sub_services))
 
         # Now copy the outputs of each of the sub-jobs...
