@@ -25,10 +25,6 @@ test)
     run_tests
     ;;
 
-travis-test)
-    run_tests
-    coveralls
-    ;;
 
 *) echo 'No operation specified'
     exit 0;

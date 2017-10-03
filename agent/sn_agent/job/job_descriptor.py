@@ -61,11 +61,11 @@ def init_test_jobs():
     job_parameters = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'tests/output/test_output.txt'}
+                        'output_url': 'test_output.txt'}
     job_parameters_2 = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input_2.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'tests/output/test_output_2.txt'}
+                        'output_url': 'test_output_2.txt'}
 
     service_id = ontology.DOCUMENT_SUMMARIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)

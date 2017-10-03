@@ -8,6 +8,8 @@
 
 import logging
 import pytest
+import os
+from pathlib import Path
 
 from sn_agent.log import setup_logging
 from sn_agent.job.job_descriptor import JobDescriptor
@@ -20,6 +22,7 @@ from sn_agent.test.mocks import MockApp
 
 log = logging.getLogger(__name__)
 
+TEST_DIR = Path(__file__).parent
 
 class MockServiceAdapter(ServiceAdapterABC):
     def __init__(self, app, service: ServiceDescriptor):
@@ -80,21 +83,30 @@ def test_perform_services(app):
     init_test_jobs()
     setup_service_manager(app)
 
+    # The test jobs specify output URLs for files in an "output" directory inside the "tests" directory.
+
+    print("current directory is ", os.getcwd())
+    print("test directory is ", TEST_DIR)
+
+    output_directory = os.path.join(TEST_DIR, "output")
+    print("output directory is ", output_directory)
+    if not os.path.exists(output_directory):
+        os.mkdir(output_directory)
+
     # Excercise the service manager methods.
     assert(not app['service_manager'] is None)
     service_manager = app['service_manager']
 
     perform_one_service(app, service_manager, ontology.DOCUMENT_SUMMARIZER_ID)
-    #@CURTIS: Tests failing in Travis due to missing folders - try using a settings ENV var to indicate tests root or something
-    # perform_one_service(app, service_manager, ontology.ENTITY_EXTRACTER_ID)
-    # perform_one_service(app, service_manager, ontology.FACE_RECOGNIZER_ID)
-    # perform_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
-    # perform_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
-    # perform_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)
-    #
-    # start_stop_start_one_service(app, service_manager, ontology.DOCUMENT_SUMMARIZER_ID)
-    # start_stop_start_one_service(app, service_manager, ontology.ENTITY_EXTRACTER_ID)
-    # start_stop_start_one_service(app, service_manager, ontology.FACE_RECOGNIZER_ID)
-    # start_stop_start_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
-    # start_stop_start_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
-    # start_stop_start_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)
+    perform_one_service(app, service_manager, ontology.ENTITY_EXTRACTER_ID)
+    perform_one_service(app, service_manager, ontology.FACE_RECOGNIZER_ID)
+    perform_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
+    perform_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
+    perform_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)
+
+    start_stop_start_one_service(app, service_manager, ontology.DOCUMENT_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.ENTITY_EXTRACTER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.FACE_RECOGNIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)

@@ -14,10 +14,6 @@ services:
       volumes:
         - ./agent-data:/data
 
-      working_dir: /code
-      entrypoint: ./agent.sh
-      command: noop
-
     agent-web:
       build: agent-web
       ports:
@@ -25,9 +21,6 @@ services:
       environment:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
         - PYTHONPATH=/code
-      working_dir: /code
-      entrypoint: ./agent-web.sh
-      command: noop
 
     geth:
       build: geth
@@ -48,19 +41,11 @@ services:
               cpus: '0.0001'
               memory: 20M
 
-      working_dir: /geth
-      entrypoint: ./geth.sh
-      command: noop
-
     parity:
       build: parity
       volumes:
         - ./parity-data:/data
-      working_dir: /parity
-      entrypoint: ./parity.sh
-      command: noop
+
 
     truffle:
       build: truffle
-      entrypoint: ./truffle.sh
-      command: noop
