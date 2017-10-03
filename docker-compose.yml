@@ -9,8 +9,23 @@ services:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
         - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
         - PYTHONPATH=/code
+        - SN_DHT_BOOT_HOST=172.17.0.1
+        - SN_DHT_PORT=3000
       ports:
-        - "8000:8000"
+        - "3000:3000/udp"
+      volumes:
+        - ./agent-data:/data
+
+    agent2:
+      build: agent
+      environment:
+        - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
+        - PYTHONPATH=/code
+        - SN_DHT_NEEDS_BOOTING=False
+        - SN_DHT_PORT=6881
+      ports:
+        - "6881:6881/udp"
       volumes:
         - ./agent-data:/data
 

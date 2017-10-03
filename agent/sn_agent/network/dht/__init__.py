@@ -1,9 +1,8 @@
 import logging
 
-from sn_agent.network.dht.dht import DHT
-
 from sn_agent.agent.base import AgentABC
 from sn_agent.network.base import NetworkABC
+from sn_agent.network.dht.dht import DHT
 from sn_agent.network.enum import NetworkStatus
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
@@ -13,20 +12,8 @@ logger = logging.getLogger(__name__)
 class DHTNetwork(NetworkABC):
     def __init__(self, app):
         super().__init__(app)
-        import nacl.signing
 
-
-
-        host1, port1 = 'localhost', 3000
-        dht1 = DHT(key1)
-
-        key2 = nacl.signing.SigningKey.generate()
-
-        host2, port2 = 'localhost', 3001
-        dht2 = DHT(host2, port2, key2, boot_host=host1, boot_port=port1)
-
-        dht1["test2"] = ["My", "json-serializable", "Object"]
-        print(dht2["test2"])
+        self.dht = DHT()
 
     def update_ontology(self):
         super().update_ontology()
@@ -38,7 +25,9 @@ class DHTNetwork(NetworkABC):
         return super().leave_network()
 
     def join_network(self) -> bool:
-        return super().join_network()
+        agent = self.app['agent']
+        agent_id = str(agent.agent_id)
+        self.dht[agent_id] = self.dht.my_id
 
     def get_network_status(self) -> NetworkStatus:
         return super().get_network_status()

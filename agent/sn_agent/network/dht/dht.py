@@ -6,35 +6,32 @@ import time
 import nacl.encoding
 import nacl.signing
 
-from .handler import DHTRequestHandler
-from .server import DHTServer
-from .settings import DHTSettings
 from .bucketset import BucketSet
+from .handler import DHTRequestHandler
 from .hashing import hash_function, random_id
 from .peer import Peer
+from .server import DHTServer
+from .settings import DHTSettings
 from .shortlist import Shortlist
 
 logger = logging.getLogger(__name__)
 
 
 class DHT(object):
-    def __init__(self, host=None, port=None, key=None, my_id=None):
+    def __init__(self):
         self.settings = DHTSettings()
 
-        if not my_id:
-            my_id = random_id()
+        self.my_id = random_id()
 
-        if not host:
-            host = "0.0.0.0"
+        host = self.settings.HOST
 
-        if not port:
+        port = self.settings.PORT
+        if port == 0:
             port = random.randint(5000, 10000)
 
-        if not key:
-            key = nacl.signing.SigningKey.generate()
-        self.my_key = key
+        self.my_key = nacl.signing.SigningKey.generate()
 
-        self.peer = Peer(host, port, my_id)
+        self.peer = Peer(host, port, self.my_id)
         self.data = {}
         self.buckets = BucketSet(self.settings.K, self.settings.ID_BITS, self.peer.id)
         self.rpc_ids = {}  # should probably have a lock for this
@@ -94,6 +91,9 @@ class DHT(object):
         return shortlist.completion_result()
 
     def bootstrap(self, boot_host, boot_port):
+
+        logger.debug("Bootstrapping for %s:%s", boot_host, boot_port)
+
         boot_peer = Peer(boot_host, boot_port, 0)
         self.iterative_find_nodes(self.peer.id, boot_peer=boot_peer)
 

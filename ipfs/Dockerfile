@@ -1,4 +1,3 @@
-FROM desmart/truffle
+FROM ipfs/go-ipfs
 
-WORKDIR /truffle
-ADD . /truffle
+

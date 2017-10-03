@@ -7,6 +7,7 @@ set -o nounset
 
 function recreate_agent_image {
     docker-compose create --build --force-recreate agent
+    docker-compose create --build --force-recreate agent2
 }
 
 case "$1" in
@@ -18,6 +19,11 @@ demo)
 agent)
     recreate_agent_image
     docker-compose run --service-ports agent ./agent.sh run
+    ;;
+
+agent2)
+    recreate_agent_image
+    docker-compose run --service-ports agent2 ./agent.sh run
     ;;
 
 agent-docs)
@@ -43,11 +49,15 @@ solc)
     ;;
 
 parity)
-    docker-compose run --service-ports parity parity --help
+    docker-compose run --service-ports parity
     ;;
 
 truffle)
-    docker-compose run --service-ports truffle truffle --help
+    docker-compose run --service-ports truffle
+    ;;
+
+ipfs)
+    docker-compose run --service-ports ipfs daemon
     ;;
 
 clean)
@@ -66,7 +76,13 @@ create-web-cookie)
     docker-compose run agent-web-cookie
     ;;
 
-
+gen-ssl)
+    openssl genrsa -des3 -passout pass:x -out server.pass.key 2048
+    openssl rsa -passin pass:x -in server.pass.key -out server.key
+    rm server.pass.key
+    openssl req -new -key server.key -out server.csr -subj "/C=UK/ST=Warwickshire/L=Leamington/O=OrgName/OU=IT Department/CN=example.com"
+    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+    ;;
 
 *) echo 'No operation specified'
     exit 0;
