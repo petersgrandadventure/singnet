@@ -9,6 +9,7 @@
 import logging
 import pytest
 import os
+from pathlib import Path
 
 from sn_agent.log import setup_logging
 from sn_agent.job.job_descriptor import JobDescriptor
@@ -21,6 +22,7 @@ from sn_agent.test.mocks import MockApp
 
 log = logging.getLogger(__name__)
 
+TEST_DIR = Path(__file__).parent
 
 class MockServiceAdapter(ServiceAdapterABC):
     def __init__(self, app, service: ServiceDescriptor):
@@ -82,9 +84,13 @@ def test_perform_services(app):
     setup_service_manager(app)
 
     # The test jobs specify output URLs for files in an "output" directory inside the "tests" directory.
-    output_directory = "output"
+
+    print("current directory is ", os.getcwd())
+    print("test directory is ", TEST_DIR)
+
+    output_directory = os.path.join(TEST_DIR, "output")
     if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
+        os.mkdir(output_directory)
 
     # Excercise the service manager methods.
     assert(not app['service_manager'] is None)
