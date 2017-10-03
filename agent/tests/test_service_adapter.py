@@ -89,6 +89,7 @@ def test_perform_services(app):
     print("test directory is ", TEST_DIR)
 
     output_directory = os.path.join(TEST_DIR, "output")
+    print("output directory is ", output_directory)
     if not os.path.exists(output_directory):
         os.mkdir(output_directory)
 
