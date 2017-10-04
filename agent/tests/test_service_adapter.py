@@ -51,9 +51,9 @@ def perform_one_service(app, service_manager, service_id):
         for job in test_jobs:
             log.debug("      testing job %s", job)
             service_adapter.perform(job)
-    except RuntimeError as execption:
+    except RuntimeError as exception:
         exception_caught = True
-        log.error("    Exception caught %s", execption)
+        log.error("    Exception caught %s", exception)
         log.debug("    Error performing %s %s", job, service_adapter)
 
     assert not exception_caught
@@ -66,9 +66,9 @@ def start_stop_start_one_service(app, service_manager, service_id):
         service_adapter.start()
         service_adapter.stop()
         service_adapter.start()
-    except RuntimeError as execption:
+    except RuntimeError as exception:
         exception_caught = True
-        log.error("    Exception caught %s", execption)
+        log.error("    Exception caught %s", exception)
         log.debug("    Error starting or stopping %s", service_adapter)
 
     assert not exception_caught
@@ -110,3 +110,70 @@ def test_perform_services(app):
     start_stop_start_one_service(app, service_manager, ontology.TEXT_SUMMARIZER_ID)
     start_stop_start_one_service(app, service_manager, ontology.VIDEO_SUMMARIZER_ID)
     start_stop_start_one_service(app, service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID)
+
+
+# Test performance of services - all of them
+def test_bogus_yaml_config(app):
+    print()
+    setup_logging()
+
+    # Test missing opencog ontology_node_id
+    original_config_file = os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE']
+    os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE'] = "tests/service_adapter_test.yml"
+    exception_caught = False
+    try:
+        setup_service_manager(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+
+    assert(exception_caught)
+
+    # Test missing JSONRPC ontology_node_id
+    os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE'] = "tests/service_adapter_test_2.yml"
+    exception_caught = False
+    try:
+        setup_service_manager(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+
+    assert(exception_caught)
+
+    # Test missing Module ontology_node_id
+    os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE'] = "tests/service_adapter_test_3.yml"
+    exception_caught = False
+    try:
+        setup_service_manager(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+
+    assert(exception_caught)
+
+
+    # Test bogus service adapter type
+    os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE'] = "tests/service_adapter_test_4.yml"
+    exception_caught = False
+    try:
+        setup_service_manager(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+
+    assert(exception_caught)
+
+
+    # Reset to the original config file.
+    os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE'] = original_config_file
+
+    setup_service_manager(app)
+

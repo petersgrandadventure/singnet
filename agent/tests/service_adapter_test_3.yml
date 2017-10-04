@@ -1,0 +1,21 @@
+---
+
+modules:
+- module:
+  name: demo.document_summarizer.DocumentSummarizer
+  required_ontology_node_ids:
+    - deadbeef-aaaa-bbbb-cccc-000000000002
+    - deadbeef-aaaa-bbbb-cccc-000000000003
+    - deadbeef-aaaa-bbbb-cccc-000000000004
+    - deadbeef-aaaa-bbbb-cccc-000000000005
+    - deadbeef-aaaa-bbbb-cccc-000000000006
+
+- module:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
+  name: demo.word_sense_disambiguater.WordSenseDisambiguater
+
+
+bogusii:
+- bogus:
+  name: demo.document_summarizer.DocumentSummarizer
+  required_ontology_node_ids:
