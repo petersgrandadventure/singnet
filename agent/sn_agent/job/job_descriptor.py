@@ -22,7 +22,7 @@ class JobDescriptor(object):
         return self.__dict__ == other.__dict__
 
     def __str__(self):
-        if not self.service:
+        if self.service is None:
             description = ""
         else:
             description = self.service.name()
@@ -30,8 +30,6 @@ class JobDescriptor(object):
 
     def __iter__(self):
         return self.job_parameters.__iter__()
-    def __next__(self):
-        return self.job_parameters.__next__()
 
     def __delitem__(self, key):
         self.job_parameters.__delitem__(key)
