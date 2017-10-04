@@ -56,10 +56,10 @@ clean)
 
 hard-clean)
     docker-compose down --rmi all --remove-orphans
-    docker ps -q | xargs -r docker kill
-    docker ps -a -q | xargs -r docker rm
-    docker images -q | xargs -r docker rmi
-    docker volume ls -qf dangling=true | xargs -r docker volume rm
+    docker kill `docker ps -q`
+    docker rm `docker ps -a -q`
+    docker rmi `docker images -q`
+    docker volume rm `docker volume ls -qf dangling=true`
     ;;
 
 create-web-cookie)
