@@ -38,7 +38,8 @@ class JobDescriptor(object):
     def __setitem__(self, key, value):
         self.job_parameters.__setitem__(key, value)
 
-
+    def __len__(self):
+        return len(self.job_parameters)
 
     def append_job_item(self, job_item: dict):
         self.job_parameters.append(job_item)

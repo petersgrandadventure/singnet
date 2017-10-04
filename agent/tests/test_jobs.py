@@ -46,9 +46,14 @@ def test_jobs():
                 file_count += 1
             else:
                 file_count = 0
+        assert(file_count == 4)
 
+        # Cover and test iteration and list item retrieval and length.
         new_job[0] = job_parameters_2
+        assert(new_job[0] == job_parameters_2)
+        job_count = len(new_job)
         del new_job[1]
+        assert(len(new_job) == job_count - 1)
 
         # Test equality and string conversion functions.
         last_job = new_job
