@@ -1,0 +1,6 @@
+---
+
+bogusii:
+- bogus:
+  name: demo.document_summarizer.DocumentSummarizer
+  required_ontology_node_ids:

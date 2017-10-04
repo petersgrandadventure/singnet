@@ -1,0 +1,17 @@
+---
+
+opencogs:
+- opencog:
+  required_ontology_node_ids:
+    - 86717381-0b4c-440f-9ed6-41206fbba0bc
+    - b95fb615-cb03-4d19-bf71-2a892c3d45a8
+  host: 127.0.0.1
+  port: 15010
+
+- opencog:
+  ontology_node_id: 413cfd03-14a2-45dd-a94c-3c7798aca992
+  required_ontology_node_ids:
+    - 86717381-0b4c-440f-9ed6-41206fbba0bc
+    - b95fb615-cb03-4d19-bf71-2a892c3d45a8
+  host: 127.0.0.1
+  port: 15010
