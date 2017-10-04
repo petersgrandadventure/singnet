@@ -60,7 +60,7 @@ def test_bogus_yaml_config(app):
         pass
     assert(exception_caught)
 
-    # Test missing service ontology_node_id
+    # Test missing service name
     log.debug("ontology os.environ config file {0}".format(original_config_file))
     yaml_file = os.path.join(TEST_DIR, "ontology_test_2.yml")
     os.environ['SN_ONTOLOGY_CONFIG_FILE'] = yaml_file
@@ -74,7 +74,7 @@ def test_bogus_yaml_config(app):
         pass
     assert(exception_caught)
 
-    # Test missing service ontology_node_id
+    # Test bad section name in yaml file
     log.debug("ontology os.environ config file {0}".format(original_config_file))
     yaml_file = os.path.join(TEST_DIR, "ontology_test_3.yml")
     os.environ['SN_ONTOLOGY_CONFIG_FILE'] = yaml_file
