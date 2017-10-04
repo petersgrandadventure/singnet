@@ -64,3 +64,8 @@ def test_jobs():
         total_jobs = len(test_jobs)
         test_jobs[0] = new_job
         del test_jobs[total_jobs-1]
+
+        # Check the string conversion with no ServiceDescriptor...
+        new_job = JobDescriptor(None, job_parameters)
+        assert(str(new_job) != "")
+
