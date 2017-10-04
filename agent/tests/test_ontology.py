@@ -38,6 +38,8 @@ def test_ontology(app):
     service_name = app_ontology.get_service_name(ontology.ENTITY_EXTRACTER_ID)
     assert(service_name == 'Entity Extracter')
 
+    service_description = app_ontology.get_service_description(ontology.DOCUMENT_SUMMARIZER_ID)
+    assert(service_description == 'Summarizes documents with text, video and images')
 
 def test_bogus_yaml_config(app):
     app = MockApp()
