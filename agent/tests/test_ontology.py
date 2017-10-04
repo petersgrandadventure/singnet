@@ -1,10 +1,17 @@
 import logging
 
 import pytest
-from sn_agent import ontology
-from sn_agent.test.mocks import MockApp
+import os
+from pathlib import Path
 
-logger = logging.getLogger(__name__)
+from sn_agent import ontology
+from sn_agent.ontology.settings import OntologySettings
+from sn_agent.test.mocks import MockApp
+from sn_agent.log import setup_logging
+
+log = logging.getLogger(__name__)
+
+TEST_DIR = Path(__file__).parent
 
 @pytest.fixture
 def app():
@@ -30,3 +37,56 @@ def test_ontology(app):
     assert(service_name == 'Video Summarizer')
     service_name = app_ontology.get_service_name(ontology.ENTITY_EXTRACTER_ID)
     assert(service_name == 'Entity Extracter')
+
+
+def test_bogus_yaml_config(app):
+    app = MockApp()
+    setup_logging()
+    settings = OntologySettings()
+    original_config_file = settings.CONFIG_FILE
+    log.debug("ontology original config file {0}".format(original_config_file))
+
+    # Test missing service ontology_node_id
+    log.debug("ontology os.environ config file {0}".format(original_config_file))
+    yaml_file = os.path.join(TEST_DIR, "ontology_test.yml")
+    os.environ['SN_ONTOLOGY_CONFIG_FILE'] = yaml_file
+    exception_caught = False
+    try:
+        ontology.setup_ontology(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+    assert(exception_caught)
+
+    # Test missing service ontology_node_id
+    log.debug("ontology os.environ config file {0}".format(original_config_file))
+    yaml_file = os.path.join(TEST_DIR, "ontology_test_2.yml")
+    os.environ['SN_ONTOLOGY_CONFIG_FILE'] = yaml_file
+    exception_caught = False
+    try:
+        ontology.setup_ontology(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+    assert(exception_caught)
+
+    # Test missing service ontology_node_id
+    log.debug("ontology os.environ config file {0}".format(original_config_file))
+    yaml_file = os.path.join(TEST_DIR, "ontology_test_3.yml")
+    os.environ['SN_ONTOLOGY_CONFIG_FILE'] = yaml_file
+    exception_caught = False
+    try:
+        ontology.setup_ontology(app)
+    except RuntimeError as exception:
+        exception_caught = True
+        log.debug("    Expected Exception caught %s", exception)
+    except:
+        pass
+    assert(exception_caught)
+
+
+    os.environ['SN_ONTOLOGY_CONFIG_FILE'] = original_config_file
