@@ -2,7 +2,6 @@ services:
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000001
   name: Document Summarizer
-  description: Summarizes documents with text, video and images
   extra_test: Some extra for one service
 
 - service:
