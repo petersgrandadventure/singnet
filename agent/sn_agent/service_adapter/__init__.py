@@ -6,10 +6,16 @@ from sn_agent.service_adapter.opencog import OpenCogServiceAdapter
 from sn_agent.service_adapter.settings import ServiceAdapterSettings
 from sn_agent.service_adapter.manager import ServiceManager
 
+import logging
+
+log = logging.getLogger(__name__)
+
 def setup_service_manager(app):
     settings = ServiceAdapterSettings()
     config_file = settings.CONFIG_FILE
     ontology = app['ontology']
+
+    log.debug("reading configuration file {0}".format(config_file))
 
     with open(config_file, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)

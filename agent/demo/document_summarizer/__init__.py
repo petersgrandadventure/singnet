@@ -12,12 +12,11 @@ from sn_agent.service_adapter.manager import ServiceManager
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from sn_agent import ontology
 import os
+import asyncio
 
 import logging
 
 log = logging.getLogger(__name__)
-
-
 
 
 class DocumentSummarizer(ModuleServiceAdapterABC):
@@ -26,12 +25,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
     def __init__(self, app, service_ontology_node, required_service_nodes, name: str):
         super().__init__(app, service_ontology_node, required_service_nodes, name)
         self.app = app
-
         self.settings = DocumentSummarizerSettings()
-        directory = self.settings.TEST_OUTPUT_DIRECTORY
-
-        if not os.path.exists(directory):
-            os.makedirs(directory)
 
     def post_load_initialize(self, service_manager: ServiceManager):
         self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
@@ -40,27 +34,31 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         self.video_summarizer = service_manager.get_service_adapter_for_id(ontology.VIDEO_SUMMARIZER_ID)
         self.entity_extracter = service_manager.get_service_adapter_for_id(ontology.ENTITY_EXTRACTER_ID)
 
-    def transform_output_url(self, sub_adapter: str, item_count: int, output_url: str):
+    def transform_output_url(self, tag: str, item_count: int, output_url: str):
         last_part = output_url.split("/")[-1]
         if last_part == "":
-            output_url = self.settings.TEST_OUTPUT_DIRECTORY + sub_adapter + ".out"
+            sub_adapter_output = tag + ".out"
         else:
-            output_url = self.settings.TEST_OUTPUT_DIRECTORY + sub_adapter + "_" + last_part
-        return output_url
+            sub_adapter_output = tag + "_" + last_part
+        sub_adapter_url = os.path.join(self.settings.TEST_OUTPUT_DIRECTORY, sub_adapter_output)
+        return sub_adapter_url
 
-    def sub_adapter_job(self, sub_adapter: ModuleServiceAdapterABC,  tag: str, job: JobDescriptor):
+    def sub_adapter_job(self, tag: str, sub_adapter: ModuleServiceAdapterABC, job: JobDescriptor):
         new_service_descriptor = ServiceDescriptor(sub_adapter.service)
         new_job = JobDescriptor(new_service_descriptor)
         item_count = 0
         for job_item in job:
+
+            # Just pass the inputs on directly to the subtasks.
             new_job_item = {}
             new_job_item['input_type'] = job_item['input_type']
+            new_job_item['input_url'] = job_item['input_url']
+
             output_type = job_item['output_type']
             new_job_item['output_type'] = output_type
 
-            new_job_item['input_url'] = job_item['input_url']
-
-            # Transform the output so we can get separate outputs for each sub-adapter.
+            # Transform the output URL so we can get separate output files for each sub-adapter
+            # That way we can assemble the various parts at the end using these separate URLs.
             if output_type == 'file_url_put':
                 output_url = job_item['output_url']
                 sub_adapter_output_url = self.transform_output_url(tag, item_count, output_url)
@@ -86,21 +84,39 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         if not os.path.exists(directory):
             os.mkdir(directory)
 
-        # Perform the sub-jobs...
-        word_job = self.sub_adapter_job(self.word_sense_disambiguater, 'word', job)
-        self.word_sense_disambiguater.perform(word_job)
+        # Create new job descriptors for the sub-services...
+        word_job = self.sub_adapter_job('word', self.word_sense_disambiguater, job)
+        face_job = self.sub_adapter_job('face', self.face_recognizer, job)
+        text_job = self.sub_adapter_job('text', self.text_summarizer, job)
+        video_job = self.sub_adapter_job('video', self.video_summarizer, job)
+        entity_job = self.sub_adapter_job('entity', self.entity_extracter, job)
 
-        face_job = self.sub_adapter_job(self.face_recognizer, 'face', job)
-        self.face_recognizer.perform(face_job)
+        async def disambiguate_words():
+            self.word_sense_disambiguater.perform(word_job)
 
-        text_job = self.sub_adapter_job(self.text_summarizer, 'text', job)
-        self.text_summarizer.perform(text_job)
+        async def recognize_faces():
+            self.face_recognizer.perform(face_job)
 
-        video_job = self.sub_adapter_job(self.video_summarizer, 'video', job)
-        self.video_summarizer.perform(video_job)
+        async def summarize_text():
+            self.text_summarizer.perform(text_job)
 
-        entity_job = self.sub_adapter_job(self.entity_extracter, 'entity', job)
-        self.entity_extracter.perform(entity_job)
+        async def summarize_video():
+            self.video_summarizer.perform(video_job)
+
+        async def extract_entities():
+            self.entity_extracter.perform(entity_job)
+
+        # Gather all the subservice tasks to process them asynchronously.
+        loop = self.app.loop
+        sub_services = [
+            asyncio.ensure_future(disambiguate_words(), loop=loop),
+            asyncio.ensure_future(recognize_faces(), loop=loop),
+            asyncio.ensure_future(summarize_text(), loop=loop),
+            asyncio.ensure_future(summarize_video(), loop=loop),
+            asyncio.ensure_future(extract_entities(), loop=loop)]
+
+        # Wait until the sub-service tasks all complete.
+        loop.run_until_complete(asyncio.gather(*sub_services))
 
         # Now copy the outputs of each of the sub-jobs...
         item_count = 0

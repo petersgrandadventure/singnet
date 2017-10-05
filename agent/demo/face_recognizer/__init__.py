@@ -25,9 +25,8 @@ class FaceRecognizer(ModuleServiceAdapterABC):
         item_count = 0
         for job_item in job:
             file_name = job[item_count]['output_url']
-            file = open(file_name, 'w')
-            file.write("face:\n")
-            file.write("    Mary Jones\n")
-            file.write("    Henry Jones\n")
-            file.close()
+            with open(file_name, 'w') as file:
+                file.write("face:\n")
+                file.write("    Mary Jones\n")
+                file.write("    Henry Jones\n")
 

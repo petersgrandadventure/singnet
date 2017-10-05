@@ -22,7 +22,7 @@ class JobDescriptor(object):
         return self.__dict__ == other.__dict__
 
     def __str__(self):
-        if not self.service:
+        if self.service is None:
             description = ""
         else:
             description = self.service.name()
@@ -30,8 +30,6 @@ class JobDescriptor(object):
 
     def __iter__(self):
         return self.job_parameters.__iter__()
-    def __next__(self):
-        return self.job_parameters.__next__()
 
     def __delitem__(self, key):
         self.job_parameters.__delitem__(key)
@@ -40,7 +38,8 @@ class JobDescriptor(object):
     def __setitem__(self, key, value):
         self.job_parameters.__setitem__(key, value)
 
-
+    def __len__(self):
+        return len(self.job_parameters)
 
     def append_job_item(self, job_item: dict):
         self.job_parameters.append(job_item)
@@ -61,11 +60,11 @@ def init_test_jobs():
     job_parameters = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'tests/output/test_output.txt'}
+                        'output_url': 'test_output.txt'}
     job_parameters_2 = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input_2.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'tests/output/test_output_2.txt'}
+                        'output_url': 'test_output_2.txt'}
 
     service_id = ontology.DOCUMENT_SUMMARIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)

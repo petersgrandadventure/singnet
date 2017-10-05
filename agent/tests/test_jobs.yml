@@ -1,0 +1,17 @@
+jobs:
+- job:
+  service_id: deadbeef-aaaa-bbbb-cccc-000000000001
+  name: Document Summarizer
+  description: Summarizes documents with text, video and images
+  extra_test: Some extra for one service
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
+  name: Word Sense Disamnbiguater
+  description: Differentiates between different possible grammatical word senses using context
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000003
+  name: Face Recognizer
+  description: Recognizes personds present in images from a list of persons reference images
+

@@ -25,11 +25,9 @@ class EntityExtracter(ModuleServiceAdapterABC):
         item_count = 0
         for job_item in job:
             file_name = job[item_count]['output_url']
-            file = open(file_name, 'w')
-            file.write("entity:\n")
-            file.write("    pig\n")
-            file.write("    farmer\n")
-            file.write("    tractor\n")
-            file.write("    cornfield\n")
-            file.close()
-
+            with open(file_name, 'w') as file:
+                file.write("entity:\n")
+                file.write("    pig\n")
+                file.write("    farmer\n")
+                file.write("    tractor\n")
+                file.write("    cornfield\n")
