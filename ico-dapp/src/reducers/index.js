@@ -1,15 +1,13 @@
-import { INCREASE, DECREASE } from '../constants'
+import { combineReducers } from 'redux'
+// reducers
+import amount from './amount'
+import account from './account'
+import legalTerms from './legalTerms'
 
-const initialState = {
-  number: 1
-}
+const rootReducer = combineReducers({
+  amount,
+  account,
+  legalTerms
+})
 
-export default function update(state = initialState, action) {
-  if(action.type === INCREASE) {
-    return { number: state.number + action.amount }
-  }
-  if(action.type === DECREASE) {
-    return { number: state.number - action.amount }
-  }
-  return state
-}
+export default rootReducer
