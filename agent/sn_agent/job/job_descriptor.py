@@ -34,9 +34,9 @@ class JobDescriptor(object):
     def __delitem__(self, key):
         self.job_parameters.__delitem__(key)
     def __getitem__(self, key):
-        return self.job_parameters.__getitem__(key)
+        return self.job_parameters[key]
     def __setitem__(self, key, value):
-        self.job_parameters.__setitem__(key, value)
+        self.job_parameters[key] = value
 
     def __len__(self):
         return len(self.job_parameters)

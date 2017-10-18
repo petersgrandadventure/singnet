@@ -67,11 +67,8 @@ class Ontology(object):
         return service['name']
 
     def get_service_description(self, node_id) -> str:
-        description = self.services[node_id]['description']
-        if description is None:
-            description = ''
-        return description
-
+        service = self.services[node_id]
+        return service['description']
 
 def setup_ontology(app):
     settings = OntologySettings()
@@ -89,16 +86,17 @@ def setup_ontology(app):
         log.debug('parsing section: {0}'.format(section))
         if section == 'services':
             for service_data in section_items:
-                ontology_node_id = service_data['ontology_node_id']
-                # ontology_node_id = data.get('ontology_node_id')
+                ontology_node_id = service_data.get('ontology_node_id')
                 if ontology_node_id is None:
                     raise RuntimeError('You must supply a ontology_node_id for each service')
 
-                name = service_data['name']
+                name = service_data.get('name')
                 if name is None:
                     raise RuntimeError('You must supply a name for each service')
 
-                description = service_data['name']
+                description = service_data.get('description')
+                if description is None:
+                    description = name
 
                 # Add the rest of the items to the service.
                 log.debug("adding Service to ontology %s - %s", ontology_node_id, name)
