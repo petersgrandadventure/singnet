@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const Account = ({ address }) => (
-  <div>
+  <div style={{padding: 20}}>
     <span>account: {address}</span>
   </div>
 )
