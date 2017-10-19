@@ -11,6 +11,7 @@ from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
 test_jobs = {}
 
+
 class JobDescriptor(object):
     def __init__(self, service: ServiceDescriptor, job_parameters: dict = None):
         self.service = service
@@ -33,8 +34,10 @@ class JobDescriptor(object):
 
     def __delitem__(self, key):
         self.job_parameters.__delitem__(key)
+
     def __getitem__(self, key):
         return self.job_parameters.__getitem__(key)
+
     def __setitem__(self, key, value):
         self.job_parameters.__setitem__(key, value)
 
@@ -58,9 +61,9 @@ def init_test_jobs():
     test_jobs[ontology.ENTITY_EXTRACTER_ID] = []
 
     job_parameters = {'input_type': 'file',
-                        'input_url': 'http://test.com/inputs/test_input.txt',
-                        'output_type': 'file_url_put',
-                        'output_url': 'test_output.txt'}
+                      'input_url': 'http://test.com/inputs/test_input.txt',
+                      'output_type': 'file_url_put',
+                      'output_url': 'test_output.txt'}
     job_parameters_2 = {'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input_2.txt',
                         'output_type': 'file_url_put',

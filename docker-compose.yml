@@ -3,29 +3,27 @@ version: "3"
 
 services:
 
-    agent:
+    alice:
       build: agent
       environment:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+        - SN_AGENT_WEB_PORT=8000
         - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
         - PYTHONPATH=/code
-        - SN_DHT_BOOT_HOST=172.17.0.1
-        - SN_DHT_PORT=3000
       ports:
-        - "3000:3000/udp"
+        - "8000:8000"
       volumes:
         - ./agent-data:/data
 
-    agent2:
+    bob:
       build: agent
       environment:
         - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
+        - SN_AGENT_WEB_PORT=8001
         - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
         - PYTHONPATH=/code
-        - SN_DHT_NEEDS_BOOTING=False
-        - SN_DHT_PORT=6881
       ports:
-        - "6881:6881/udp"
+        - "8001:8001"
       volumes:
         - ./agent-data:/data
 
@@ -36,3 +34,6 @@ services:
       environment:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
         - PYTHONPATH=/code
+
+    truffle:
+      build: truffle

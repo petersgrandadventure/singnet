@@ -15,18 +15,3 @@ def setup_network(app):
 
 def join_network(app):
     app['network'].join_network()
-
-
-class BadMessage(Exception):
-    """ Raised when a message can't be parsed or a timeout occurs """
-    pass
-
-
-class MaxSizeException(Exception):
-    """ Maximum size of something is reached """
-    pass
-
-
-class NetworkError(Exception):
-    """ Network error """
-    pass

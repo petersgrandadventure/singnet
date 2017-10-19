@@ -46,10 +46,6 @@ services:
       volumes:
         - ./parity-data:/data
 
-
-    truffle:
-      build: truffle
-
     ipfs:
       build: ipfs
       environment:

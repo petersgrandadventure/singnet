@@ -22,9 +22,9 @@ sphinx-autobuild
 sphinx_rtd_theme
 recommonmark
 
-msgpack-python
-ipaddress
-miniupnpc
-apscheduler
-m2crypto
-pynacl
+aiohttp-jinja2
+bson
+
+tensorflow
+
+web3

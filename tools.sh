@@ -5,25 +5,20 @@ set -o verbose
 set -o xtrace
 set -o nounset
 
-function recreate_agent_image {
-    docker-compose create --build --force-recreate agent
-    docker-compose create --build --force-recreate agent2
-}
-
 case "$1" in
 
 demo)
     docker-compose up --build --force-recreate
     ;;
 
-agent)
-    recreate_agent_image
-    docker-compose run --service-ports agent ./agent.sh run
+alice)
+    docker-compose create --build --force-recreate alice
+    docker-compose run --service-ports alice ./agent.sh run
     ;;
 
-agent2)
-    recreate_agent_image
-    docker-compose run --service-ports agent2 ./agent.sh run
+bob)
+    docker-compose create --build --force-recreate bob
+    docker-compose run --service-ports bob ./agent.sh run
     ;;
 
 agent-docs)
@@ -52,8 +47,10 @@ parity)
     docker-compose run --service-ports parity
     ;;
 
-truffle)
-    docker-compose run --service-ports truffle
+prepare)
+    docker-compose run --service-ports truffle compile --all dao
+    docker-compose run --service-ports truffle migrate --reset dao
+    docker-compose run --service-ports truffle test dao
     ;;
 
 ipfs)
@@ -65,8 +62,9 @@ clean)
     ;;
 
 hard-clean)
+    docker image prune
     docker-compose down --rmi all --remove-orphans
-    docker kill `docker ps -q`
+    docker kill `docker ps -q` || true
     docker rm `docker ps -a -q`
     docker rmi `docker images -q`
     docker volume rm `docker volume ls -qf dangling=true`
@@ -77,11 +75,8 @@ create-web-cookie)
     ;;
 
 gen-ssl)
-    openssl genrsa -des3 -passout pass:x -out server.pass.key 2048
-    openssl rsa -passin pass:x -in server.pass.key -out server.key
-    rm server.pass.key
-    openssl req -new -key server.key -out server.csr -subj "/C=UK/ST=Warwickshire/L=Leamington/O=OrgName/OU=IT Department/CN=example.com"
-    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+    cd agent
+    openssl req -nodes -new -x509  -keyout server.key -out server.crt -subj '/CN=localhost'
     ;;
 
 *) echo 'No operation specified'

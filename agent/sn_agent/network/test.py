@@ -76,8 +76,8 @@ class TestNetwork(NetworkABC):
         """
         Called by the UI as well as find_provider - should return a list that contains
         information about all the providers that have indicated that they can proved
-        the designated service.
+        the designated service. This is a lookup from the blockchain.
         :param service:
         :return: a list of external agents which provide the service requested
         """
-        pass
+        return ['ALICE',]
