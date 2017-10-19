@@ -1,7 +1,7 @@
 const Agent = artifacts.require('agent/Agent.sol')
+const Market = artifacts.require('market/MarketJob.sol')
 
-
-contract('Agent', function () {
+contract('Agent', function (accounts) {
 
     let agent
 
@@ -37,12 +37,8 @@ contract('Agent', function () {
 
         let packet2 = await agent2.getPacket(0)
 
-        console.log(packet2)
-
         assert.isNotNull(packet2)
 
     })
-
-
 
 })
