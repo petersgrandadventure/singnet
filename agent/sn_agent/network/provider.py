@@ -17,6 +17,7 @@
 from sn_agent.agent.base import AgentABC
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
+
 class ExternalServiceProvider(AgentABC):
     def __init__(self, net, agent_id, service: ServiceDescriptor):
         self.net = net

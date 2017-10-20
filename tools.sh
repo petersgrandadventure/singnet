@@ -47,10 +47,10 @@ parity)
     docker-compose run --service-ports parity
     ;;
 
-prepare)
-    docker-compose run --service-ports truffle compile --all dao
-    docker-compose run --service-ports truffle migrate --reset dao
-    docker-compose run --service-ports truffle test dao
+prepare-dao)
+    docker-compose create --build --force-recreate testrpc
+    docker-compose create --build --force-recreate dao
+    docker-compose run --service-ports dao ./dao.sh run
     ;;
 
 ipfs)

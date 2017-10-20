@@ -11,7 +11,3 @@ def setup_network(app):
     klass = import_string(settings.CLASS)
     logger.debug('Loading network class: %s', klass)
     app['network'] = klass(app)
-
-
-def join_network(app):
-    app['network'].join_network()

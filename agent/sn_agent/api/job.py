@@ -1,76 +1,33 @@
 import logging
-from urllib.parse import urlparse
 
-import aiohttp
-
-from sn_agent import ontology
+from sn_agent.job.job_descriptor import JobDescriptor
+from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
 logger = logging.getLogger(__name__)
 
 
-async def submit_job(context=None):
-    process_job(context)
+async def can_perform_service(app, service_descriptor: ServiceDescriptor):
+    logger.debug("get_can_perform: %s", service_descriptor)
 
-    return 'pong'
+    service_manager = app['service_manager']
+    service_adapter = service_manager.get_service_adapter_for_id(service_descriptor.ontology_node_id)
+
+    if service_adapter is None:
+        raise Exception('Service not available')
+
+    return service_adapter.can_perform()
 
 
-async def process_job(app):
-    logger.debug("Job submission")
+async def perform_job(app, job_descriptor: JobDescriptor):
+    logger.debug("perform_job: %s", job_descriptor)
 
-    blockchain = app['blockchain']
-    dht = app['dht']
+    service_manager = app['service_manager']
 
-    ontology_id = ontology.DOCUMENT_SUMMARIZER_ID
-    agent_ids = blockchain.get_agents_for_ontology(ontology_id)
+    service_descriptor = job_descriptor.service
 
-    available_agents = []
-    for agent_id in agent_ids:
+    service_adapter = service_manager.get_service_adapter_for_id(service_descriptor.ontology_node_id)
 
-        connection_info = dht.get(agent_id)
+    if service_adapter is None:
+        raise Exception('Service not available')
 
-        for value in connection_info:
-            logger.debug('received value: %s', value)
-
-            if isinstance(value, dict):
-                if 'url' in value.keys():
-                    url = urlparse(value['url'])
-                    url_str = url.geturl()
-
-                    logger.debug('Connection URL: %s', url_str)
-                    # if url.scheme == 'ws' or url.scheme == 'wss':
-
-                    try:
-                        session = aiohttp.ClientSession()
-                        async with session.ws_connect(url_str, heartbeat=10000) as ws:
-
-                            logger.debug("************** Successfully connected to %s", url)
-                            async for msg in ws:
-                                if msg.type == aiohttp.WSMsgType.TEXT:
-                                    if msg.data == 'close cmd':
-                                        await ws.close()
-                                        break
-                                    else:
-                                        await ws.send_str(msg.data + '/answer')
-                                elif msg.type == aiohttp.WSMsgType.CLOSED:
-                                    break
-                                elif msg.type == aiohttp.WSMsgType.ERROR:
-                                    break
-
-                    except aiohttp.ClientConnectorError:
-                        logger.error('Client Connector error for: %s', url_str)
-                        pass
-
-                    except aiohttp.ServerDisconnectedError:
-                        logger.error('Server disconnected error for: %s', url_str)
-                        pass
-
-                    except aiohttp.WSServerHandshakeError:
-                        logger.error('Incorrect WS handshake for: %s', url_str)
-                        pass
-
-                    except aiohttp.ClientOSError:
-                        logger.error('Client OS error for: %s', url_str)
-                        pass
-
-                    finally:
-                        session.close()
+    return service_adapter.perform(job_descriptor)

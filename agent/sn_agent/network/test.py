@@ -2,9 +2,7 @@ import logging
 
 from sn_agent.network.base import NetworkABC
 from sn_agent.network.enum import NetworkStatus
-
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
-from sn_agent.network.provider import ExternalServiceProvider
 
 logger = logging.getLogger(__name__)
 
@@ -80,4 +78,4 @@ class TestNetwork(NetworkABC):
         :param service:
         :return: a list of external agents which provide the service requested
         """
-        return ['ALICE',]
+        return ['ALICE', ]

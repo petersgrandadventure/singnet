@@ -3,7 +3,8 @@
 set -o errexit
 set -o nounset
 
-export SN_AGENT_WEB_HOST=$(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}')
+export SN_NETWORK_GATEWAY=$(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}')
+echo $SN_NETWORK_GATEWAY
 
 function run_tests {
     py.test --verbose --cov-config .coveragerc --cov-report html --cov=sn_agent tests

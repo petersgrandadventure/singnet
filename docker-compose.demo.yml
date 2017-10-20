@@ -22,24 +22,7 @@ services:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
         - PYTHONPATH=/code
 
-    geth:
-      build: geth
-      ports:
-        - "8545:8545"
-        - "8546:8546"
-        - "30303:30303"
 
-      volumes:
-        - ./geth-data:/data
-
-      deploy:
-          resources:
-            limits:
-              cpus: '0.001'
-              memory: 50M
-            reservations:
-              cpus: '0.0001'
-              memory: 20M
 
     parity:
       build: parity

@@ -10,7 +10,11 @@ noop)
     ;;
 
 run)
-    parity --help
+    cd /dao
+    npm install zeppelin-solidity
+    truffle compile-all
+    truffle migrate --reset
+#    truffle test
     ;;
 
 *) echo 'No operation specified'

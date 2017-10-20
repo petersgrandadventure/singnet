@@ -1,10 +1,13 @@
 import json
 import logging
+import os
+from pathlib import Path
+
+from web3 import Web3, HTTPProvider
 
 from sn_agent.agent.base import AgentABC
 from sn_agent.network import NetworkSettings
 from sn_agent.network.base import NetworkABC
-from sn_agent.network.blockchain import BlockChain
 from sn_agent.network.dht import DHT
 from sn_agent.network.enum import NetworkStatus
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
@@ -16,20 +19,52 @@ class SNNetwork(NetworkABC):
     def __init__(self, app):
         super().__init__(app)
         self.settings = NetworkSettings()
-        self.blockchain = BlockChain(self.settings.CLIENT_URL)
+        self.client_connection = Web3(HTTPProvider(self.settings.CLIENT_URL))
+        self.addresses = self.load_json('addresses.json')
         self.dht = DHT(self.settings.BOOT_HOST, self.settings.BOOT_PORT)
+        self.agent = None
+        self.payload = {
+            'from': self.client_connection.eth.coinbase,
+            'gas': 1500000,
+            'gasPrice': 30000000000000
+        }
 
     async def startup(self):
         logger.debug('Registering agent on DHT')
 
-        agent = self.app['agent']
-        agent_id = agent.agent_id
-        agent_id_str = str(agent_id)
+        self.agent = self.app['agent']
 
-        self.dht.put(agent_id_str, {'url': "%s://%s:%s/api/ws" % ('http', self.settings.WEB_HOST, self.settings.WEB_PORT)}, 1)
+        agent_id_str = str(self.agent.agent_id)
+
+        self.dht.put(agent_id_str, {'url': self.settings.WEB_URL}, 1)
+
+        current_block = self.client_connection.eth.blockNumber
+        logger.debug('Current client blocknumber: %s', current_block)
+
+        self.join_network()
+
+    # Implemented methods
+    def join_network(self):
+        logger.debug('Joining Network')
+        contract = self.get_agent_factory_contract()
+        contract.transact(self.payload).create()
+        logger.debug('Joined network')
+
+    def advertise_service(self, service: ServiceDescriptor):
+        logger.debug('Advertising service: %s', service)
+        agent = self.app['agent']
+        contract = self.get_agent_registry_contract()
+        contract.transact(self.payload).addAgent(service, agent)
+        logger.debug('Advertised service: %s', service)
 
     def find_service_providers(self, service: ServiceDescriptor) -> list:
-        return self.blockchain.get_agents_for_ontology(service.ontology_node_id)
+        logger.debug('Finding service providers for: %s', service)
+        contract = self.get_agent_registry_contract()
+        result = contract.call(self.payload).getAgentsWithService(service)
+        logger.debug('%s service provider(s) found for: %s', len(result), service)
+        return result
+
+    # TODO: Unimplemented methods
 
     def logoff_network(self) -> bool:
         return super().logoff_network()
@@ -37,29 +72,8 @@ class SNNetwork(NetworkABC):
     def update_ontology(self):
         super().update_ontology()
 
-    def join_network(self) -> bool:
-        def getAddressByName(addresses, name):
-            for key, value in addresses.items():
-                if key == name:
-                    return value
-
-        def parseAbi(data):
-            for key, value in data.items():
-                if key == 'abi':
-                    return value
-
-        payload = {'from': web3.eth.coinbase, 'gas': 1500000, 'gasPrice': 30000000000000}
-        agentFactoryAbi = parseAbi(json.loads(open('../build/contracts/AgentFactory.json', 'r').read()))
-        agentFactoryAddress = getAddressByName(json.loads(open('../addresses.json', 'r').read()), 'AgentFactory')
-        agentFactoryContract = web3.eth.contract(abi=agentFactoryAbi, address=agentFactoryAddress)
-
-        return agentFactoryContract.transact(payload).create()
-
     def remove_service_advertisement(self, service: ServiceDescriptor):
         super().remove_service_advertisement(service)
-
-    def advertise_service(self, service: ServiceDescriptor):
-        super().advertise_service(service)
 
     def is_agent_a_member(self, agent: AgentABC) -> bool:
         return super().is_agent_a_member(agent)
@@ -73,3 +87,66 @@ class SNNetwork(NetworkABC):
     def leave_network(self) -> bool:
         return super().leave_network()
 
+    ### These are here because they were in the original code, not sure how to use them
+    def getAgentsById(self, id):
+        """
+        I have no idea what this does - what do you pass in here?
+        :param id:
+        :return:
+        """
+        contract = self.get_agent_registry_contract()
+        return contract.call(self.payload).getAgent(id)
+
+    def createMarketJob(self, agents, amounts, payer, firstService, lastService):
+        contract = self.get_market_job_contract()
+        return contract.deploy(
+            transaction={
+                'from': self.client_connection.eth.accounts[8],
+                'value': self.client_connection.toWei(1, 'ether')},
+            args=(
+                agents,
+                amounts,
+                payer,
+                firstService,
+                lastService
+            )
+        )
+
+    def setJobCompleted(self):
+        contract = self.get_market_job_contract()
+        return contract.call(self.payload).setJobCompleted()
+
+    def payAgent(self, agentAccounts):
+        contract = self.get_market_job_contract()
+        return contract.call({'from': agentAccounts[0]}).withdraw()
+
+    # Utility Functions
+
+    def getABI(self, param):
+        filename = '%s.json' % param
+        data = self.load_json(filename)
+        abi = data['abi']
+        return abi
+
+    def load_json(self, filename):
+        filepath = os.path.join(Path(__file__).parent, 'data', filename)
+        with open(filepath, encoding='utf-8') as data_file:
+            return json.loads(data_file.read())
+
+    def getAddress(self, param):
+        return self.addresses[param]
+
+    def get_agent_registry_contract(self):
+        return self.get_contract('AgentRegistry')
+
+    def get_market_job_contract(self):
+        return self.get_contract('MarketJob')
+
+    def get_agent_factory_contract(self):
+        return self.get_contract('AgentFactory')
+
+    def get_contract(self, type_name):
+        abi = self.getABI(type_name)
+        address = self.getAddress(type_name)
+        contract = self.client_connection.eth.contract(abi=abi, address=address)
+        return contract
