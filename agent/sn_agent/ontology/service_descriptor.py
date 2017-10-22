@@ -9,9 +9,9 @@
 # Duration constants - durations are in milliseconds
 
 import logging
-
 from abc import ABC
 from datetime import timedelta
+
 from sn_agent.ontology import Ontology
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,6 @@ class ServiceDescriptor(ABC):
         self.ontology = ontology
         self.ontology_node_id = ontology_node_id
 
-
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
@@ -39,4 +38,4 @@ class ServiceDescriptor(ABC):
 
     def __str__(self):
         name = self.name()
-        return "<Service: %s - %s at %d>".format (self.ontology_node_id, name, id())
+        return "<Service: %s - %s at %d>".format(self.ontology_node_id, name, id(self))

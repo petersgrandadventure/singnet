@@ -1,9 +1,47 @@
 <html>
+
 <head>
+
 </head>
 <body>
-<form method="post">
-<button>Submit Job</button>
-</form>
+<button onclick="sendMessage()">Click me</button>
+
+<script>
+    var ws = new WebSocket('ws://localhost:8000/api/ws');
+
+    ws.onopen = function () {
+        // Web Socket is connected, send data using send()
+        //ws.send("Message to send");
+        console.log('Connection Opened');
+    };
+
+    ws.onmessage = function (evt) {
+        var received_msg = evt.data;
+        console.log(received_msg);
+    };
+
+    ws.onclose = function () {
+        console.log("Connection is closed...");
+    };
+
+    window.onbeforeunload = function (event) {
+        socket.close();
+    };
+
+    ws.onerror = function (a,b,c,d) {
+        console.log(a);
+        console.log(b);
+        console.log(c);
+        console.log(d);
+    };
+
+    function sendMessage() {
+        var data = ws.send('{"jsonrpc": "2.0", "method": "can_perform", "params": [42], "id":3}');
+        console.log(data);
+    }
+
+</script>
+
+Back to basics
 </body>
 </html>
