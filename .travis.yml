@@ -11,6 +11,13 @@ env:
 
 install:
   - pip install -r agent/requirements.txt
+  - git clone --branch 1.3.6 https://github.com/savoirfairelinux/opendht.git
+  - cd opendht
+  - mkdir build
+  - cd build
+  - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DOPENDHT_PYTHON=On -DOPENDHT_LTO=On
+  - make -j8
+  - make install
 
 script:
   - py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
