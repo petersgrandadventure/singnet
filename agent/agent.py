@@ -6,6 +6,8 @@ import ssl
 
 import logging
 
+from sn_agent.network import NetworkSettings
+
 logger = logging.getLogger(__name__)
 
 app = create_app()
@@ -16,7 +18,7 @@ app = create_app()
 # TODO Make the port configurable from the ENV
 # web.run_app(app, port=8000, ssl_context=sslcontext)
 
-settings = AgentSettings()
+settings = NetworkSettings()
 
 logger.info('Host setting: %s', settings.WEB_HOST)
 

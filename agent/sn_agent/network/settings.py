@@ -15,8 +15,10 @@ class NetworkSettings(SettingsBase):
 
         self.BOOT_HOST = 'bootstrap.ring.cx'
         self.BOOT_PORT = "4222"
+        self.WEB_HOST = "0.0.0.0"
+        self.WEB_PORT = 8000
 
         super().__init__(**custom_settings)
 
         # Must place after the init so as to pick up the proper gateway value
-        self.WEB_URL = Url(scheme='http', host=self.GATEWAY, port=8000, path='/api').url
+        self.WEB_URL = Url(scheme='http', host=self.GATEWAY, port=self.WEB_PORT, path='/api').url

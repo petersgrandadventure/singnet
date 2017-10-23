@@ -13,11 +13,13 @@ test_jobs = {}
 
 
 class JobDescriptor(object):
-    def __init__(self, service: ServiceDescriptor, job_parameters: dict = None):
+    def __init__(self, service: ServiceDescriptor, job_parameters: list = None):
         self.service = service
-        self.job_parameters = []
-        if not job_parameters is None:
-            self.job_parameters.append(job_parameters)
+
+        if job_parameters is None:
+            job_parameters = []
+
+        self.job_parameters = job_parameters
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -60,15 +62,25 @@ def init_test_jobs():
     test_jobs[ontology.VIDEO_SUMMARIZER_ID] = []
     test_jobs[ontology.ENTITY_EXTRACTER_ID] = []
 
-    job_parameters = {'input_type': 'file',
+    job_parameters = [
+        {
+            'input_type': 'file',
                       'input_url': 'http://test.com/inputs/test_input.txt',
                       'output_type': 'file_url_put',
-                      'output_url': 'test_output.txt'}
-    job_parameters_2 = {'input_type': 'file',
+                      'output_url': 'test_output.txt'
+        }
+                      ]
+
+    job_parameters_2 = [
+        {
+            'input_type': 'file',
                         'input_url': 'http://test.com/inputs/test_input_2.txt',
                         'output_type': 'file_url_put',
-                        'output_url': 'test_output_2.txt'}
+                        'output_url': 'test_output_2.txt'
+        }
+    ]
 
+    #TODO: These need to be fixed so that we can test for single and multiple jobs
     service_id = ontology.DOCUMENT_SUMMARIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
     test_jobs[service_id].append(job)

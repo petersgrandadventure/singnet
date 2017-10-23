@@ -31,3 +31,4 @@ async def perform_job(app, job_descriptor: JobDescriptor):
         raise Exception('Service not available')
 
     return service_adapter.perform(job_descriptor)
+

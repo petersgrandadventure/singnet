@@ -44,8 +44,8 @@ class DHT:
 
         # Deserialize from BSON - another serializer could be used but BSON works well here
         for d in data_bin:
-            data = bson.loads(d.data)
-            data.append(data)
+            loaded_data = bson.loads(d.data)
+            data.append(loaded_data)
 
         logger.debug('Key Value info: %s', data)
         return data

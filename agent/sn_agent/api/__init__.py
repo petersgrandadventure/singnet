@@ -1,5 +1,6 @@
 import logging
 import os
+
 from aiohttp import web, WSMsgType
 from aiohttp.web_response import Response
 from jsonrpcserver.aio import methods
@@ -13,24 +14,32 @@ logger = logging.getLogger(__name__)
 
 WS_FILE = os.path.join(os.path.dirname(__file__), 'websocket.html')
 
+
 @methods.add
-async def can_perform(meaning_of_life=None, context=None):
+async def can_perform(service_node_id=None, context=None):
     # figure out what we are being asked to perform and answer
-    service = ServiceDescriptor(ontology.DOCUMENT_SUMMARIZER_ID)
+    service = ServiceDescriptor(service_node_id)
     app = context
     return await can_perform_service(app, service)
 
 
 @methods.add
-async def perform(request, context):
-    job = JobDescriptor()
+async def perform(service_node_id=None, job_params=None, context=None):
+    service_descriptor = ServiceDescriptor(service_node_id)
+
+    job = JobDescriptor(service_descriptor, job_params)
     app = context
-    return await perform_job(app, job)
+
+    result = await perform_job(app, job)
+    logging.debug('Result of perform was %s', result)
+    return result
 
 
 async def http_handler(request):
-    request = await request.text()
-    response = await methods.dispatch(request)
+    app = request.app
+    request_text = await request.text()
+
+    response = await methods.dispatch(request_text, app)
     if response.is_notification:
         return web.Response()
     else:

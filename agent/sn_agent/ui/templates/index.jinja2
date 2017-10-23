@@ -4,7 +4,8 @@
 
 </head>
 <body>
-<button onclick="sendMessage()">Click me</button>
+<button onclick="sendMessage()">Can Perform</button>
+<button onclick="sendPerformMessage()">Perform</button>
 
 <script>
     var ws = new WebSocket('ws://localhost:8000/api/ws');
@@ -36,10 +37,17 @@
     };
 
     function sendMessage() {
-        var data = ws.send('{"jsonrpc": "2.0", "method": "can_perform", "params": [42], "id":3}');
-        console.log(data);
+        var data = ws.send('{"jsonrpc": "2.0", "method": "can_perform", "params": {"service_node_id":"deadbeef-aaaa-bbbb-cccc-000000000001"}, "id":3}');
+        alert(data);
     }
 
+    function sendPerformMessage() {
+        var data = ws.send('{"jsonrpc": "2.0", "method": "perform", "params": {' +
+            '"service_node_id":"deadbeef-aaaa-bbbb-cccc-000000000001", ' +
+            '"job_params":[{"input_type": "file","input_url": "http://test.com/inputs/test_input.txt","output_type": "file_url_put","output_url": "test_output.txt"}]' +
+            '}, "id":3}');
+        alert(data);
+    }
 </script>
 
 Back to basics

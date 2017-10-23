@@ -38,4 +38,4 @@ class ServiceDescriptor(ABC):
 
     def __str__(self):
         name = self.name()
-        return "<Service: %s - %s at %d>".format(self.ontology_node_id, name, id(self))
+        return "<Service: %s - %s at %d>" % (self.ontology_node_id, name, id(self))
