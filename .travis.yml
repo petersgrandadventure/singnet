@@ -12,7 +12,7 @@ before_install:
   - docker build -t singularitynet_agent agent
 
 script:
-  - docker run singularitynet_agent /bin/sh -c "py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests"
+  - docker run singularitynet_agent /bin/sh -c "cd /code;py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests"
 
 after_success:
   - docker run singularitynet_agent /bin/bash -c "coveralls"
