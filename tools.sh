@@ -27,8 +27,12 @@ agent-docs)
     ;;
 
 agent-test)
-    recreate_agent_image
-    docker-compose run agent ./agent.sh test
+    docker-compose create --build --force-recreate alice
+    docker-compose run alice ./agent.sh test
+    ;;
+
+travis-test)
+    py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
     ;;
 
 agent-web)
