@@ -3,8 +3,8 @@
 set -o errexit
 set -o nounset
 
-export SN_NETWORK_GATEWAY=$(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}')
-echo $SN_NETWORK_GATEWAY
+#export SN_NETWORK_GATEWAY=$(netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}')
+#echo $SN_NETWORK_GATEWAY
 
 case "$1" in
 
