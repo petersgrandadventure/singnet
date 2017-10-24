@@ -1,6 +1,11 @@
+import os
+from pathlib import Path
+
 from urllib3.util import Url
 
 from sn_agent import SettingsBase
+
+THIS_DIR = Path(__file__).parent
 
 
 class NetworkSettings(SettingsBase):
@@ -13,10 +18,11 @@ class NetworkSettings(SettingsBase):
 
         self.CLASS = 'sn_agent.network.sn.SNNetwork'
 
-        self.BOOT_HOST = 'bootstrap.ring.cx'
-        self.BOOT_PORT = "4222"
         self.WEB_HOST = "0.0.0.0"
         self.WEB_PORT = 8000
+
+        self.AGENT_URL_LOOKUP_FILE = os.path.join(THIS_DIR, 'data', 'agent_to_url_lookup.json')
+        self.COINBASE = '0x633a490e1d3022a90e49cfb79ff8789d264ae753'
 
         super().__init__(**custom_settings)
 

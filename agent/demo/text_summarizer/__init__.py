@@ -9,16 +9,13 @@
 import logging
 
 from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.service_adapter.base import ModuleServiceAdapterABC
+from sn_agent.service_adapter import ServiceAdapterABC
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
-class TextSummarizer(ModuleServiceAdapterABC):
+class TextSummarizer(ServiceAdapterABC):
     type_name = "TextSummarizer"
-
-    def __init__(self, app, service_ontology_node, required_service_nodes, name: str):
-        super().__init__(app, service_ontology_node, required_service_nodes, name)
 
     def perform(self, job: JobDescriptor):
         item_count = 0

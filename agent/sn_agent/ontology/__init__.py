@@ -1,17 +1,17 @@
-import yaml
-
 import logging
+
+import yaml
 
 from sn_agent.ontology.settings import OntologySettings
 
 log = logging.getLogger(__name__)
 
-DOCUMENT_SUMMARIZER_ID          = 'deadbeef-aaaa-bbbb-cccc-000000000001'
-WORD_SENSE_DISAMBIGUATER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
-FACE_RECOGNIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000003'
-TEXT_SUMMARIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000004'
-VIDEO_SUMMARIZER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000005'
-ENTITY_EXTRACTER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000006'
+DOCUMENT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000001'
+WORD_SENSE_DISAMBIGUATER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000002'
+FACE_RECOGNIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000003'
+TEXT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000004'
+VIDEO_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000005'
+ENTITY_EXTRACTER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000006'
 
 
 class Service(dict):
@@ -31,7 +31,6 @@ class Service(dict):
 
 
 class Ontology(object):
-
     # Note: We are not going to rely solely on the app['ontology'] access mechanism because the
     # ontology is currently a mock of our eventual implementation which will be global and
     # accessed through updates driven by the blockchain. Since there will only be one implementation
@@ -44,7 +43,7 @@ class Ontology(object):
 
     def __init__(self, app):
         super().__init__()
-        self.services =  {}
+        self.services = {}
         Ontology.register_global_ontology(self)
 
     @classmethod
@@ -69,6 +68,7 @@ class Ontology(object):
     def get_service_description(self, node_id) -> str:
         service = self.services[node_id]
         return service['description']
+
 
 def setup_ontology(app):
     settings = OntologySettings()
@@ -108,4 +108,3 @@ def setup_ontology(app):
 
         else:
             raise RuntimeError('Unknown ontology section type specified: %s' % section)
-

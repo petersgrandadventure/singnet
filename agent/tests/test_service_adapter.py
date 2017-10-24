@@ -6,22 +6,23 @@
 #
 
 import logging
-import pytest
 import os
 from pathlib import Path
 
-from sn_agent.log import setup_logging
-from sn_agent.job.job_descriptor import JobDescriptor
+import pytest
+
 from sn_agent import ontology
-from sn_agent.ontology.service_descriptor import ServiceDescriptor
-from sn_agent.service_adapter.base import ServiceAdapterABC
-from sn_agent.service_adapter import setup_service_manager
+from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.job.job_descriptor import init_test_jobs
+from sn_agent.log import setup_logging
+from sn_agent.ontology.service_descriptor import ServiceDescriptor
+from sn_agent.service_adapter import setup_service_manager, ServiceAdapterABC
 from sn_agent.test.mocks import MockApp
 
 log = logging.getLogger(__name__)
 
 TEST_DIRECTORY = Path(__file__).parent
+
 
 class MockServiceAdapter(ServiceAdapterABC):
     def __init__(self, app, service: ServiceDescriptor):
@@ -30,17 +31,18 @@ class MockServiceAdapter(ServiceAdapterABC):
     def perform(self, job: JobDescriptor):
         log.debug("      performed job %s", job)
 
+
 @pytest.fixture
 def app():
     app = MockApp()
     ontology.setup_ontology(app)
     return app
 
+
 # Utilities
 
 # Test performance of services - all of them
 def test_perform_services(app):
-
     # The test jobs specify output URLs for files in an "output" directory inside the "tests" directory.
 
     print("current directory is ", os.getcwd())
@@ -105,7 +107,7 @@ def test_perform_services(app):
     setup_service_manager(app)
 
     # Excercise the service manager methods.
-    assert(not app['service_manager'] is None)
+    assert (not app['service_manager'] is None)
     service_manager = app['service_manager']
 
     perform_one_service(app, service_manager, ontology.DOCUMENT_SUMMARIZER_ID)
@@ -141,7 +143,7 @@ def test_bogus_yaml_config(app):
     except:
         pass
 
-    assert(exception_caught)
+    assert (exception_caught)
 
     # Test missing JSONRPC ontology_node_id
     yaml_file = os.path.join(TEST_DIRECTORY, "service_adapter_test_2.yml")
@@ -155,7 +157,7 @@ def test_bogus_yaml_config(app):
     except:
         pass
 
-    assert(exception_caught)
+    assert (exception_caught)
 
     # Test missing Module ontology_node_id
     yaml_file = os.path.join(TEST_DIRECTORY, "service_adapter_test_3.yml")
@@ -169,8 +171,7 @@ def test_bogus_yaml_config(app):
     except:
         pass
 
-    assert(exception_caught)
-
+    assert (exception_caught)
 
     # Test bogus service adapter type
     yaml_file = os.path.join(TEST_DIRECTORY, "service_adapter_test_4.yml")
@@ -184,8 +185,7 @@ def test_bogus_yaml_config(app):
     except:
         pass
 
-    assert(exception_caught)
-
+    assert (exception_caught)
 
     # Reset to the original config file.
     os.environ['SN_SERVICE_ADAPTER_CONFIG_FILE'] = original_config_file

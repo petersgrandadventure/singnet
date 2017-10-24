@@ -1,14 +1,12 @@
 import logging
 
-import pytest
-from sn_agent.log import setup_logging
 from sn_agent import ontology
-from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.job.job_descriptor import init_test_jobs
+from sn_agent.log import setup_logging
+from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
 log = logging.getLogger(__name__)
-
 
 
 # Tests
@@ -29,9 +27,9 @@ def test_jobs():
                           'output_type': 'file_url_put',
                           'output_url': 'test_output.txt'}
         job_parameters_2 = {'input_type': 'file',
-                          'input_url': 'http://test.com/inputs/test_input.txt',
-                          'output_type': 'file_url_put',
-                          'output_url': 'test_output.txt'}
+                            'input_url': 'http://test.com/inputs/test_input.txt',
+                            'output_type': 'file_url_put',
+                            'output_url': 'test_output.txt'}
 
         service_id = ontology.DOCUMENT_SUMMARIZER_ID
 
@@ -45,26 +43,25 @@ def test_jobs():
                 file_count += 1
             else:
                 file_count = 0
-        assert(file_count == 4)
+        assert (file_count == 4)
 
         # Cover and test iteration and list item retrieval and length.
         new_job[0] = job_parameters_2
-        assert(new_job[0] == job_parameters_2)
+        assert (new_job[0] == job_parameters_2)
         job_count = len(new_job)
         del new_job[1]
-        assert(len(new_job) == job_count - 1)
+        assert (len(new_job) == job_count - 1)
 
         # Test equality and string conversion functions.
         last_job = new_job
-        assert(last_job == new_job)
-        assert(str(last_job) == str(new_job))
+        assert (last_job == new_job)
+        assert (str(last_job) == str(new_job))
 
         test_jobs.append(new_job)
         total_jobs = len(test_jobs)
         test_jobs[0] = new_job
-        del test_jobs[total_jobs-1]
+        del test_jobs[total_jobs - 1]
 
         # Check the string conversion with no ServiceDescriptor...
         new_job = JobDescriptor(None, [job_parameters])
-        assert(str(new_job) != "")
-
+        assert (str(new_job) != "")
