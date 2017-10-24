@@ -6,6 +6,8 @@
 # Distributed under the MIT software license, see LICENSE file.
 #
 
+from typing import List
+
 from sn_agent import ontology
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
@@ -13,7 +15,7 @@ test_jobs = {}
 
 
 class JobDescriptor(object):
-    def __init__(self, service: ServiceDescriptor, job_parameters: list = None):
+    def __init__(self, service: ServiceDescriptor, job_parameters: List[dict] = None):
         self.service = service
 
         if job_parameters is None:
@@ -80,27 +82,31 @@ def init_test_jobs():
         }
     ]
 
-    #TODO: These need to be fixed so that we can test for single and multiple jobs
+    # Create test jobs for the document summarizer.
     service_id = ontology.DOCUMENT_SUMMARIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
     test_jobs[service_id].append(job)
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters_2)
     test_jobs[service_id].append(job)
 
+    # Create test jobs for the word-sense disambiguator.
     service_id = ontology.WORD_SENSE_DISAMBIGUATER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
     test_jobs[service_id].append(job)
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters_2)
     test_jobs[service_id].append(job)
 
+    # Create test jobs for the face recognizer.
     service_id = ontology.FACE_RECOGNIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
     test_jobs[service_id].append(job)
 
+    # Create test jobs for the text summarizer.
     service_id = ontology.TEXT_SUMMARIZER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
     test_jobs[service_id].append(job)
 
+    # Create test jobs for the entity extractor.
     service_id = ontology.ENTITY_EXTRACTER_ID
     job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
     test_jobs[service_id].append(job)

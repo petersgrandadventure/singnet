@@ -15,11 +15,13 @@
 #
 
 import jsonrpcclient
+import logging
 
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.ontology import Service
 from sn_agent.service_adapter.base import ServiceAdapterABC
 
+logger = logging.getLogger(__name__)
 
 class ExternalServiceAdapter(ServiceAdapterABC):
     def __init__(self, app, agent_id, service: Service):
@@ -31,6 +33,7 @@ class ExternalServiceAdapter(ServiceAdapterABC):
         network = self.app['network']
         # This is a hack, we should never really get more than 1 URL per agent
         agent_urls = network.dht.get(agent_id)
+        logger.debug("agent_urls for {0} = {1}".format(agent_id, agent_urls))
         self.agent_url = agent_urls[0]['url']
 
     def has_all_requirements(self):
