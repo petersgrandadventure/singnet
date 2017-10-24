@@ -8,7 +8,6 @@ from web3 import Web3, HTTPProvider
 from sn_agent.agent.base import AgentABC
 from sn_agent.network import NetworkSettings
 from sn_agent.network.base import NetworkABC
-from sn_agent.network.dht import DHT
 from sn_agent.network.enum import NetworkStatus
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
@@ -21,10 +20,9 @@ class SNNetwork(NetworkABC):
         self.settings = NetworkSettings()
         self.client_connection = Web3(HTTPProvider(self.settings.CLIENT_URL))
         self.addresses = self.load_json('addresses.json')
-        self.dht = DHT(self.settings.BOOT_HOST, self.settings.BOOT_PORT)
         self.agent = None
         self.payload = {
-            'from': self.client_connection.eth.coinbase,
+            # 'from': self.client_connection.eth.coinbase,
             'gas': 1500000,
             'gasPrice': 30000000000000
         }
@@ -33,10 +31,6 @@ class SNNetwork(NetworkABC):
         logger.debug('Registering agent on DHT')
 
         self.agent = self.app['agent']
-
-        agent_id_str = str(self.agent.agent_id)
-
-        self.dht.put(agent_id_str, {'url': self.settings.WEB_URL}, 1)
 
         # current_block = self.client_connection.eth.blockNumber
         # logger.debug('Current client blocknumber: %s', current_block)
@@ -65,8 +59,19 @@ class SNNetwork(NetworkABC):
         return result
 
     def get_url_for_agent(self, agent_id):
-        #TODO Go look this up from the blockchain
-        return None
+
+        filename = self.settings.AGENT_URL_LOOKUP_FILE
+        with open(filename, encoding='UTF-8').read() as file_contents:
+            agent_urls = json.loads(file_contents)
+
+        url = agent_urls.get(agent_id)
+
+        if url is None:
+            # Fallback to blockchain if none specified in the lookup file
+            blockchain_result = None
+            # TODO implement grabbing from blockchain
+
+        return url
 
     # TODO: Unimplemented methods
 
