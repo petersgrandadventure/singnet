@@ -22,8 +22,8 @@ bob)
     ;;
 
 agent-docs)
-    recreate_agent_image
-    docker-compose run agent ./agent.sh docs
+    docker-compose create --build --force-recreate test
+    docker-compose run test ./agent.sh docs
     ;;
 
 agent-test)
