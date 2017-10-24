@@ -1,26 +1,18 @@
+sudo: required
 
-language: python
+services:
+  - docker
 
-python:
-  - "3.6"
 env:
   global:
-    - PYTHONPATH=$PYTHONPATH:$(pwd)/agent
     - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
     - SN_SERVICE_ADAPTER_CONFIG_FILE=agent/service_adapter_config_example.yml
 
-install:
-  - pip install -r agent/requirements.txt
-  - git clone --branch 1.3.6 https://github.com/savoirfairelinux/opendht.git
-  - cd opendht
-  - mkdir build
-  - cd build
-  - cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DOPENDHT_PYTHON=On -DOPENDHT_LTO=On
-  - make -j8
-  - make install
+before_install:
+  - docker build -t singularitynet_agent agent
 
 script:
-  - py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
+  - docker run -e SN_SERVICE_ADAPTER_CONFIG_FILE=/code/agent/service_adapter_config_example.yml singularitynet_agent /bin/sh -c "export PYTHONPATH=$PYTHONPATH:/code/agent;py.test --verbose --cov-config .coveragerc --cov=sn_agent tests"
 
 after_success:
-  - coveralls
+  - docker run singularitynet_agent /bin/bash -c "coveralls"
