@@ -7,12 +7,12 @@ services:
       build: agent
       environment:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
-        - SN_NETWORK_WEB_PORT=8000
+        - SN_NETWORK_WEB_PORT=9050
         - SN_SERVICE_ADAPTER_CONFIG_FILE=alice_config.yml
         - PYTHONPATH=/code
         - SN_DS_TEST_OUTPUT_DIRECTORY=/data
       ports:
-        - "8000:8000"
+        - "9050:9050"
       volumes:
         - ./agent-data:/data
       links:
@@ -23,11 +23,11 @@ services:
       build: agent
       environment:
         - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
-        - SN_NETWORK_WEB_PORT=8001
+        - SN_NETWORK_WEB_PORT=9060
         - SN_SERVICE_ADAPTER_CONFIG_FILE=bob_config.yml
         - PYTHONPATH=/code
       ports:
-        - "8001:8001"
+        - "9060:9060"
       volumes:
         - ./agent-data:/data
 
@@ -35,12 +35,12 @@ services:
       build: agent
       environment:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
-        - SN_NETWORK_WEB_PORT=8000
+        - SN_NETWORK_WEB_PORT=9070
         - SN_SERVICE_ADAPTER_CONFIG_FILE=test_config.yml
         - PYTHONPATH=/code
         - SN_DS_TEST_OUTPUT_DIRECTORY=/data
       ports:
-        - "8000:8000"
+        - "9070:9070"
       volumes:
         - ./agent-data:/data
       links:
@@ -50,7 +50,7 @@ services:
     agent-web:
       build: agent-web
       ports:
-        - "8080:8080"
+        - "9080:9080"
       environment:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
         - PYTHONPATH=/code

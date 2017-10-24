@@ -34,14 +34,25 @@ class ExternalServiceAdapter(ServiceAdapterABC):
         # This is a hack, we should never really get more than 1 URL per agent
         agent_urls = network.dht.get(agent_id)
         logger.debug("agent_urls for {0} = {1}".format(agent_id, agent_urls))
-        self.agent_url = agent_urls[0]['url']
+
+        agent_url = None
+
+        if len(agent_urls):
+            agent_url = agent_urls[0]['url']
+
+        self.agent_url = agent_url
 
     def has_all_requirements(self):
         return True
 
     def can_perform(self) -> bool:
+
+        if not self.agent_url:
+            return False
+
         result = jsonrpcclient.request(
-            self.agent_url, 'can_perform',
+            self.agent_url,
+            'can_perform',
             {
                 "service_node_id": self.service.node_id
             }
@@ -49,8 +60,13 @@ class ExternalServiceAdapter(ServiceAdapterABC):
         return result
 
     def perform(self, job: JobDescriptor):
+
+        if not self.agent_url:
+            return 'No agent available'
+
         result = jsonrpcclient.request(
-            self.agent_url, 'perform',
+            self.agent_url,
+            'perform',
             {
                 "service_node_id": self.service.node_id,
                 "job_params": job.job_parameters
