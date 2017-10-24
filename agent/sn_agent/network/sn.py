@@ -38,8 +38,8 @@ class SNNetwork(NetworkABC):
 
         self.dht.put(agent_id_str, {'url': self.settings.WEB_URL}, 1)
 
-        current_block = self.client_connection.eth.blockNumber
-        logger.debug('Current client blocknumber: %s', current_block)
+        # current_block = self.client_connection.eth.blockNumber
+        # logger.debug('Current client blocknumber: %s', current_block)
 
         self.join_network()
 
@@ -63,6 +63,10 @@ class SNNetwork(NetworkABC):
         result = contract.call(self.payload).getAgentsWithService(service)
         logger.debug('%s service provider(s) found for: %s', len(result), service)
         return result
+
+    def get_url_for_agent(self, agent_id):
+        #TODO Go look this up from the blockchain
+        return None
 
     # TODO: Unimplemented methods
 
