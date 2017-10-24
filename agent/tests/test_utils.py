@@ -8,10 +8,11 @@
 
 import logging
 
-from sn_agent.utils import import_string
 from sn_agent.test.mocks import MockApp
+from sn_agent.utils import import_string
 
 log = logging.getLogger(__name__)
+
 
 def test_utils():
     klass = import_string("sn_agent.network.test.TestNetwork")

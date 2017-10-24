@@ -20,22 +20,28 @@ class SNNetwork(NetworkABC):
         self.settings = NetworkSettings()
         self.client_connection = Web3(HTTPProvider(self.settings.CLIENT_URL))
         self.addresses = self.load_json('addresses.json')
+        self.payload = None
         self.agent = None
-        self.payload = {
-            # 'from': self.client_connection.eth.coinbase,
-            'gas': 1500000,
-            'gasPrice': 30000000000000
-        }
+
 
     async def startup(self):
         logger.debug('Registering agent on DHT')
 
         self.agent = self.app['agent']
 
-        # current_block = self.client_connection.eth.blockNumber
-        # logger.debug('Current client blocknumber: %s', current_block)
+        try:
+            self.payload = {
+                'from': self.client_connection.eth.coinbase,
+                'gas': 1500000,
+                'gasPrice': 30000000000000
+            }
+            current_block = self.client_connection.eth.blockNumber
+            logger.debug('Current client blocknumber: %s', current_block)
 
-        self.join_network()
+            self.join_network()
+
+        except ConnectionError:
+            logger.error('Unable to connect to the Ethereum client')
 
     # Implemented methods
     def join_network(self):
@@ -61,8 +67,9 @@ class SNNetwork(NetworkABC):
     def get_url_for_agent(self, agent_id):
 
         filename = self.settings.AGENT_URL_LOOKUP_FILE
-        with open(filename, encoding='UTF-8').read() as file_contents:
-            agent_urls = json.loads(file_contents)
+
+        with open(filename, encoding='utf-8') as data_file:
+            agent_urls = json.loads(data_file.read())
 
         url = agent_urls.get(agent_id)
 

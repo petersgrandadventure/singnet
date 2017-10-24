@@ -5,41 +5,43 @@
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
-from demo.document_summarizer.settings import DocumentSummarizerSettings
-from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.service_adapter.base import ModuleServiceAdapterABC, ServiceAdapterABC
-from sn_agent.service_adapter.manager import ServiceManager
-from sn_agent.ontology.service_descriptor import ServiceDescriptor
-from sn_agent import ontology
-import os
 import asyncio
-
 import logging
+import os
+from typing import List
 
-log = logging.getLogger(__name__)
+from demo.document_summarizer.settings import DocumentSummarizerSettings
+from sn_agent import ontology
+from sn_agent.job.job_descriptor import JobDescriptor
+from sn_agent.ontology import Service
+from sn_agent.ontology.service_descriptor import ServiceDescriptor
+from sn_agent.service_adapter import ServiceAdapterABC, ServiceManager
+
+logger = logging.getLogger(__name__)
 
 
-class DocumentSummarizer(ModuleServiceAdapterABC):
+class DocumentSummarizer(ServiceAdapterABC):
     type_name = "DocumentSummarizer"
 
-    def __init__(self, app, service_ontology_node, required_service_nodes, name: str):
-        super().__init__(app, service_ontology_node, required_service_nodes, name)
-        self.app = app
+    def __init__(self, app, service: Service, required_services: List[Service]) -> None:
+        super().__init__(app, service, required_services)
+
         self.settings = DocumentSummarizerSettings()
 
         self.word_sense_disambiguater = None
         self.face_recognizer = None
         self.text_summarizer = None
         self.video_summarizer = None
-        self.entity_extracter = None
+        self.entity_extractor = None
 
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
+
         self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
         self.face_recognizer = service_manager.get_service_adapter_for_id(ontology.FACE_RECOGNIZER_ID)
         self.text_summarizer = service_manager.get_service_adapter_for_id(ontology.TEXT_SUMMARIZER_ID)
         self.video_summarizer = service_manager.get_service_adapter_for_id(ontology.VIDEO_SUMMARIZER_ID)
-        self.entity_extracter = service_manager.get_service_adapter_for_id(ontology.ENTITY_EXTRACTER_ID)
+        self.entity_extractor = service_manager.get_service_adapter_for_id(ontology.ENTITY_EXTRACTER_ID)
 
     def transform_output_url(self, tag: str, item_count: int, output_url: str):
         last_part = output_url.split("/")[-1]
@@ -57,9 +59,10 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         for job_item in job:
 
             # Just pass the inputs on directly to the subtasks.
-            new_job_item = {}
-            new_job_item['input_type'] = job_item['input_type']
-            new_job_item['input_url'] = job_item['input_url']
+            new_job_item = {
+                'input_type': job_item['input_type'],
+                'input_url': job_item['input_url']
+            }
 
             output_type = job_item['output_type']
             new_job_item['output_type'] = output_type
@@ -84,7 +87,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
             output_file.write("\n")
 
     def perform(self, job: JobDescriptor):
-        log.debug("      summarizing document")
+        logger.debug("      summarizing document")
 
         # Make sure we have a directory.
         directory = self.settings.TEST_OUTPUT_DIRECTORY
@@ -96,13 +99,13 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         face_job = self.sub_adapter_job('face', self.face_recognizer, job)
         text_job = self.sub_adapter_job('text', self.text_summarizer, job)
         video_job = self.sub_adapter_job('video', self.video_summarizer, job)
-        entity_job = self.sub_adapter_job('entity', self.entity_extracter, job)
+        entity_job = self.sub_adapter_job('entity', self.entity_extractor, job)
 
         self.word_sense_disambiguater.perform(word_job)
         self.face_recognizer.perform(face_job)
         self.text_summarizer.perform(text_job)
         self.video_summarizer.perform(video_job)
-        self.entity_extracter.perform(entity_job)
+        self.entity_extractor.perform(entity_job)
 
         # Now copy the outputs of each of the sub-jobs...
         item_count = 0
@@ -119,7 +122,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
             item_count += 1
 
     def perform_async(self, job: JobDescriptor):
-        log.debug("      summarizing document")
+        logger.debug("      summarizing document")
 
         # Make sure we have a directory.
         directory = self.settings.TEST_OUTPUT_DIRECTORY
@@ -131,7 +134,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
         face_job = self.sub_adapter_job('face', self.face_recognizer, job)
         text_job = self.sub_adapter_job('text', self.text_summarizer, job)
         video_job = self.sub_adapter_job('video', self.video_summarizer, job)
-        entity_job = self.sub_adapter_job('entity', self.entity_extracter, job)
+        entity_job = self.sub_adapter_job('entity', self.entity_extractor, job)
 
         async def disambiguate_words():
             self.word_sense_disambiguater.perform(word_job)
@@ -146,7 +149,7 @@ class DocumentSummarizer(ModuleServiceAdapterABC):
             self.video_summarizer.perform(video_job)
 
         async def extract_entities():
-            self.entity_extracter.perform(entity_job)
+            self.entity_extractor.perform(entity_job)
 
         # Gather all the subservice tasks to process them asynchronously.
         loop = self.app.loop
