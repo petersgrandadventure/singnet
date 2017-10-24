@@ -4,10 +4,10 @@ import logging.config
 def setup_logging():
     _logging = {
         'version': 1,
-        'disable_existing_loggers': True,
+        'disable_existing_loggers': False,
 
         'root': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'handlers': ['console'],
         },
 

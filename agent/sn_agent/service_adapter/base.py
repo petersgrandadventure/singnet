@@ -2,8 +2,8 @@ import logging
 from abc import ABC, abstractmethod
 from typing import List
 
-from sn_agent.ontology import Ontology, Service
 from sn_agent.job.job_descriptor import JobDescriptor
+from sn_agent.ontology import Service
 from sn_agent.service_adapter.manager import ServiceManager
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ class ServiceAdapterABC(ABC):
 
     type_name = "Base"
 
-    def __init__(self, app, service: Service, required_service_node_ids) -> None:
+    def __init__(self, app, service: Service, required_service_node_ids=None) -> None:
         self.app = app
         self.service = service
         self.required_service_node_ids = required_service_node_ids
@@ -24,7 +24,7 @@ class ServiceAdapterABC(ABC):
         self.requirements_met = False
         self.available = False
 
-    def post_load_initialize(self, service_manager : ServiceManager):
+    def post_load_initialize(self, service_manager: ServiceManager):
         """
         This will hunt out all the agents required to fulfill the required ontology ids
 
@@ -71,11 +71,11 @@ class ServiceAdapterABC(ABC):
         An answer of no can be because it is offline, or perhaps it is too busy.
         :return:
         """
-        return self.requirements_met and self.available and all_required_agents_can_perform()
+        return self.requirements_met and self.available and self.all_required_agents_can_perform()
 
     def all_required_agents_can_perform(self):
 
-        if self.required_ontology_node_ids is None:
+        if self.required_service_node_ids is None:
             return True
 
         for required_service_adapter in self.required_service_adapters:
@@ -92,6 +92,7 @@ class ServiceAdapterABC(ABC):
         :return:
         """
         pass
+
 
 class ModuleServiceAdapterABC(ServiceAdapterABC):
     """

@@ -31,6 +31,3 @@ class TestAgent(AgentABC):
 
     def perform(self, service: ServiceDescriptor) -> bool:
         pass
-
-    def list_providers(self, service: ServiceDescriptor) -> list:
-         pass

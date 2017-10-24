@@ -1,5 +1,5 @@
-from sn_agent import api
+from sn_agent.ui.handlers import index
 
 
 def setup_routes(app):
-    app.router.add_post('/api', api.handler)
+    app.router.add_get('/', index)

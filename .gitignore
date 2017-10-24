@@ -1,8 +1,6 @@
 .DS_Store
 *.egg-info/
 .tox/
-local
-local/
 agent/tests/output/*
 .cache
 .idea

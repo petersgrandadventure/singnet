@@ -6,14 +6,13 @@
 # Distributed under the MIT software license, see LICENSE file.
 #
 
-from typing import List
+import logging
 
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter.base import ModuleServiceAdapterABC
 
-import logging
-
 log = logging.getLogger(__name__)
+
 
 class TextSummarizer(ModuleServiceAdapterABC):
     type_name = "TextSummarizer"

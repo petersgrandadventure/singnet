@@ -2,9 +2,7 @@ import logging
 
 from sn_agent.network.base import NetworkABC
 from sn_agent.network.enum import NetworkStatus
-
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
-from sn_agent.network.provider import ExternalServiceProvider
 
 logger = logging.getLogger(__name__)
 
@@ -76,8 +74,8 @@ class TestNetwork(NetworkABC):
         """
         Called by the UI as well as find_provider - should return a list that contains
         information about all the providers that have indicated that they can proved
-        the designated service.
+        the designated service. This is a lookup from the blockchain.
         :param service:
         :return: a list of external agents which provide the service requested
         """
-        pass
+        return ['ALICE', ]

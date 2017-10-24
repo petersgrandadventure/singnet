@@ -36,10 +36,9 @@ def test_jobs():
         service_id = ontology.DOCUMENT_SUMMARIZER_ID
 
         # Create a new job descriptor with four sets of parameters.
-        new_job = JobDescriptor(ServiceDescriptor(service_id), job_parameters)
-        new_job.append_job_item(job_parameters)
-        new_job.append_job_item(job_parameters)
-        new_job.append_job_item(job_parameters)
+        job_list = [job_parameters, job_parameters, job_parameters, job_parameters]
+        new_job = JobDescriptor(ServiceDescriptor(service_id), job_list)
+
         file_count = 0
         for job_item in new_job:
             if job_item['input_type'] == 'file':
@@ -66,6 +65,6 @@ def test_jobs():
         del test_jobs[total_jobs-1]
 
         # Check the string conversion with no ServiceDescriptor...
-        new_job = JobDescriptor(None, job_parameters)
+        new_job = JobDescriptor(None, [job_parameters])
         assert(str(new_job) != "")
 

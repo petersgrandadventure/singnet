@@ -10,7 +10,7 @@ export default class Amount extends React.Component {
     const { value } = event.target
     this.setState(
       { amount: value },
-      () => this.props.convert(reg.test(this.state.amount) ? this.state.amount : 0)
+      () => this.props.convert(reg.test(this.state.amount) ? parseInt(this.state.amount) : 0)
     )
   }
 
@@ -21,6 +21,7 @@ export default class Amount extends React.Component {
         <input
           type="text"
           placeholder={'Eth'}
+          style={{marginRight: 20}}
           value={this.state.amount}
           onChange={(event) => this.convert(event)}
         />

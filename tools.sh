@@ -5,29 +5,34 @@ set -o verbose
 set -o xtrace
 set -o nounset
 
-function recreate_agent_image {
-    docker-compose create --build --force-recreate agent
-}
-
 case "$1" in
 
 demo)
     docker-compose up --build --force-recreate
     ;;
 
-agent)
-    recreate_agent_image
-    docker-compose run --service-ports agent ./agent.sh run
+alice)
+    docker-compose create --build --force-recreate alice
+    docker-compose run --service-ports alice ./agent.sh run
+    ;;
+
+bob)
+    docker-compose create --build --force-recreate bob
+    docker-compose run --service-ports bob ./agent.sh run
     ;;
 
 agent-docs)
-    recreate_agent_image
-    docker-compose run agent ./agent.sh docs
+    docker-compose create --build --force-recreate test
+    docker-compose run test ./agent.sh docs
     ;;
 
 agent-test)
-    recreate_agent_image
-    docker-compose run agent ./agent.sh test
+    docker-compose create --build --force-recreate test
+    docker-compose run test ./agent.sh test
+    ;;
+
+travis-test)
+    py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
     ;;
 
 agent-web)
@@ -43,11 +48,17 @@ solc)
     ;;
 
 parity)
-    docker-compose run --service-ports parity parity --help
+    docker-compose run --service-ports parity
     ;;
 
-truffle)
-    docker-compose run --service-ports truffle truffle --help
+prepare-dao)
+    docker-compose create --build --force-recreate testrpc
+    docker-compose create --build --force-recreate dao
+    docker-compose run --service-ports dao ./dao.sh run
+    ;;
+
+ipfs)
+    docker-compose run --service-ports ipfs daemon
     ;;
 
 clean)
@@ -55,8 +66,9 @@ clean)
     ;;
 
 hard-clean)
+    docker image prune
     docker-compose down --rmi all --remove-orphans
-    docker kill `docker ps -q`
+    docker kill `docker ps -q` || true
     docker rm `docker ps -a -q`
     docker rmi `docker images -q`
     docker volume rm `docker volume ls -qf dangling=true`
@@ -66,7 +78,10 @@ create-web-cookie)
     docker-compose run agent-web-cookie
     ;;
 
-
+gen-ssl)
+    cd agent
+    openssl req -nodes -new -x509  -keyout server.key -out server.crt -subj '/CN=localhost'
+    ;;
 
 *) echo 'No operation specified'
     exit 0;

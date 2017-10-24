@@ -3,49 +3,69 @@ version: "3"
 
 services:
 
-    agent:
+    alice:
       build: agent
       environment:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
-        - SN_SERVICE_ADAPTER_CONFIG_FILE=service_adapter_config_example.yml
+        - SN_NETWORK_WEB_PORT=9050
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=alice_config.yml
         - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
       ports:
-        - "8000:8000"
+        - "9050:9050"
       volumes:
         - ./agent-data:/data
+      links:
+        - testrpc
+#        - bob
+
+    bob:
+      build: agent
+      environment:
+        - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
+        - SN_NETWORK_WEB_PORT=9060
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=bob_config.yml
+        - PYTHONPATH=/code
+      ports:
+        - "9060:9060"
+      volumes:
+        - ./agent-data:/data
+
+    test:
+      build: agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+        - SN_NETWORK_WEB_PORT=9070
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=test_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+      ports:
+        - "9070:9070"
+      volumes:
+        - ./agent-data:/data
+      links:
+        - testrpc
+
 
     agent-web:
       build: agent-web
       ports:
-        - "8080:8080"
+        - "9080:9080"
       environment:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
         - PYTHONPATH=/code
 
-    geth:
-      build: geth
+    dao:
+      build: dao
+      volumes:
+        - ./dao:/dao
+      links:
+        - testrpc
+
+    testrpc:
+      build: testrpc
       ports:
         - "8545:8545"
         - "8546:8546"
         - "30303:30303"
-
-      volumes:
-        - ./geth-data:/data
-
-      deploy:
-          resources:
-            limits:
-              cpus: '0.001'
-              memory: 50M
-            reservations:
-              cpus: '0.0001'
-              memory: 20M
-
-    parity:
-      build: parity
-      volumes:
-        - ./parity-data:/data
-
-
-    truffle:
-      build: truffle
+      command: testrpc

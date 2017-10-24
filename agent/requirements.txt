@@ -13,6 +13,7 @@ pyaml
 requests
 
 pytest
+mock
 pytest-cov
 coveralls
 
@@ -20,3 +21,10 @@ sphinx
 sphinx-autobuild
 sphinx_rtd_theme
 recommonmark
+
+aiohttp-jinja2
+bson
+
+tensorflow
+
+web3

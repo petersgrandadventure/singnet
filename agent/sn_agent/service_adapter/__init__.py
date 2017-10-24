@@ -67,6 +67,6 @@ def setup_service_manager(app):
         else:
             raise RuntimeError('Unknown service adapter type specified: %s' % section)
 
-    service_manager = ServiceManager(service_adapters)
+    service_manager = ServiceManager(app, service_adapters)
     service_manager.post_load_initialize()
     app['service_manager'] = service_manager
