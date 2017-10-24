@@ -6,13 +6,13 @@ services:
 env:
   global:
     - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
-    - SN_SERVICE_ADAPTER_CONFIG_FILE=agent/service_adapter_config_example.yml
+    - SN_SERVICE_ADAPTER_CONFIG_FILE=test/test_config.yml
 
 before_install:
   - docker build -t singularitynet_agent agent
 
 script:
-  - docker run -e SN_SERVICE_ADAPTER_CONFIG_FILE=/code/agent/service_adapter_config_example.yml singularitynet_agent /bin/sh -c "export PYTHONPATH=$PYTHONPATH:/code/agent;py.test --verbose --cov-config .coveragerc --cov=sn_agent tests"
+  - docker run -e SN_SERVICE_ADAPTER_CONFIG_FILE=/code/test/test_config.yml singularitynet_agent /bin/sh -c "export PYTHONPATH=$PYTHONPATH:/code/agent;py.test --verbose --cov-config .coveragerc --cov=sn_agent tests"
 
 after_success:
   - docker run singularitynet_agent /bin/bash -c "coveralls"
