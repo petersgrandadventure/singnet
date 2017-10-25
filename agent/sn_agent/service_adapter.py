@@ -192,7 +192,7 @@ class ExternalServiceAdapter(ServiceAdapterABC):
             try:
                 result = jsonrpcclient.request(
                     url,
-                    'can_perform',
+                    'perform',
                     {
                         "service_node_id": self.service.node_id,
                         "job_params": job.job_parameters
