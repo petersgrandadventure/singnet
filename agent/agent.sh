@@ -21,6 +21,9 @@ docs)
     ;;
 
 test)
+    export PYTHONPATH=$PYTHONPATH:/code
+    export SN_SERVICE_ADAPTER_CONFIG_FILE=/code/tests/test_config.yml
+    export SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
     py.test --verbose --cov-config .coveragerc --cov-report html --cov=sn_agent tests
     ;;
 
