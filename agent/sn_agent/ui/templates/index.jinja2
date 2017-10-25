@@ -8,7 +8,7 @@
 <button onclick="sendPerformMessage()">Perform</button>
 
 <script>
-    var ws = new WebSocket('ws://localhost:8000/api/ws');
+    var ws = new WebSocket('ws://localhost:9050/api/ws');
 
     ws.onopen = function () {
         // Web Socket is connected, send data using send()
@@ -29,7 +29,7 @@
         socket.close();
     };
 
-    ws.onerror = function (a,b,c,d) {
+    ws.onerror = function (a, b, c, d) {
         console.log(a);
         console.log(b);
         console.log(c);
@@ -37,8 +37,16 @@
     };
 
     function sendMessage() {
-        var data = ws.send('{"jsonrpc": "2.0", "method": "can_perform", "params": {"service_node_id":"deadbeef-aaaa-bbbb-cccc-000000000001"}, "id":3}');
-        alert(data);
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "can_perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001"
+            },
+            "id": 3
+        };
+        var data = ws.send(JSON.stringify(request));
+        console.log(data);
     }
 
     function sendPerformMessage() {
@@ -46,7 +54,7 @@
             '"service_node_id":"deadbeef-aaaa-bbbb-cccc-000000000001", ' +
             '"job_params":[{"input_type": "file","input_url": "http://test.com/inputs/test_input.txt","output_type": "file_url_put","output_url": "test_output.txt"}]' +
             '}, "id":3}');
-        alert(data);
+        console.log(data);
     }
 </script>
 

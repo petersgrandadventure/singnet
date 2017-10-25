@@ -31,10 +31,6 @@ agent-test)
     docker-compose run test ./agent.sh test
     ;;
 
-travis-test)
-    py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
-    ;;
-
 agent-web)
     docker-compose run --service-ports agent-web ./agent-web.sh run
     ;;
