@@ -13,8 +13,6 @@ TEXT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000004'
 VIDEO_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000005'
 ENTITY_EXTRACTER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000006'
 
-TENSORFLOW_MNIST_ID             = 'deadbeef-aaaa-bbbb-cccc-111111111101'
-
 class Service(dict):
     def __init__(self, node_id, name, description):
         super().__init__()

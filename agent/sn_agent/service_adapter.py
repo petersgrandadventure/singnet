@@ -205,7 +205,7 @@ class ExternalServiceAdapter(ServiceAdapterABC):
                 logger.error('error requesting %s for agent %s', url, agent_id)
 
 
-def setup_service_manager(app):
+def setup_service_manager(app, service_adapters: List[ServiceAdapterABC] = None) -> ServiceManager:
     settings = ServiceAdapterSettings()
     config_file = settings.CONFIG_FILE
     ontology = app['ontology']
@@ -215,7 +215,10 @@ def setup_service_manager(app):
     with open(config_file, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
 
-    service_adapters = []
+    if service_adapters is None:
+        service_adapters = []
+
+    # Load service adapters from the config file.
     for section, data in cfg.items():
         if section == 'services':
             for service_object in data:
@@ -233,6 +236,7 @@ def setup_service_manager(app):
 
                 required_services = []
 
+                # Get the required / dependent service adapters corresponding to require service ids.
                 if required_services_object is not None:
                     for required_service_object in required_services_object:
 
@@ -259,3 +263,4 @@ def setup_service_manager(app):
     service_manager = ServiceManager(app, service_adapters)
     service_manager.post_load_initialize()
     app['service_manager'] = service_manager
+    return service_manager
