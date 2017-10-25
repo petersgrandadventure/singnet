@@ -45,6 +45,18 @@ def setup_logging():
                 'level': 'DEBUG',
                 'propagate': False,
             },
+
+            'demo': {
+                'handlers': ['console', 'file'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+
+            'tests': {
+                'handlers': ['console', 'file'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
         }
     }
 

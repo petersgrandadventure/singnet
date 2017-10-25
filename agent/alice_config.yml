@@ -1,5 +1,6 @@
 ---
 
+<<<<<<< Updated upstream
 services:
 - service: deadbeef-aaaa-bbbb-cccc-000000000001
   module: demo.document_summarizer.DocumentSummarizer
@@ -19,3 +20,7 @@ services:
   - id: deadbeef-aaaa-bbbb-cccc-000000000006
     agents:
     - 804be272-1cd8-4e11-8e5d-2eed03d47405
+
+- service: deadbeef-aaaa-bbbb-cccc-111111111101
+  module: demo.tensorflow_mnist.TensorflowMNIST
+
