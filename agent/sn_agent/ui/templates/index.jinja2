@@ -4,6 +4,7 @@
 
 </head>
 <body>
+
 <button onclick="sendMessage()">Can Perform</button>
 <button onclick="sendPerformMessage()">Perform</button>
 
@@ -46,8 +47,7 @@
             },
             "id": 3
         };
-        var data = ws.send(JSON.stringify(request));
-        console.log(data);
+        ws.send(JSON.stringify(request));
     }
 
     function sendPerformMessage() {
@@ -69,11 +69,9 @@
             },
             "id": 3
         };
-        var data = ws.send(JSON.stringify(request));
-        console.log(data);
+        ws.send(JSON.stringify(request));
     }
 </script>
 
-Back to basics
 </body>
 </html>

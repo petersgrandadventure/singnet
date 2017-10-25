@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -o errexit
-set -o verbose
+#set -o verbose
 set -o xtrace
 set -o nounset
 
@@ -19,6 +19,11 @@ alice)
 bob)
     docker-compose create --build --force-recreate bob
     docker-compose run --service-ports bob ./agent.sh run
+    ;;
+
+charlie)
+    docker-compose create --build --force-recreate charlie
+    docker-compose run --service-ports charlie ./agent.sh run
     ;;
 
 agent-docs)

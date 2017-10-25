@@ -5,9 +5,3 @@ services:
   module: demo.word_sense_disambiguater.WordSenseDisambiguater
 - service: deadbeef-aaaa-bbbb-cccc-000000000003
   module: demo.face_recognizer.FaceRecognizer
-- service: deadbeef-aaaa-bbbb-cccc-000000000004
-  module: demo.text_summarizer.TextSummarizer
-- service: deadbeef-aaaa-bbbb-cccc-000000000005
-  module: demo.video_summarizer.VideoSummarizer
-- service: deadbeef-aaaa-bbbb-cccc-000000000006
-  module: demo.entity_extracter.EntityExtracter

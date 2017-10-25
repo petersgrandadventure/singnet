@@ -31,6 +31,31 @@ services:
       volumes:
         - ./agent-data:/data
 
+    charlie:
+      build: agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-cccc-bc56-bbbbbbbbbbbb
+        - SN_NETWORK_WEB_PORT=9065
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=charlie_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+      ports:
+        - "9065:9065"
+      volumes:
+        - ./agent-data:/data
+
+    bob:
+      build: agent
+      environment:
+        - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
+        - SN_NETWORK_WEB_PORT=9060
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=bob_config.yml
+        - PYTHONPATH=/code
+      ports:
+        - "9060:9060"
+      volumes:
+        - ./agent-data:/data
+
     test:
       build: agent
       environment:
@@ -45,7 +70,6 @@ services:
         - ./agent-data:/data
       links:
         - testrpc
-
 
     agent-web:
       build: agent-web

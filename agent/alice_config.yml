@@ -6,10 +6,12 @@ services:
   required_services:
   - id: deadbeef-aaaa-bbbb-cccc-000000000002
     agents:
-    - 804be272-1cd8-4e11-8e5d-2eed03d47405
+    - b545478a-971a-cccc-bc56-bbbbbbbbbbbb
+
   - id: deadbeef-aaaa-bbbb-cccc-000000000003
     agents:
-    - 804be272-1cd8-4e11-8e5d-2eed03d47405
+    - b545478a-971a-cccc-bc56-bbbbbbbbbbbb
+
   - id: deadbeef-aaaa-bbbb-cccc-000000000004
     agents:
     - 804be272-1cd8-4e11-8e5d-2eed03d47405
