@@ -10,3 +10,5 @@ __pycache__/
 /agent-data/
 /agent-web-data/
 /agent/app.log
+agent/tests/app.log
+
