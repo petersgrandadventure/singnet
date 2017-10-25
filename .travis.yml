@@ -11,9 +11,10 @@ services:
 before_install:
   - docker build -t singularitynet_agent agent
   - docker volume create results
+  - pip install coveralls
 
 script:
-  - docker run --volume results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
+  - docker run --volume ${PWD}/test-results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
 
 after_success:
-  - docker run --volume results:/data -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH singularitynet_agent /bin/bash -c "coveralls"
+  - coveralls
