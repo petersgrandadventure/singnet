@@ -16,4 +16,4 @@ script:
   - docker run --volume results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
 
 after_success:
-  - docker run --volume results:/data singularitynet_agent /bin/bash -c "coveralls"
+  - docker run --volume results:/data -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID -e TRAVIS_BRANCH=$TRAVIS_BRANCH singularitynet_agent /bin/bash -c "coveralls"
