@@ -1,6 +1,5 @@
 ---
 
-<<<<<<< Updated upstream
 services:
 - service: deadbeef-aaaa-bbbb-cccc-000000000001
   module: demo.document_summarizer.DocumentSummarizer
