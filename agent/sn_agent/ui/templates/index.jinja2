@@ -16,9 +16,6 @@
 <script>
     var ws = new WebSocket('ws://localhost:9050/api/ws');
 
-    // A 28 x 28 image of a 7 which has been flattened into a single float 784-element vector format
-    // as required by the tensorflow mnist adapter.
-
     var received_msg = "";
 
     ws.onopen = function () {
@@ -97,6 +94,8 @@
                             "input_data": {
                                 "images": [
 
+                                    // A 28 x 28 image of a 7 which has been flattened into a single
+                                    // float 784-element vector format as required by the tensorflow mnist adapter.
                                     [
                                         0, 0, 0, 0, 0, 0, 0,
                                         0, 0, 0, 0, 0, 0, 0,
