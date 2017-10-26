@@ -1,0 +1,7 @@
+---
+
+services:
+- service: deadbeef-aaaa-bbbb-cccc-000000000002
+  module: demo.word_sense_disambiguater.WordSenseDisambiguater
+- service: deadbeef-aaaa-bbbb-cccc-000000000003
+  module: demo.face_recognizer.FaceRecognizer

@@ -54,7 +54,7 @@ There are seven major interacting components in the SingularityNET architecture:
  invoke to perform the actual services required to perform a job according to
  the negotiated ServiceDescriptor.
 
-* **ExternalServiceProvider** - a wrapper for interacting with external service
+* **ExternalServiceAdapter** - a wrapper for interacting with external service
  agents in the SingularityNET universe.
 
 
@@ -162,19 +162,27 @@ At this time, the only OS that this has been tested on is Ubunut 16.04 LTS. This
 may change in the future but for now, you must start there. There are only a
 few system level requirement.
 
-The installer script will download, compile several packages but they are all
-installed locally. To support the compilation, the operating system needs to
-have the following run:
+Docker and Docker Compose are used heavily. You must have a recent version of
+Docker installed.
+
+The current demo uses a 3 node setup, Alice, Bob and Charlie.
+
+The following command will create and run the Alice node.
 
 ```
-sudo ./tools.sh system-prep
+./tools.sh alice
 ```
 
-If you are installing the agent to provide work and have an NVIDIA GPU, please
-start by running:
+In a separate terminal, you can run the Bob agent.
 
 ```
-sudo ./tools.sh system-gpu-prep
+./tools.sh bob
+```
+
+In yet another separate terminal, you can run the Charlie agent.
+
+```
+./tools.sh charlie
 ```
 
 

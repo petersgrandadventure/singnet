@@ -10,9 +10,10 @@ services:
 
 before_install:
   - docker build -t singularitynet_agent agent
+  - pip install coveralls
 
 script:
-  - docker run singularitynet_agent /bin/sh -c "./agent.sh test"
+  - docker run --volume ${PWD}/test-results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
 
 after_success:
-  - docker run singularitynet_agent /bin/bash -c "coveralls"
+  - coveralls

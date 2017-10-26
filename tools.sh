@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -o errexit
-set -o verbose
+#set -o verbose
 set -o xtrace
 set -o nounset
 
@@ -21,6 +21,11 @@ bob)
     docker-compose run --service-ports bob ./agent.sh run
     ;;
 
+charlie)
+    docker-compose create --build --force-recreate charlie
+    docker-compose run --service-ports charlie ./agent.sh run
+    ;;
+
 agent-docs)
     docker-compose create --build --force-recreate test
     docker-compose run test ./agent.sh docs
@@ -29,10 +34,6 @@ agent-docs)
 agent-test)
     docker-compose create --build --force-recreate test
     docker-compose run test ./agent.sh test
-    ;;
-
-travis-test)
-    py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
     ;;
 
 agent-web)
