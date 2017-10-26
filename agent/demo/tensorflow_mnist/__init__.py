@@ -9,7 +9,7 @@
 from typing import List
 
 from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.service_adapter import ServiceAdapterABC
+from sn_agent.service_adapter import ServiceManager, ServiceAdapterABC
 from sn_agent.ontology import Service
 
 from tensorflow.examples.tutorials.mnist import input_data
@@ -19,6 +19,9 @@ import os
 from pathlib import Path
 
 import logging
+
+MNIST_CLASSIFIER_ID = 'deadbeef-aaaa-bbbb-cccc-111111111101'
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,18 +33,40 @@ AGENT_DIRECTORY = Path(__file__).parent
 CHECK_ACCURACY = False
 
 
-def deepnn(input_images):
-    """deepnn builds the graph for a deep net for classifying digits.
+def conv2d(x, W):
+    """conv2d returns a 2d convolution layer with full stride."""
+    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+
+
+def max_pool_2x2(x):
+    """max_pool_2x2 downsamples a feature map by 2X."""
+    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+
+def weight_variable(shape):
+    """weight_variable generates a weight variable of a given shape."""
+    initial = tf.truncated_normal(shape, stddev=0.1)
+    return tf.Variable(initial)
+
+
+def bias_variable(shape):
+    """bias_variable generates a bias variable of a given shape."""
+    initial = tf.constant(0.1, shape=shape)
+    return tf.Variable(initial)
+
+
+def build_classifier_graph(input_images):
+    """build_classifier_graph builds the graph for a deep net for classifying digits.
 
     Args:
         x: an input tensor with the dimensions (N_examples, 784), where 784 is the
         number of pixels in a standard MNIST image.
 
     Returns:
-        A tuple (y, keep_prob). y is a tensor of shape (N_examples, 10), with values
-        equal to the logits of classifying the digit into one of 10 classes (the
-        digits 0-9). keep_prob is a scalar placeholder for the probability of
-        dropout.
+        A tuple (classifier_graph, keep_prob). classifier_graph is the final tensor of
+        shape (N_examples, 10), with values equal to the logits of classifying the
+        digit into one of 10 classes (the digits 0-9). keep_prob is a scalar placeholder
+        for the probability of dropout.
     """
 
     # Reshape to use within a convolutional neural net.
@@ -75,7 +100,6 @@ def deepnn(input_images):
     with tf.name_scope('fc1'):
         W_fc1 = weight_variable([7 * 7 * 64, 1024])
         b_fc1 = bias_variable([1024])
-
     h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64])
     h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
 
@@ -90,30 +114,8 @@ def deepnn(input_images):
         W_fc2 = weight_variable([1024, 10])
         b_fc2 = bias_variable([10])
 
-    y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
-    return y_conv, keep_prob
-
-
-def conv2d(x, W):
-    """conv2d returns a 2d convolution layer with full stride."""
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
-
-
-def max_pool_2x2(x):
-    """max_pool_2x2 downsamples a feature map by 2X."""
-    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
-
-
-def weight_variable(shape):
-    """weight_variable generates a weight variable of a given shape."""
-    initial = tf.truncated_normal(shape, stddev=0.1)
-    return tf.Variable(initial)
-
-
-def bias_variable(shape):
-    """bias_variable generates a bias variable of a given shape."""
-    initial = tf.constant(0.1, shape=shape)
-    return tf.Variable(initial)
+    classifier_graph = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+    return classifier_graph, keep_prob
 
 
 class TensorflowMNIST(ServiceAdapterABC):
@@ -121,40 +123,51 @@ class TensorflowMNIST(ServiceAdapterABC):
 
     def __init__(self, app, service: Service, required_services: List[Service] = None):
         super().__init__(app, service, required_services)
+        if not service.node_id == MNIST_CLASSIFIER_ID:
+            raise RuntimeError("TensorflowMNIST cannot perform service %s", service.node_id)
+
+    def post_load_initialize(self, service_manager: ServiceManager):
+
+        # Train the model or load a pretrained model from the cache.
+
+        # There are member variables for the placeholders:
+        #     self.input_images - images to be classified
+        #     self.keep_prob - controls the dropout during training
+        #
+        # As well as member variables we need to have during perform:
+        #     self.classifier_graph - the tensorflow graph for the image classifier
+        #     self.model_path - the location of the cached model
 
         # Import data
         data_directory = os.path.join(AGENT_DIRECTORY, "input_data")
-        mnist = input_data.read_data_sets(data_directory, one_hot=True)
-        self.mnist = mnist
+        mnist_data = input_data.read_data_sets(data_directory, one_hot=True)
 
-        # Create the model
+        # Create the model - first initialize to default
         tf.reset_default_graph()
-        input_images = tf.placeholder(tf.float32, [None, 784])
-        self.input_images = input_images
+
+        # Define a placeholder for the images
+        self.input_images = tf.placeholder(tf.float32, [None, 784])
 
         # Define loss and optimizer
         input_labels = tf.placeholder(tf.float32, [None, 10])
 
-        # Build the graph for the deep net
-        y_conv, keep_prob = deepnn(input_images)
-        self.y_conv = y_conv
-        self.keep_prob = keep_prob
+        # Build the graph for the deep neural network classifier
+        self.classifier_graph, self.keep_prob = build_classifier_graph(self.input_images)
 
         with tf.name_scope('loss'):
-            cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=input_labels, logits=y_conv)
+            cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=input_labels, logits=self.classifier_graph)
         cross_entropy = tf.reduce_mean(cross_entropy)
 
         with tf.name_scope('adam_optimizer'):
             train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 
         with tf.name_scope('accuracy'):
-            correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(input_labels, 1))
+            correct_prediction = tf.equal(tf.argmax(self.classifier_graph, 1), tf.argmax(input_labels, 1))
             correct_prediction = tf.cast(correct_prediction, tf.float32)
         accuracy = tf.reduce_mean(correct_prediction)
 
         # Initialize the variables (i.e. assign their default value)
-        iniitalizer = tf.global_variables_initializer()
-        self.iniitalizer = iniitalizer
+        initializer = tf.global_variables_initializer()
 
         # 'Saver' op to save and restore all the variables
 
@@ -166,32 +179,32 @@ class TensorflowMNIST(ServiceAdapterABC):
             logger.debug("Restoring from pre-trained model")
             with tf.Session() as sess:
                 # Initialize variables
-                sess.run(iniitalizer)
+                sess.run(initializer)
 
                 # Restore model weights from previously saved model
                 saver.restore(sess, self.model_path)
 
                 if CHECK_ACCURACY:
                     accuracy = accuracy.eval(feed_dict={
-                        input_images: mnist.test.images,
-                        input_labels: mnist.test.labels,
-                        keep_prob: 1.0})
+                        self.input_images: mnist_data.test.images,
+                        input_labels: mnist_data.test.labels,
+                        self.keep_prob: 1.0})
                     logger.debug("test accuracy {0}".format(accuracy))
 
         else:
             logger.debug("No checkpoint - training model from scratch")
             with tf.Session() as sess:
-                sess.run(iniitalizer)
-                for i in range(1000):
-                    batch = mnist.train.next_batch(50)
+                sess.run(initializer)
+                for i in range(20000):
+                    batch = mnist_data.train.next_batch(50)
                     if i % 100 == 0:
                         train_accuracy = accuracy.eval(feed_dict={
-                            input_images: batch[0], input_labels: batch[1], keep_prob: 1.0})
+                            self.input_images: batch[0], input_labels: batch[1], self.keep_prob: 1.0})
                         logger.debug('step {0}, training accuracy {1}'.format(i, train_accuracy))
                     train_step.run(feed_dict={
-                        input_images: batch[0],
+                        self.input_images: batch[0],
                         input_labels: batch[1],
-                        keep_prob: 0.5})
+                        self.keep_prob: 0.5})
 
                 # Save model weights to disk
                 save_path = saver.save(sess, self.model_path)
@@ -199,48 +212,58 @@ class TensorflowMNIST(ServiceAdapterABC):
 
                 if CHECK_ACCURACY:
                     accuracy = accuracy.eval(feed_dict={
-                        input_images: mnist.test.images,
-                        input_labels: mnist.test.labels,
-                        keep_prob: 1.0})
+                        self.input_images: mnist_data.test.images,
+                        input_labels: mnist_data.test.labels,
+                        self.keep_prob: 1.0})
                     logger.debug('Test accuracy {0}'.format(accuracy))
 
     def perform(self, job: JobDescriptor):
         with tf.Session() as sess:
             # Initialize variables
-            sess.run(self.iniitalizer)
+            sess.run(tf.global_variables_initializer())
 
             # Restore model weights from previously saved model
             saver = tf.train.Saver()
             saver.restore(sess, self.model_path)
 
+            # Process the items in the job. A single job may include a request to classify
+            # many different images. Each item, in turn, may be an array of images.
+            results = []
             for job_item in job:
 
+                # Make sure the input type is one we can handle...
                 input_type = job_item['input_type']
-                if not input_type is 'attached':
+                if input_type != 'attached':
+                    logger.error("BAD input dict %s", str(job_item))
                     raise RuntimeError("TensorflowMNIST - job item 'input_type' must be 'attached'.")
 
+                # Get the images to classify, while making sure our job item dict is of the appropriate format.
                 input_data = job_item['input_data']
                 if input_data is None:
                     raise RuntimeError("TensorflowMNIST - job item 'input_data' must be defined.")
-                prediction_images = input_data.get('images')
-                if prediction_images is None:
+                images_to_classify = input_data.get('images')
+                if images_to_classify is None:
                     raise RuntimeError("TensorflowMNIST - job item 'input_data' missing 'images'")
 
                 # Get the predication and confidence for each element in the test slice
-                prediction = tf.argmax(self.y_conv, 1)
-                confidence = tf.nn.softmax(self.y_conv)
-                predictions = prediction.eval(feed_dict={self.input_images: prediction_images, self.keep_prob: 1.0})
-                confidences = confidence.eval(feed_dict={self.input_images: prediction_images, self.keep_prob: 1.0})
+                prediction = tf.argmax(self.classifier_graph, 1)
+                confidence = tf.nn.softmax(self.classifier_graph)
+                predictions = prediction.eval(feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
+                confidences = confidence.eval(feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
                 prediction_confidences = []
-                for index in range(0, len(prediction_images)):
+                for index in range(0, len(images_to_classify)):
+                    # predictions[index] = int(predictions[index])
                     prediction_confidence = confidences[index][predictions[index]]
-                    prediction_confidences.append(prediction_confidence)
+                    prediction_confidences.append(float(prediction_confidence))
 
                 logger.debug("Predictions: {0}".format(predictions))
                 logger.debug("Confidences: {0}".format(prediction_confidences))
 
-                results = {
-                    'predictions': predictions,
+                # Add the job results to our combined results array for all job items.
+                single_job_result = {
+                    'predictions': predictions.tolist(),
                     'confidences': prediction_confidences,
                 }
-                return results
+                results.append(single_job_result)
+
+            return results

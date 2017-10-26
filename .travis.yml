@@ -10,7 +10,6 @@ services:
 
 before_install:
   - docker build -t singularitynet_agent agent
-  - docker volume create results
   - pip install coveralls
 
 script:
