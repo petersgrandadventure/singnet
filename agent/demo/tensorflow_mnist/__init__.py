@@ -1,5 +1,5 @@
 #
-# entity_extracter/__init__.py - demo agent service adapter...
+# tensorflow_mniost/__init__.py - a service adapter for the tensorflow MNIST tutorial graph and dataset...
 #
 # Copyright (c) 2017 SingularityNET
 #
@@ -237,7 +237,7 @@ class TensorflowMNIST(ServiceAdapterABC):
                     logger.error("BAD input dict %s", str(job_item))
                     raise RuntimeError("TensorflowMNIST - job item 'input_type' must be 'attached'.")
 
-                # Get the images to classify, while making sure our job item dict is of the appropriate format.
+                # Get the images to classify, while making sure our job item input dict is of the appropriate format.
                 input_data = job_item['input_data']
                 if input_data is None:
                     raise RuntimeError("TensorflowMNIST - job item 'input_data' must be defined.")
@@ -245,7 +245,7 @@ class TensorflowMNIST(ServiceAdapterABC):
                 if images_to_classify is None:
                     raise RuntimeError("TensorflowMNIST - job item 'input_data' missing 'images'")
 
-                # Get the predication and confidence for each element in the test slice
+                # Get the predication and confidence for each image in this job item.
                 prediction = tf.argmax(self.classifier_graph, 1)
                 confidence = tf.nn.softmax(self.classifier_graph)
                 predictions = prediction.eval(feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
@@ -259,7 +259,7 @@ class TensorflowMNIST(ServiceAdapterABC):
                 logger.debug("Predictions: {0}".format(predictions))
                 logger.debug("Confidences: {0}".format(prediction_confidences))
 
-                # Add the job results to our combined results array for all job items.
+                # Add this job item's results to our combined results array.
                 single_job_result = {
                     'predictions': predictions.tolist(),
                     'confidences': prediction_confidences,
