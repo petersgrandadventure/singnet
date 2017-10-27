@@ -174,96 +174,94 @@ class TensorflowMNIST(ServiceAdapterABC):
         self.model_path = os.path.join(AGENT_DIRECTORY, "model_data", "model.ckpt")
         saver = tf.train.Saver()
 
+        # Create our long-running Tensorflow session
+        self.session = tf.Session()
+
         logger.debug("Checking for pre-trained model in {0}".format(self.model_path))
         if os.path.exists(self.model_path + ".index"):
             logger.debug("Restoring from pre-trained model")
-            with tf.Session() as sess:
-                # Initialize variables
-                sess.run(initializer)
 
-                # Restore model weights from previously saved model
-                saver.restore(sess, self.model_path)
+            # Initialize variables
+            self.session.run(initializer)
 
-                if CHECK_ACCURACY:
-                    accuracy = accuracy.eval(feed_dict={
-                        self.input_images: mnist_data.test.images,
-                        input_labels: mnist_data.test.labels,
-                        self.keep_prob: 1.0})
-                    logger.debug("test accuracy {0}".format(accuracy))
+            # Restore model weights from previously saved model
+            saver.restore(self.session, self.model_path)
+
+            if CHECK_ACCURACY:
+                accuracy = accuracy.eval(feed_dict={
+                    self.input_images: mnist_data.test.images,
+                    input_labels: mnist_data.test.labels,
+                    self.keep_prob: 1.0})
+                logger.debug("test accuracy {0}".format(accuracy))
 
         else:
             logger.debug("No checkpoint - training model from scratch")
-            with tf.Session() as sess:
-                sess.run(initializer)
-                for i in range(20000):
-                    batch = mnist_data.train.next_batch(50)
-                    if i % 100 == 0:
-                        train_accuracy = accuracy.eval(feed_dict={
-                            self.input_images: batch[0], input_labels: batch[1], self.keep_prob: 1.0})
-                        logger.debug('step {0}, training accuracy {1}'.format(i, train_accuracy))
-                    train_step.run(feed_dict={
-                        self.input_images: batch[0],
-                        input_labels: batch[1],
-                        self.keep_prob: 0.5})
+            self.session.run(initializer)
 
-                # Save model weights to disk
-                save_path = saver.save(sess, self.model_path)
-                logger.debug("Model saved in file: {0}".format(save_path))
+            # Train the model
+            for i in range(20000):
+                batch = mnist_data.train.next_batch(50)
+                if i % 100 == 0:
+                    train_accuracy = accuracy.eval(feed_dict={
+                        self.input_images: batch[0], input_labels: batch[1], self.keep_prob: 1.0})
+                    logger.debug('step {0}, training accuracy {1}'.format(i, train_accuracy))
+                train_step.run(feed_dict={
+                    self.input_images: batch[0],
+                    input_labels: batch[1],
+                    self.keep_prob: 0.5})
 
-                if CHECK_ACCURACY:
-                    accuracy = accuracy.eval(feed_dict={
-                        self.input_images: mnist_data.test.images,
-                        input_labels: mnist_data.test.labels,
-                        self.keep_prob: 1.0})
-                    logger.debug('Test accuracy {0}'.format(accuracy))
+            # Save model weights to disk
+            save_path = saver.save(self.session, self.model_path)
+            logger.debug("Model saved in file: {0}".format(save_path))
+
+            if CHECK_ACCURACY:
+                accuracy = accuracy.eval(feed_dict={
+                    self.input_images: mnist_data.test.images,
+                    input_labels: mnist_data.test.labels,
+                    self.keep_prob: 1.0})
+                logger.debug('Test accuracy {0}'.format(accuracy))
 
     def perform(self, job: JobDescriptor):
-        with tf.Session() as sess:
-            # Initialize variables
-            sess.run(tf.global_variables_initializer())
 
-            # Restore model weights from previously saved model
-            saver = tf.train.Saver()
-            saver.restore(sess, self.model_path)
+        # Process the items in the job. A single job may include a request to classify
+        # many different images. Each item, in turn, may be an array of images.
+        results = []
+        for job_item in job:
 
-            # Process the items in the job. A single job may include a request to classify
-            # many different images. Each item, in turn, may be an array of images.
-            results = []
-            for job_item in job:
+            # Make sure the input type is one we can handle...
+            input_type = job_item['input_type']
+            if input_type != 'attached':
+                logger.error("BAD input dict %s", str(job_item))
+                raise RuntimeError("TensorflowMNIST - job item 'input_type' must be 'attached'.")
 
-                # Make sure the input type is one we can handle...
-                input_type = job_item['input_type']
-                if input_type != 'attached':
-                    logger.error("BAD input dict %s", str(job_item))
-                    raise RuntimeError("TensorflowMNIST - job item 'input_type' must be 'attached'.")
+            # Get the images to classify, while making sure our job item dict is of the appropriate format.
+            input_data = job_item['input_data']
+            if input_data is None:
+                raise RuntimeError("TensorflowMNIST - job item 'input_data' must be defined.")
+            images_to_classify = input_data.get('images')
+            if images_to_classify is None:
+                raise RuntimeError("TensorflowMNIST - job item 'input_data' missing 'images'")
 
-                # Get the images to classify, while making sure our job item input dict is of the appropriate format.
-                input_data = job_item['input_data']
-                if input_data is None:
-                    raise RuntimeError("TensorflowMNIST - job item 'input_data' must be defined.")
-                images_to_classify = input_data.get('images')
-                if images_to_classify is None:
-                    raise RuntimeError("TensorflowMNIST - job item 'input_data' missing 'images'")
+            # Get the predication and confidence for each image in this job item
+            prediction = tf.argmax(self.classifier_graph, 1)
+            confidence = tf.nn.softmax(self.classifier_graph)
+            predictions = prediction.eval(session=self.session,
+                                          feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
+            confidences = confidence.eval(session=self.session,
+                                          feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
+            prediction_confidences = []
+            for index in range(0, len(images_to_classify)):
+                prediction_confidence = confidences[index][predictions[index]]
+                prediction_confidences.append(float(prediction_confidence))
 
-                # Get the predication and confidence for each image in this job item.
-                prediction = tf.argmax(self.classifier_graph, 1)
-                confidence = tf.nn.softmax(self.classifier_graph)
-                predictions = prediction.eval(feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
-                confidences = confidence.eval(feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
-                prediction_confidences = []
-                for index in range(0, len(images_to_classify)):
-                    # predictions[index] = int(predictions[index])
-                    prediction_confidence = confidences[index][predictions[index]]
-                    prediction_confidences.append(float(prediction_confidence))
+            logger.debug("Predictions: {0}".format(predictions))
+            logger.debug("Confidences: {0}".format(prediction_confidences))
 
-                logger.debug("Predictions: {0}".format(predictions))
-                logger.debug("Confidences: {0}".format(prediction_confidences))
+            # Add the job results to our combined results array for all job items.
+            single_job_result = {
+                'predictions': predictions.tolist(),
+                'confidences': prediction_confidences,
+            }
+            results.append(single_job_result)
 
-                # Add this job item's results to our combined results array.
-                single_job_result = {
-                    'predictions': predictions.tolist(),
-                    'confidences': prediction_confidences,
-                }
-                results.append(single_job_result)
-
-            return results
+        return results
