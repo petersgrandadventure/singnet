@@ -1,5 +1,5 @@
 #
-# entity_extracter/__init__.py - demo agent service adapter...
+# tensorflow_mniost/__init__.py - a service adapter for the tensorflow MNIST tutorial graph and dataset...
 #
 # Copyright (c) 2017 SingularityNET
 #
@@ -223,9 +223,6 @@ class TensorflowMNIST(ServiceAdapterABC):
 
     def perform(self, job: JobDescriptor):
 
-        # Initialize variables
-        self.session.run(tf.global_variables_initializer())
-
         # Process the items in the job. A single job may include a request to classify
         # many different images. Each item, in turn, may be an array of images.
         results = []
@@ -245,7 +242,7 @@ class TensorflowMNIST(ServiceAdapterABC):
             if images_to_classify is None:
                 raise RuntimeError("TensorflowMNIST - job item 'input_data' missing 'images'")
 
-            # Get the predication and confidence for each element in the test slice
+            # Get the predication and confidence for each image in this job item
             prediction = tf.argmax(self.classifier_graph, 1)
             confidence = tf.nn.softmax(self.classifier_graph)
             predictions = prediction.eval(session=self.session,
@@ -254,7 +251,6 @@ class TensorflowMNIST(ServiceAdapterABC):
                                           feed_dict={self.input_images: images_to_classify, self.keep_prob: 1.0})
             prediction_confidences = []
             for index in range(0, len(images_to_classify)):
-                # predictions[index] = int(predictions[index])
                 prediction_confidence = confidences[index][predictions[index]]
                 prediction_confidences.append(float(prediction_confidence))
 
