@@ -52,6 +52,10 @@ parity)
     docker-compose run --service-ports parity
     ;;
 
+relex)
+    docker-compose run --service-ports relex
+    ;;
+
 prepare-dao)
     docker-compose create --build --force-recreate testrpc
     docker-compose create --build --force-recreate dao

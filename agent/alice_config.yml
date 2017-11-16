@@ -27,5 +27,11 @@ services:
   module: examples.agent_simple.AgentSimple
 
 - service: deadbeef-aaaa-bbbb-cccc-111111111101
-  module: demo.tensorflow_mnist.TensorflowMNIST
+  module: examples.tensorflow_mnist.TensorflowMNIST
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000202
+  module: examples.relex.RelexAdapter
+
+
+
 
