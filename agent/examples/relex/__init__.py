@@ -11,6 +11,7 @@ from typing import List
 import socket
 import json
 import select
+import asyncio
 
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter import ServiceAdapterABC
@@ -55,12 +56,18 @@ class RelexAdapter(ServiceAdapterABC):
         time_out_seconds = 10.0
         relex_socket.settimeout(time_out_seconds)
         received_message = "NOT RECEIVED"
+
         try:
             # Connect to server and send data - note that "relex" below is the way to get to the
             # server running in another Docker container. See: docker_compose.yml
             relex_socket.connect(("relex", 9000))
 
-            relex_socket.sendall(sentence.encode('utf-8'))
+            # Construct the message for the relex server. NOTE: It expects a "text: " at the
+            # beginning and a "\n" at the end.
+            relex_sentence = "text: " + sentence + "\n"
+
+            # Send the sentence to the relex server.
+            relex_socket.sendall(relex_sentence.encode('utf-8'))
 
             # Read the first parts
             received_message = relex_socket.recv(1024)
@@ -74,18 +81,23 @@ class RelexAdapter(ServiceAdapterABC):
                 if bytes > 1024:
                     received_message = received_message + relex_socket.recv(bytes)
 
+            # Decode this since the rest of the system expects unicode strings and not the
+            # bytes returned from the socket.
+            received_message = received_message.decode('utf-8')
+
         except socket.timeout:
             print("Socket timed out")
 
         finally:
             relex_socket.close()
 
-        return received_message;
+        return received_message
+
 
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Relex parse job.")
 
-        # Process the items in the job. The job may include many
+        # Process the items in the job. The job may include many different sentences.
         results = []
         for job_item in job:
 
