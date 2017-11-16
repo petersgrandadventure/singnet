@@ -10,6 +10,10 @@
 <br>
 <button onclick="sendPerform()">Perform</button>
 <br>
+<button onclick="sendPerformSimpleAgent()">Perform SimpleAgent</button>
+<br>
+<button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
+<br>
 <button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
 <br>
 
@@ -71,6 +75,84 @@
                             "input_url": "http://test.com/inputs/test_input.txt",
                             "output_type": "file_url_put",
                             "output_url": "test_output.txt"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+
+    }
+
+    // This tests the very simple example agent defined in singnet/examples/agent_simple/__init__.py
+    function sendPerformSimpleAgent() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {   // This is the dictionary for the first job item.
+
+                            // An input type of "attached" means that the JSON RPC request contains
+                            // the data needed to perform the service. This contrasts to AI services
+                            // which require large input data which is usually not passed with the
+                            // request, but passed by reference using an URL.
+                            "input_type": "attached",
+
+                            // The dictionary entry for "input_data", which is itself a
+                            // dictionary, gets returned from the AgentSimple python
+                            // function: get_attached_job_data. It contains one entry for
+                            // "simple_text". This data will get formatted into the template
+                            // defined in AgentSimple's post_load_initialize function.
+                            "input_data": {"simple_text": "Sophia loves humans"},
+                            //            --------------------------------------
+                            //            ^^^^ dictionary passed to perform ^^^^
+
+                            // This indicates that the JSON RPC request contains the results in
+                            // the response.
+                            "output_type": "attached"
+                        },
+                        {
+                            // This is the dictionary for the second job item.
+                            "input_type": "attached",
+                            "input_data": {"simple_text": "the Singularity is near"},
+                            "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+
+    }
+
+    // This tests the relex semantic relationship entity extracter defined in singnet/examples/relex/__init__.py
+    function sendPerformRelexParse() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000202",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {
+                            "input_type": "attached",
+                            "input_data": {"sentence": "The Singularity will come before we know it."},
+                            "output_type": "attached"
+                        },
+                        {
+                            // This is the dictionary for the second job item.
+                            "input_type": "attached",
+                            "input_data": {"sentence": "Will women robots rule the world?"},
+                            "output_type": "attached"
                         }
                     ]
             },

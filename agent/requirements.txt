@@ -28,3 +28,4 @@ bson
 tensorflow
 
 web3
+requests
