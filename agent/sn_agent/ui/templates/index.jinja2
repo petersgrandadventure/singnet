@@ -12,6 +12,8 @@
 <br>
 <button onclick="sendPerformSimpleAgent()">Perform SimpleAgent</button>
 <br>
+<button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
+<br>
 <button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
 <br>
 
@@ -129,6 +131,36 @@
 
     }
 
+    // This tests the relex semantic relationship entity extracter defined in singnet/examples/relex/__init__.py
+    function sendPerformRelexParse() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000202",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {
+                            "input_type": "attached",
+                            "input_data": {"sentence": "The Singularity will come before we know it."},
+                            "output_type": "attached"
+                        },
+                        {
+                            // This is the dictionary for the second job item.
+                            "input_type": "attached",
+                            "input_data": {"sentence": "Will women robots rule the world?"},
+                            "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+
+    }
 
     function sendPerformMNIST() {
 
