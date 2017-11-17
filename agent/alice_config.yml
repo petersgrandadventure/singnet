@@ -22,6 +22,8 @@ services:
     agents:
     - 804be272-1cd8-4e11-8e5d-2eed03d47405
 
+- service: deadbeef-aaaa-bbbb-cccc-000000000000
+  module: examples.aigents.AigentsAdapter
 
 - service: deadbeef-aaaa-bbbb-cccc-000000000101
   module: examples.agent_simple.AgentSimple

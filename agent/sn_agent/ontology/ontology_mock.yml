@@ -69,3 +69,9 @@ services:
   name: Relex Parser
   description: An English-language semantic dependency relationship extractor, built on the Carnegie-Mellon Link Grammar parser.
 
+# singnet/examples/aigents - an agent proxy to Aigents services
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000000
+  name: Aigents Services
+  description: Aigents services
+
