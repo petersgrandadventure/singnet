@@ -16,9 +16,13 @@
 <br>
 <button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
 <br>
+<button onclick="sendAigentsRequest()">Send request to Aigents</button>
+<br>
+
 
 <script>
     var ws = new WebSocket('ws://localhost:9050/api/ws');
+    //var ws = new WebSocket('ws://88.99.210.144:9050/api/ws');
 
     var received_msg = "";
 
@@ -161,6 +165,52 @@
         ws.send(JSON.stringify(request));
 
     }
+
+   function sendAigentsRequest() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000000",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {   // This is the dictionary for the first job item.
+
+                            // An input type of "attached" means that the JSON RPC request contains
+                            // the data needed to perform the service. This contrasts to AI services
+                            // which require large input data which is usually not passed with the
+                            // request, but passed by reference using an URL.
+                            "input_type": "attached",
+
+                            // The dictionary entry for "input_data", which is itself a
+                            // dictionary, gets returned from the AgentSimple python
+                            // function: get_attached_job_data. It contains one entry for
+                            // "simple_text". This data will get formatted into the template
+                            // defined in AgentSimple's post_load_initialize function.
+                            "input_data": {"simple_text": "Sophia loves humans"},
+                            //            --------------------------------------
+                            //            ^^^^ dictionary passed to perform ^^^^
+
+                            // This indicates that the JSON RPC request contains the results in
+                            // the response.
+                            "output_type": "attached"
+                        },
+                        {
+                            // This is the dictionary for the second job item.
+                            "input_type": "attached",
+                            "input_data": {"simple_text": "the Singularity is near"},
+                            "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+    }
+
 
     function sendPerformMNIST() {
 
