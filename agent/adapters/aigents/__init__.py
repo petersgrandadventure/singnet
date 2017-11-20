@@ -11,6 +11,7 @@ import requests
 import logging
 from typing import List
 
+from adapters.aigents.settings import AigentsSettings
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter import ServiceAdapterABC
 from sn_agent.ontology import Service
@@ -26,16 +27,14 @@ class AigentsAdapter(ServiceAdapterABC):
     def __init__(self, app, service: Service, required_services: List[Service]) -> None:
         super().__init__(app, service, required_services)
 
-        # Initialize member variables heres.
-        self.response_template = None
+        self.settings = AigentsSettings()
 
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
 
         # Do any agent initialization here.
-        # TODO
+        # TODO login to Aigents here, but then need to RSS working even if logged and ensure cookie is maintained!?
         pass
-
 
     def get_attached_job_data(self, job_item: dict) -> dict:
 
@@ -52,7 +51,6 @@ class AigentsAdapter(ServiceAdapterABC):
 
         return input_data
 
-
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Aigents job.")
 
@@ -61,15 +59,12 @@ class AigentsAdapter(ServiceAdapterABC):
         for job_item in job:
 
             # Get the input data for this job.
-            #TODO actual parameters handling
+            #TODO sor tou different sub-service adapters
             job_data = self.get_attached_job_data(job_item)
             logger.info(job_data)
-            #job_params = job_data['params']['job_params']
-            #logger.info('Aigents input'+job_params)
-            rss_area = job_data['rss_area']
+            rss_area = job_data["rss_area"]
 
-            #TODO config
-            r = requests.get("https://aigents.com/al/?rss%20"+rss_area)
+            r = requests.get(self.settings.AIGENTS_PATH+"?rss%20"+rss_area)
             logger.info(r)
 
             if r is None:
