@@ -1,5 +1,5 @@
 #
-# relex/__init__.py - an AI adapter that integrates the relex natural language parser...
+# adapters/opencog/relex/__init__.py - an AI adapter that integrates the relex natural language parser...
 #
 # Copyright (c) 2017 SingularityNET
 #

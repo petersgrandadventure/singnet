@@ -10,14 +10,13 @@ from pathlib import Path
 
 import pytest
 
-from examples.tensorflow_mnist import TensorflowMNIST, MNIST_CLASSIFIER_ID
+from adapters.tensorflow.mnist import TensorflowMNIST, MNIST_CLASSIFIER_ID
 from sn_agent import ontology as onto
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.log import setup_logging
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from sn_agent.service_adapter import setup_service_manager
 from sn_agent.test.mocks import MockApp
-
 
 # A 28 x 28 image of a 7 which has been flattened into a single float 784-element vector format
 # as required by the tensorflow mnist adapter.
@@ -194,7 +193,7 @@ def test_tensorflow_mnist_adapter(app):
     except RuntimeError as exception:
         exception_caught = True
         log.error("    Exception caught %s", exception)
-        log.debug("    Error performing %s %s", job, service_adapter)
+        log.debug("    Error performing %s %s", job, mnist_service_adapter)
     assert not exception_caught
 
     # Check our results for format and content.

@@ -10,7 +10,7 @@ import logging
 import os
 from typing import List
 
-from demo.document_summarizer.settings import DocumentSummarizerSettings
+from examples.multi_agent_adapter.document_summarizer.settings import DocumentSummarizerSettings
 from sn_agent import ontology
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.ontology import Service
