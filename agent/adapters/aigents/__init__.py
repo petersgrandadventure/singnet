@@ -7,6 +7,7 @@
 # Distributed under the MIT software license, see LICENSE file.
 #
 
+import urllib.parse
 import requests
 import logging
 from typing import List
@@ -59,13 +60,36 @@ class AigentsAdapter(ServiceAdapterABC):
         for job_item in job:
 
             # Get the input data for this job.
-            #TODO sor tou different sub-service adapters
+            #TODO sort out different sub-service adapters
+	    #TODO validation
             job_data = self.get_attached_job_data(job_item)
             logger.info(job_data)
-            rss_area = job_data["rss_area"]
 
-            r = requests.get(self.settings.AIGENTS_PATH+"?rss%20"+rss_area)
-            logger.info(r)
+            if job_data["type"] == "rss_feed":
+                area = job_data["data"]["area"]
+                r = requests.get(self.settings.AIGENTS_PATH+"?rss%20"+area)
+                logger.info(r)
+
+            if job_data["type"] == "social_graph":
+                network = job_data["data"]["network"]
+                userid = job_data["data"]["userid"]
+                days = "180"
+                #TODO POST
+                s = requests.session()
+                #TOSO in one query
+                url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
+                logger.info(url)
+                r = s.get(url);
+                logger.info(r.text)
+                url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
+                logger.info(url)
+                r = s.get(url);
+                logger.info(r.text)
+                url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days \
+				+', format json, authorities, fans, similar to me'
+                logger.info(url)
+                r = s.get(url)
+                logger.info(r.text)
 
             if r is None:
                 raise RuntimeError("Aigents - no response")
