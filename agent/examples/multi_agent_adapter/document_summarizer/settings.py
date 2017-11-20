@@ -3,7 +3,7 @@ from pathlib import Path
 
 from sn_agent import SettingsBase
 
-ADAPTER_PARENT_DIR = Path(__file__).parent.parent.parent
+ADAPTER_PARENT_DIR = Path(__file__).parent.parent.parent.parent
 
 
 class DocumentSummarizerSettings(SettingsBase):
