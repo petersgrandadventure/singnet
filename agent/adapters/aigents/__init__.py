@@ -1,5 +1,6 @@
 #
-# agent_simple/__init__.py - a very simple example service adapter...
+# agent/adapters/aigents/__init__.py - adapter integrating different sub-services of Aigents web service,
+# such as RSS feeding, social graph discovery, summarizing pattern axtraction and entity attribution
 #
 # Copyright (c) 2017 SingularityNET
 #
@@ -32,7 +33,7 @@ class AigentsAdapter(ServiceAdapterABC):
         super().post_load_initialize(service_manager)
 
         # Do any agent initialization here.
-        self.response_template = "This was Aigents input: '{0}'."
+        # TODO
         pass
 
 
@@ -60,28 +61,27 @@ class AigentsAdapter(ServiceAdapterABC):
         for job_item in job:
 
             # Get the input data for this job.
+            #TODO actual parameters handling
             job_data = self.get_attached_job_data(job_item)
+            logger.info(job_data)
+            #job_params = job_data['params']['job_params']
+            #logger.info('Aigents input'+job_params)
+            rss_area = job_data['rss_area']
 
             #TODO config
-            r = requests.get("https://aigents.com/al/?rss%20ai")
-            #print( r.status_code)
-            #print(r.headers)
+            r = requests.get("https://aigents.com/al/?rss%20"+rss_area)
+            logger.info(r)
+
+            if r is None:
+                raise RuntimeError("Aigents - no response")
+
             output = r.text
-
-
-
-            # Check to make sure you have the data required.
-            simple_text = job_data.get('simple_text')
-            if simple_text is None:
-                raise RuntimeError("Aigents - job item 'input_data' missing 'simple_text'")
-
-            # Do the work... in this case we're just doing a simple text substitution into
-            # our response template.
-            simple_sentence = self.response_template.format(simple_text)
 
             # Add the job results to our combined results array for all job items.
             single_job_result = {
-                'simple_sentence': output #simple_sentence,
+		'adapter_type' : 'aigents',
+		'service_type' : 'rss',
+                'response_data': output
             }
             results.append(single_job_result)
 
