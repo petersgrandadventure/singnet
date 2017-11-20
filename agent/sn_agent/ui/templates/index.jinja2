@@ -16,8 +16,14 @@
 <br>
 <button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
 <br>
+
 Aigents:<br>
-<button onclick="sendAigentsRequest()">Send request to Aigents rss</button>
+<button onclick="sendAigentsRSSRequest(document.getElementById('aigents_areas').value)">Send request to Aigents rss</button>
+&nbsp;
+<select id="aigents_areas" value="ai">
+  <option value="ai">ai</option>
+  <option value="business">business</option>
+</select>
 <br>
 <div id="aigents_request"></div>
 
@@ -181,7 +187,7 @@ Aigents:<br>
        document.getElementById("aigents_out").textContent = text;
    }
 
-   function sendAigentsRequest() {
+   function sendAigentsRSSRequest(area) {
 
         var request = {
             "jsonrpc": "2.0",
@@ -194,7 +200,7 @@ Aigents:<br>
                     [
                         {   
                             "input_type": "attached",
-                            "input_data": {"areas": "ai"},
+                            "input_data": {"rss_area": area},
                             "output_type": "attached"
                         }
                     ]

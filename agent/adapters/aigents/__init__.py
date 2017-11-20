@@ -63,9 +63,14 @@ class AigentsAdapter(ServiceAdapterABC):
             # Get the input data for this job.
             #TODO actual parameters handling
             job_data = self.get_attached_job_data(job_item)
+            logger.info(job_data)
+            #job_params = job_data['params']['job_params']
+            #logger.info('Aigents input'+job_params)
+            rss_area = job_data['rss_area']
 
             #TODO config
-            r = requests.get("https://aigents.com/al/?rss%20ai")
+            r = requests.get("https://aigents.com/al/?rss%20"+rss_area)
+            logger.info(r)
 
             if r is None:
                 raise RuntimeError("Aigents - no response")
