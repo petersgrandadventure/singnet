@@ -26,7 +26,7 @@ services:
   module: adapters.aigents.AigentsAdapter
 
 - service: deadbeef-aaaa-bbbb-cccc-000000000101
-  module: examples.agent_simple.AgentSimple
+  module: examples.simple_adapter.SimpleAdapter
 
 - service: deadbeef-aaaa-bbbb-cccc-111111111101
   module: examples.tensorflow_mnist.TensorflowMNIST

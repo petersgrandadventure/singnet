@@ -10,7 +10,7 @@
 <br>
 <button onclick="sendPerform()">Perform</button>
 <br>
-<button onclick="sendPerformSimpleAgent()">Perform SimpleAgent</button>
+<button onclick="sendPerformSimpleAdapter()">Perform SimpleAdapter</button>
 <br>
 <button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
 <br>
@@ -106,8 +106,8 @@ Aigents:<br>
 
     }
 
-    // This tests the very simple example agent defined in singnet/examples/agent_simple/__init__.py
-    function sendPerformSimpleAgent() {
+    // This tests the very simple example adapter defined in singnet/examples/simple_adapter/__init__.py
+    function sendPerformSimpleAdapter() {
 
         var request = {
             "jsonrpc": "2.0",
@@ -127,10 +127,10 @@ Aigents:<br>
                             "input_type": "attached",
 
                             // The dictionary entry for "input_data", which is itself a
-                            // dictionary, gets returned from the AgentSimple python
+                            // dictionary, gets returned from the SimpleAdapter python
                             // function: get_attached_job_data. It contains one entry for
                             // "simple_text". This data will get formatted into the template
-                            // defined in AgentSimple's post_load_initialize function.
+                            // defined in SimpleAdapter's post_load_initialize function.
                             "input_data": {"simple_text": "Sophia loves humans"},
                             //            --------------------------------------
                             //            ^^^^ dictionary passed to perform ^^^^

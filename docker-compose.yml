@@ -96,9 +96,7 @@ services:
       command: testrpc
 
     relex:
-      build: relex
+      image: opencog/relex
       ports:
-        - "3333:3333"
-        - "4444:4444"
         - "9000:9000"
       command: bash -l -c ./link-grammar-server.sh 9000
