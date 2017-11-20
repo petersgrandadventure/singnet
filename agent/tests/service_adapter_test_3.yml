@@ -2,7 +2,7 @@
 
 modules:
 - module:
-  name: demo.document_summarizer.DocumentSummarizer
+  name: examples.multi_agent_adapter.document_summarizer.DocumentSummarizer
   required_ontology_node_ids:
     - deadbeef-aaaa-bbbb-cccc-000000000002
     - deadbeef-aaaa-bbbb-cccc-000000000003
@@ -12,10 +12,10 @@ modules:
 
 - module:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
-  name: demo.word_sense_disambiguater.WordSenseDisambiguater
+  name: examples.multi_agent_adapter.word_sense_disambiguater.WordSenseDisambiguater
 
 
 bogusii:
 - bogus:
-  name: demo.document_summarizer.DocumentSummarizer
+  name: examples.multi_agent_adapter.document_summarizer.DocumentSummarizer
   required_ontology_node_ids:
