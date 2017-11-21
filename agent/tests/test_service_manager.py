@@ -10,7 +10,7 @@ import logging
 
 import pytest
 
-import demo
+from examples import multi_agent_adapter
 from sn_agent import ontology
 from sn_agent.log import setup_logging
 from sn_agent.service_adapter import setup_service_manager, ServiceManager
@@ -42,36 +42,36 @@ def test_service_manager(app):
     assert (not app['service_manager'] is None)
     service_manager = app['service_manager']
 
-    check_adapter(service_manager, ontology.DOCUMENT_SUMMARIZER_ID, demo.document_summarizer.DocumentSummarizer)
-    check_adapter(service_manager, ontology.ENTITY_EXTRACTER_ID, demo.entity_extracter.EntityExtracter)
-    check_adapter(service_manager, ontology.FACE_RECOGNIZER_ID, demo.face_recognizer.FaceRecognizer)
-    check_adapter(service_manager, ontology.TEXT_SUMMARIZER_ID, demo.text_summarizer.TextSummarizer)
-    check_adapter(service_manager, ontology.VIDEO_SUMMARIZER_ID, demo.video_summarizer.VideoSummarizer)
-    check_adapter(service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID, demo.word_sense_disambiguater.WordSenseDisambiguater)
+    check_adapter(service_manager, ontology.DOCUMENT_SUMMARIZER_ID, multi_agent_adapter.document_summarizer.DocumentSummarizer)
+    check_adapter(service_manager, ontology.ENTITY_EXTRACTER_ID, multi_agent_adapter.entity_extracter.EntityExtracter)
+    check_adapter(service_manager, ontology.FACE_RECOGNIZER_ID, multi_agent_adapter.face_recognizer.FaceRecognizer)
+    check_adapter(service_manager, ontology.TEXT_SUMMARIZER_ID, multi_agent_adapter.text_summarizer.TextSummarizer)
+    check_adapter(service_manager, ontology.VIDEO_SUMMARIZER_ID, multi_agent_adapter.video_summarizer.VideoSummarizer)
+    check_adapter(service_manager, ontology.WORD_SENSE_DISAMBIGUATER_ID, multi_agent_adapter.word_sense_disambiguater.WordSenseDisambiguater)
 
     service_adapter = service_manager.get_service_adapter_for_id(ontology.DOCUMENT_SUMMARIZER_ID)
     assert (not service_adapter is None)
-    assert (isinstance(service_adapter, demo.document_summarizer.DocumentSummarizer))
+    assert (isinstance(service_adapter, multi_agent_adapter.document_summarizer.DocumentSummarizer))
 
     service_adapter = service_manager.get_service_adapter_for_id(ontology.ENTITY_EXTRACTER_ID)
     assert (not service_adapter is None)
-    assert (isinstance(service_adapter, demo.entity_extracter.EntityExtracter))
+    assert (isinstance(service_adapter, multi_agent_adapter.entity_extracter.EntityExtracter))
 
     service_adapter = service_manager.get_service_adapter_for_id(ontology.FACE_RECOGNIZER_ID)
     assert (not service_adapter is None)
-    assert (isinstance(service_adapter, demo.face_recognizer.FaceRecognizer))
+    assert (isinstance(service_adapter, multi_agent_adapter.face_recognizer.FaceRecognizer))
 
     service_adapter = service_manager.get_service_adapter_for_id(ontology.TEXT_SUMMARIZER_ID)
     assert (not service_adapter is None)
-    assert (isinstance(service_adapter, demo.text_summarizer.TextSummarizer))
+    assert (isinstance(service_adapter, multi_agent_adapter.text_summarizer.TextSummarizer))
 
     service_adapter = service_manager.get_service_adapter_for_id(ontology.VIDEO_SUMMARIZER_ID)
     assert (not service_adapter is None)
-    assert (isinstance(service_adapter, demo.video_summarizer.VideoSummarizer))
+    assert (isinstance(service_adapter, multi_agent_adapter.video_summarizer.VideoSummarizer))
 
     service_adapter = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
     assert (not service_adapter is None)
-    assert (isinstance(service_adapter, demo.word_sense_disambiguater.WordSenseDisambiguater))
+    assert (isinstance(service_adapter, multi_agent_adapter.word_sense_disambiguater.WordSenseDisambiguater))
 
 
 def test_start_stop_services(app):

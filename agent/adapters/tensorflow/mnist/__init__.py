@@ -1,5 +1,5 @@
 #
-# tensorflow_mniost/__init__.py - a service adapter for the tensorflow MNIST tutorial graph and dataset...
+# adapters/tensorflow/mnist/__init__.py - a service adapter for the tensorflow MNIST tutorial graph and dataset...
 #
 # Copyright (c) 2017 SingularityNET
 #
