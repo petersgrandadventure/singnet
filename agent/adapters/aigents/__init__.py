@@ -1,6 +1,6 @@
 #
 # agent/adapters/aigents/__init__.py - adapter integrating different sub-services of Aigents web service,
-# such as RSS feeding, social graph discovery, summarizing pattern axtraction and entity attribution
+# such as RSS feeding, social graph discovery, summarizing text extraction by pattern and entity attribution
 #
 # Copyright (c) 2017 SingularityNET
 #
@@ -52,6 +52,37 @@ class AigentsAdapter(ServiceAdapterABC):
 
         return input_data
 
+    def request(self,session,request):
+        url = self.settings.AIGENTS_PATH+"?"+request
+        logger.info(url)
+        #TODO use POST
+        r = session.get(url)
+        if r is None or r.status_code != 200:
+            raise RuntimeError("Aigents - no response")
+        logger.info(r.text)
+        return r
+
+    def create_session(self):
+        s = requests.session()
+        #TODO use POST
+        #TODO login in one query
+        url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
+        logger.info(url)
+        r = s.get(url);
+        logger.info(r.text)
+        url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
+        #url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my email "+self.settings.AIGENTS_LOGIN_EMAIL+", " \
+        #        +self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+", language english.")
+        logger.info(url)
+        r = s.get(url)
+        logger.info(r.text)
+        # set language
+        url = self.settings.AIGENTS_PATH+"?my language english."
+        logger.info(url)
+        r = s.get(url);
+        logger.info(r.text)
+        return s
+
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Aigents job.")
 
@@ -73,25 +104,9 @@ class AigentsAdapter(ServiceAdapterABC):
             if job_data["type"] == "social_graph":
                 network = job_data["data"]["network"]
                 userid = job_data["data"]["userid"]
+                #TODO make configurable
                 days = "180"
-                s = requests.session()
-                #TODO use POST
-                #TODO login in one query
-                url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
-                logger.info(url)
-                r = s.get(url);
-                logger.info(r.text)
-                url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
-                #url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my email "+self.settings.AIGENTS_LOGIN_EMAIL+", " \
-                #        +self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+", language english.")
-                logger.info(url)
-                r = s.get(url)
-                logger.info(r.text)
-                # set language
-                url = self.settings.AIGENTS_PATH+"?my language english."
-                logger.info(url)
-                r = s.get(url);
-                logger.info(r.text)
+                s = self.create_session()
                 # get data
                 url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days \
 				+', format json, authorities, fans, similar to me'
@@ -99,7 +114,26 @@ class AigentsAdapter(ServiceAdapterABC):
                 r = s.get(url)
                 logger.info(r.text)
 
-            if r is None:
+            if job_data["type"] == "text_extract":
+                pattern = job_data["data"]["pattern"]
+                text = job_data["data"]["text"]
+                s = self.create_session()
+                # get data
+                #TODO cleanup and streamline
+                self.request(s,"peer has format.")
+                self.request(s,"my format json.")
+                self.request(s,"my knows '"+pattern+"', trusts '"+pattern+"'.")
+                self.request(s,"my sites '"+pattern+"', trusts '"+text+"'.")
+                self.request(s,"is '"+pattern+"' new false.")
+                self.request(s,"no there is '"+pattern+"'.")
+                self.request(s,"You reading '"+pattern+"' in '"+text+"'!")
+                r = self.request(s,"what is '"+pattern+"' text, about, context?")
+                self.request(s,"my knows no '"+pattern+"', trusts no '"+pattern+"'.")
+                self.request(s,"my sites no '"+pattern+"', trusts no '"+text+"'.")   
+                self.request(s,"my format not json.")
+
+            #TODO cleanup to use .request
+            if r is None or r.status_code != 200:
                 raise RuntimeError("Aigents - no response")
 
             output = r.text
@@ -107,7 +141,7 @@ class AigentsAdapter(ServiceAdapterABC):
             # Add the job results to our combined results array for all job items.
             single_job_result = {
 		'adapter_type' : 'aigents',
-		'service_type' : 'rss',
+		'service_type' : job_data["type"], #TODO cleanup?
                 'response_data': output
             }
             results.append(single_job_result)

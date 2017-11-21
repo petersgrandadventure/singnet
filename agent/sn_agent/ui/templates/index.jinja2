@@ -32,8 +32,16 @@ Aigents:<br>
   <option value="golos">golos</option>
 </select>
 &nbsp;
-<span style="font-size:10">userid:</span><input id="aigents_userid" type="text" value="aigents"></input>
+<span style="font-size:12">userid:</span><input id="aigents_userid" type="text" value="aigents"></input>
 <br>
+
+<button onclick="sendAigentsRequest('text_extract',{'pattern':document.getElementById('aigents_pattern').value,'text':document.getElementById('aigents_text').value})">Send request to Aigents text extractor</button>
+&nbsp;
+<span style="font-size:12;">pattern:</span><input id="aigents_pattern" type="text" size="50" value="{president presidency presidents presidential}"></input>
+&nbsp;
+<span style="font-size:12;">text:</span><input id="aigents_text" type="text" size="120" value="Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/"></input>
+<br>
+
 <textarea rows="10" cols="80" id="aigents_request"  style="font-size:10"></textarea>
 
 
