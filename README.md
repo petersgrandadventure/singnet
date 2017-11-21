@@ -111,9 +111,9 @@ ontology.
 
 
 ### NetworkABC ###
-The base class for block-chain netwoks. NetworkABC defines the protocol for
+The base class for block-chain networks. NetworkABC defines the protocol for
 managing the interactions of Agents, Ontology, ServiceDescriptors, as well as 
-Agent discovery, and negotion. Each block-chain implementation will require a
+Agent discovery, and negotiation. Each block-chain implementation will require a
 separate NetworkABC subclass which implements the smart-contracts and communication
 protocols required to implement the Network ABC API.
 
@@ -140,7 +140,7 @@ Additionally, ServiceAdapterABC subclasses may also implement:
 * **`init`** - perform service one-time initialization
 * **`start`** - connect with external network providers required to perform service
 * **`stop`** - disconnect in preparation for taking the service offline
-* **`can_perform`** - override to implment service specific logic
+* **`can_perform`** - override to implement service specific logic
 * **`all_required_agents_can_perform`** - check if dependent agents can perform
  sub-services
 
@@ -158,14 +158,14 @@ a client with underlying workers.
 
 ### Prerequisites ###
 
-At this time, the only OS that this has been tested on is Ubunut 16.04 LTS. This
+At this time, the only OS that this has been tested on is Ubuntu 16.04 LTS. This
 may change in the future but for now, you must start there. There are only a
-few system level requirement.
+few system level requirements.
 
 Docker and Docker Compose are used heavily. You must have a recent version of
 Docker installed.
 
-The current demo uses a 3 node setup, Alice, Bob and Charlie.
+The current demo uses a 3-node setup, Alice, Bob and Charlie.
 
 The following command will create and run the Alice node.
 
@@ -189,7 +189,7 @@ In yet another separate terminal, you can run the Charlie agent.
 ### Installing ###
 
 The install process can take a bit of time. If you run into any issue, please
-do not hesitate to file a but report. Be sure to include the last few lines of
+do not hesitate to file a bug report. Be sure to include the last few lines of
 the console output to help us determine where it failed.
 
 You will not need sudo for the install as long as the items in the prerequisites
@@ -215,7 +215,7 @@ Tests are handled by PyTest via Tox
 
 Docs are not currently included in the source as they are changing rapidly. We
 do suggest you create the docs and look them over. Once this settles, we will
-likely have a online reference to these.
+likely have an online reference to these.
 
 ```
 ./tools.sh docs

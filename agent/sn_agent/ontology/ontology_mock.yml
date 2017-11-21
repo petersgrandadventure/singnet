@@ -71,6 +71,6 @@ services:
 
 # singnet/agent/adapters/aigents - an agent proxy to Aigents services
 - service:
-  ontology_node_id: deadbeef-aaaa-bbbb-aaaa-000000000001
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000001
   name: Aigents Services
   description: Aigents services
