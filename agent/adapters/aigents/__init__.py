@@ -7,10 +7,12 @@
 # Distributed under the MIT software license, see LICENSE file.
 #
 
+import urllib.parse
 import requests
 import logging
 from typing import List
 
+from adapters.aigents.settings import AigentsSettings
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.service_adapter import ServiceAdapterABC
 from sn_agent.ontology import Service
@@ -26,16 +28,14 @@ class AigentsAdapter(ServiceAdapterABC):
     def __init__(self, app, service: Service, required_services: List[Service]) -> None:
         super().__init__(app, service, required_services)
 
-        # Initialize member variables heres.
-        self.response_template = None
+        self.settings = AigentsSettings()
 
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
 
         # Do any agent initialization here.
-        # TODO
+        # TODO login to Aigents here, but then need to RSS working even if logged and ensure cookie is maintained!?
         pass
-
 
     def get_attached_job_data(self, job_item: dict) -> dict:
 
@@ -52,7 +52,6 @@ class AigentsAdapter(ServiceAdapterABC):
 
         return input_data
 
-
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Aigents job.")
 
@@ -61,16 +60,44 @@ class AigentsAdapter(ServiceAdapterABC):
         for job_item in job:
 
             # Get the input data for this job.
-            #TODO actual parameters handling
+            #TODO sort out different sub-service adapters
+	    #TODO validation
             job_data = self.get_attached_job_data(job_item)
             logger.info(job_data)
-            #job_params = job_data['params']['job_params']
-            #logger.info('Aigents input'+job_params)
-            rss_area = job_data['rss_area']
 
-            #TODO config
-            r = requests.get("https://aigents.com/al/?rss%20"+rss_area)
-            logger.info(r)
+            if job_data["type"] == "rss_feed":
+                area = job_data["data"]["area"]
+                r = requests.get(self.settings.AIGENTS_PATH+"?rss%20"+area)
+                logger.info(r)
+
+            if job_data["type"] == "social_graph":
+                network = job_data["data"]["network"]
+                userid = job_data["data"]["userid"]
+                days = "180"
+                s = requests.session()
+                #TODO use POST
+                #TODO login in one query
+                url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
+                logger.info(url)
+                r = s.get(url);
+                logger.info(r.text)
+                url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
+                #url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my email "+self.settings.AIGENTS_LOGIN_EMAIL+", " \
+                #        +self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+", language english.")
+                logger.info(url)
+                r = s.get(url)
+                logger.info(r.text)
+                # set language
+                url = self.settings.AIGENTS_PATH+"?my language english."
+                logger.info(url)
+                r = s.get(url);
+                logger.info(r.text)
+                # get data
+                url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days \
+				+', format json, authorities, fans, similar to me'
+                logger.info(url)
+                r = s.get(url)
+                logger.info(r.text)
 
             if r is None:
                 raise RuntimeError("Aigents - no response")
