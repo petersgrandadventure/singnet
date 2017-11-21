@@ -74,17 +74,25 @@ class AigentsAdapter(ServiceAdapterABC):
                 network = job_data["data"]["network"]
                 userid = job_data["data"]["userid"]
                 days = "180"
-                #TODO POST
                 s = requests.session()
-                #TOSO in one query
+                #TODO use POST
+                #TODO login in one query
                 url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
                 logger.info(url)
                 r = s.get(url);
                 logger.info(r.text)
                 url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
+                #url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my email "+self.settings.AIGENTS_LOGIN_EMAIL+", " \
+                #        +self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+", language english.")
+                logger.info(url)
+                r = s.get(url)
+                logger.info(r.text)
+                # set language
+                url = self.settings.AIGENTS_PATH+"?my language english."
                 logger.info(url)
                 r = s.get(url);
                 logger.info(r.text)
+                # get data
                 url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days \
 				+', format json, authorities, fans, similar to me'
                 logger.info(url)
