@@ -6,11 +6,11 @@
 
 <body>
 
-<button onclick="sendCanPerform()">Can Perform</button>
+<button onclick="sendCanPerformSimpleAdapter()">Can Perform Simple Adapter</button>
 <br>
-<button onclick="sendPerform()">Perform</button>
+<button onclick="sendPerformSimpleAdapter()">Perform Simple Adapter</button>
 <br>
-<button onclick="sendPerformSimpleAgent()">Perform SimpleAgent</button>
+<button onclick="sendPerformMultiAgentAdapter()">Perform Multi-Agent Adapter</button>
 <br>
 <button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
 <br>
@@ -79,44 +79,21 @@ Aigents:<br>
         console.log(d);
     };
 
-    function sendCanPerform() {
+    function sendCanPerformSimpleAdapter() {
 
         var request = {
             "jsonrpc": "2.0",
             "method": "can_perform",
             "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001"
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101"
             },
             "id": 3
         };
         ws.send(JSON.stringify(request));
     }
 
-    function sendPerform() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
-                "job_params":
-                    [
-                        {
-                            "input_type": "file",
-                            "input_url": "http://test.com/inputs/test_input.txt",
-                            "output_type": "file_url_put",
-                            "output_url": "test_output.txt"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-
-    }
-
-    // This tests the very simple example agent defined in singnet/examples/agent_simple/__init__.py
-    function sendPerformSimpleAgent() {
+    // This tests the very simple example adapter defined in singnet/examples/simple_adapter/__init__.py
+    function sendPerformSimpleAdapter() {
 
         var request = {
             "jsonrpc": "2.0",
@@ -153,6 +130,29 @@ Aigents:<br>
                             "input_type": "attached",
                             "input_data": {"simple_text": "the Singularity is near"},
                             "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+
+    }
+
+    function sendPerformMultiAgentAdapter() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
+                "job_params":
+                    [
+                        {
+                            "input_type": "file",
+                            "input_url": "http://test.com/inputs/test_input.txt",
+                            "output_type": "file_url_put",
+                            "output_url": "test_output.txt"
                         }
                     ]
             },
@@ -203,12 +203,13 @@ Aigents:<br>
             "jsonrpc": "2.0",
             "method": "perform",
             "params": {
+
                 "service_node_id": "deadbeef-aaaa-bbbb-cccc-100000000001",
 
                 // Defines the parameters for the list of job items which will be passed to the perform function.
                 "job_params":
                     [
-                        {   
+                        {
                             "input_type": "attached",
                             "input_data": {"type": type, "data": data},
                             "output_type": "attached"
