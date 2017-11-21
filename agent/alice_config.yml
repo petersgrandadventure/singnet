@@ -2,7 +2,7 @@
 
 services:
 - service: deadbeef-aaaa-bbbb-cccc-000000000001
-  module: demo.document_summarizer.DocumentSummarizer
+  module: examples.multi_agent_adapter.document_summarizer.DocumentSummarizer
   required_services:
   - id: deadbeef-aaaa-bbbb-cccc-000000000002
     agents:
@@ -22,17 +22,17 @@ services:
     agents:
     - 804be272-1cd8-4e11-8e5d-2eed03d47405
 
-- service: deadbeef-aaaa-bbbb-cccc-000000000000
-  module: adapters.aigents.AigentsAdapter
-
 - service: deadbeef-aaaa-bbbb-cccc-000000000101
   module: examples.simple_adapter.SimpleAdapter
 
 - service: deadbeef-aaaa-bbbb-cccc-111111111101
-  module: examples.tensorflow_mnist.TensorflowMNIST
+  module: adapters.tensorflow.mnist.TensorflowMNIST
 
 - service: deadbeef-aaaa-bbbb-cccc-000000000202
-  module: examples.relex.RelexAdapter
+  module: adapters.opencog.relex.RelexAdapter
+
+- service: deadbeef-aaaa-bbbb-cccc-100000000001
+  module: adapters.aigents.AigentsAdapter
 
 
 

@@ -6,11 +6,11 @@
 
 <body>
 
-<button onclick="sendCanPerform()">Can Perform</button>
+<button onclick="sendCanPerformSimpleAdapter()">Can Perform Simple Adapter</button>
 <br>
-<button onclick="sendPerform()">Perform</button>
+<button onclick="sendPerformSimpleAdapter()">Perform Simple Adapter</button>
 <br>
-<button onclick="sendPerformSimpleAdapter()">Perform SimpleAdapter</button>
+<button onclick="sendPerformMultiAgentAdapter()">Perform Multi-Agent Adapter</button>
 <br>
 <button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
 <br>
@@ -18,14 +18,23 @@
 <br>
 
 Aigents:<br>
-<button onclick="sendAigentsRSSRequest(document.getElementById('aigents_areas').value)">Send request to Aigents rss</button>
+<button onclick="sendAigentsRequest('rss_feed',{'area':document.getElementById('aigents_areas').value})">Send request to Aigents RSS feeder</button>
 &nbsp;
 <select id="aigents_areas" value="ai">
   <option value="ai">ai</option>
   <option value="business">business</option>
 </select>
 <br>
-<div id="aigents_request"></div>
+<button onclick="sendAigentsRequest('social_graph',{'network':document.getElementById('aigents_network').value,'userid':document.getElementById('aigents_userid').value})">Send request to Aigents social grapher</button>
+&nbsp;
+<select id="aigents_network" value="steemit">
+  <option value="steemit">steemit</option>
+  <option value="golos">golos</option>
+</select>
+&nbsp;
+<span style="font-size:10">userid:</span><input id="aigents_userid" type="text" value="aigents"></input>
+<br>
+<textarea rows="10" cols="80" id="aigents_request"  style="font-size:10"></textarea>
 
 
 
@@ -70,40 +79,17 @@ Aigents:<br>
         console.log(d);
     };
 
-    function sendCanPerform() {
+    function sendCanPerformSimpleAdapter() {
 
         var request = {
             "jsonrpc": "2.0",
             "method": "can_perform",
             "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001"
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101"
             },
             "id": 3
         };
         ws.send(JSON.stringify(request));
-    }
-
-    function sendPerform() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
-                "job_params":
-                    [
-                        {
-                            "input_type": "file",
-                            "input_url": "http://test.com/inputs/test_input.txt",
-                            "output_type": "file_url_put",
-                            "output_url": "test_output.txt"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-
     }
 
     // This tests the very simple example adapter defined in singnet/examples/simple_adapter/__init__.py
@@ -127,10 +113,10 @@ Aigents:<br>
                             "input_type": "attached",
 
                             // The dictionary entry for "input_data", which is itself a
-                            // dictionary, gets returned from the SimpleAdapter python
+                            // dictionary, gets returned from the AgentSimple python
                             // function: get_attached_job_data. It contains one entry for
                             // "simple_text". This data will get formatted into the template
-                            // defined in SimpleAdapter's post_load_initialize function.
+                            // defined in AgentSimple's post_load_initialize function.
                             "input_data": {"simple_text": "Sophia loves humans"},
                             //            --------------------------------------
                             //            ^^^^ dictionary passed to perform ^^^^
@@ -144,6 +130,29 @@ Aigents:<br>
                             "input_type": "attached",
                             "input_data": {"simple_text": "the Singularity is near"},
                             "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+
+    }
+
+    function sendPerformMultiAgentAdapter() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
+                "job_params":
+                    [
+                        {
+                            "input_type": "file",
+                            "input_url": "http://test.com/inputs/test_input.txt",
+                            "output_type": "file_url_put",
+                            "output_url": "test_output.txt"
                         }
                     ]
             },
@@ -187,20 +196,22 @@ Aigents:<br>
        document.getElementById("aigents_out").textContent = text;
    }
 
-   function sendAigentsRSSRequest(area) {
+
+   function sendAigentsRequest(type,data) {
 
         var request = {
             "jsonrpc": "2.0",
             "method": "perform",
             "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000000",
+
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-100000000001",
 
                 // Defines the parameters for the list of job items which will be passed to the perform function.
                 "job_params":
                     [
                         {
                             "input_type": "attached",
-                            "input_data": {"rss_area": area},
+                            "input_data": {"type": type, "data": data},
                             "output_type": "attached"
                         }
                     ]
