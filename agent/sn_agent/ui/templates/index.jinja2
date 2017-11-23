@@ -6,26 +6,26 @@
 
 <body>
 
-<button onclick="sendCanPerformSimpleAdapter()">Can Perform Simple Adapter</button>
+<button id="btnCanPerformSimpleAdapter">Can Perform Simple Adapter</button>
 <br>
-<button onclick="sendPerformSimpleAdapter()">Perform Simple Adapter</button>
+<button id="btnPerformSimpleAdapter">Perform Simple Adapter</button>
 <br>
-<button onclick="sendPerformMultiAgentAdapter()">Perform Multi-Agent Adapter</button>
+<button id="btnPerformMultiAgentAdapter">Perform Multi-Agent Adapter</button>
 <br>
-<button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
+<button id="btnPerformRelexParse">Perform Relex Relationship Extraction</button>
 <br>
-<button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
+<button id="btnPerformMNIST">Perform MNIST Classification</button>
 <br>
 
 Aigents:<br>
-<button onclick="sendAigentsRequest('rss_feed',{'area':document.getElementById('aigents_areas').value})">Send request to Aigents RSS feeder</button>
+<button id="btnSendAigentsRequestToRSSFeeder">Send request to Aigents RSS feeder</button>
 &nbsp;
 <select id="aigents_areas" value="ai">
   <option value="ai">ai</option>
   <option value="business">business</option>
 </select>
 <br>
-<button onclick="sendAigentsRequest('social_graph',{'network':document.getElementById('aigents_network').value,'userid':document.getElementById('aigents_userid').value})">Send request to Aigents social grapher</button>
+<button id="btnSendRequestToAigentsSocialGrapher">Send request to Aigents social grapher</button>
 &nbsp;
 <select id="aigents_network" value="steemit">
   <option value="steemit">steemit</option>
@@ -35,7 +35,7 @@ Aigents:<br>
 <span style="font-size:12">userid:</span><input id="aigents_userid" type="text" value="aigents"></input>
 <br>
 
-<button onclick="sendAigentsRequest('text_extract',{'pattern':document.getElementById('aigents_pattern').value,'text':document.getElementById('aigents_text').value})">Send request to Aigents text extractor</button>
+<button id="btnSendRequestToAigentsTextExtractor">Send request to Aigents text extractor</button>
 &nbsp;
 <span style="font-size:12;">pattern:</span><input id="aigents_pattern" type="text" size="50" value="{president presidency presidents presidential}"></input>
 &nbsp;
@@ -44,337 +44,393 @@ Aigents:<br>
 
 <textarea rows="10" cols="80" id="aigents_request"  style="font-size:10"></textarea>
 
-
-
 <script>
     {% include "settings.js" %}
 
-    var ws = new WebSocket('ws://'+my_host+':9050/api/ws');
+    var sn_app = {
+      init: function(config) {
+        this.ws = new WebSocket('ws://' + config.myHost + ':9050/api/ws');
+        this.receivedMsg = "";
+        this.aigentsTextarea = config.aigentsTextarea;
+        this.btnCanPerformSimpleAdapter = config.btnCanPerformSimpleAdapter;
+        this.btnPerformSimpleAdapter = config.btnPerformSimpleAdapter;
+        this.btnPerformMultiAgentAdapter = config.btnPerformMultiAgentAdapter;
+        this.btnPerformRelexParse = config.btnPerformRelexParse;
+        this.btnPerformMNIST = config.btnPerformMNIST;
+        this.btnSendAigentsRequestToRSSFeeder = config.btnSendAigentsRequestToRSSFeeder;
+        this.btnSendRequestToAigentsSocialGrapher = config.btnSendRequestToAigentsSocialGrapher;
+        this.btnSendRequestToAigentsTextExtractor = config.btnSendRequestToAigentsTextExtractor;
+        this.aigentsAreas = config.aigentsAreas;
+        this.aigentsNetwork = config.aigentsNetwork;
+        this.aigentsUserId = config.aigentsUserId;
+        this.aigentsPattern = config.aigentsPattern;
+        this.aigentsText = config.aigentsText;
 
-    var received_msg = "";
+        this.bindSocketEvents();
+        this.bindUIEvents();
 
-    ws.onopen = function () {
+        var self = this;
+        window.onbeforeunload = function(event) {
+          self.ws.close();
+        }
+      },
+
+      bindSocketEvents: function() {
+        this.ws.onopen = this.onOpen;
+        // binding to this because we're relying on the current context in onmessage
+        this.ws.onmessage = this.onMessage.bind(this);
+        this.ws.onclose = this.onClose;
+        this.ws.onerror = this.onError;
+      },
+
+      onOpen: function() {
         // Web Socket is connected, send data using send()
         //ws.send("Message to send");
         console.log('Connection Opened');
-    };
+      },
 
-    ws.onmessage = function (evt) {
-        received_msg = evt.data;
-        console.log(received_msg);
-        var json = JSON.parse(received_msg);
-	//TODO: handle multiple responses?
-	//TODO: have adapter_type part of protocol?
-	if (json.result && json.result.length > 0){
-		result = json.result[0];
-		if (result.adapter_type && result.adapter_type == 'aigents' && result && result.response_data)
-			document.getElementById("aigents_request").textContent = result.response_data;
-	}
-    };
-
-    ws.onclose = function () {
+      onClose: function() {
         console.log("Connection is closed...");
-    };
+      },
 
-    window.onbeforeunload = function (event) {
-        socket.close();
-    };
-
-    ws.onerror = function (a, b, c, d) {
+      onError: function() {
         console.log(a);
         console.log(b);
         console.log(c);
         console.log(d);
+      },
+
+      onMessage: function(evt) {
+        this.receivedMsg = evt.data;
+        // console.log(this.receivedMsg);
+        var json = JSON.parse(this.receivedMsg);
+        // TODO: handle multiple responses?
+        // TODO: have adapter_type part of protocol?
+        if(json.result && json.result.length > 0) {
+          result = json.result[0];
+          if (result.adapter_type && result.adapter_type == 'aigents'
+            && result && result.response_data) {
+      			this.aigentsTextarea.textContent = result.response_data;
+          }
+        }
+      },
+
+      bindUIEvents: function() {
+        var self = this;
+        this.btnCanPerformSimpleAdapter.onclick = this.sendCanPerformSimpleAdapter.bind(this);
+        this.btnPerformSimpleAdapter.onclick = this.sendPerformSimpleAdapter.bind(this);
+        this.btnPerformMultiAgentAdapter.onclick = this.sendPerformMultiAgentAdapter.bind(this);
+        this.btnPerformRelexParse.onclick = this.sendPerformRelexParse.bind(this);
+        this.btnPerformMNIST.onclick = this.sendPerformMNIST.bind(this);
+        this.btnSendAigentsRequestToRSSFeeder.addEventListener('click',
+          function() {
+            self.sendAigentsRequest('rss_feed',
+              {'area': self.aigentsAreas.value});
+          });
+          this.btnSendRequestToAigentsSocialGrapher.addEventListener('click',
+          function() {
+            self.sendAigentsRequest('social_graph',
+              {'network': self.aigentsNetwork.value,
+               'userid': self.aigentsUserId.value });
+          });
+          this.btnSendRequestToAigentsTextExtractor.addEventListener('click',
+          function() {
+            self.sendAigentsRequest('text_extract',
+              {'pattern': self.aigentsPattern.value,
+               'text': self.aigentsText.value });
+          });
+      },
+
+      sendCanPerformSimpleAdapter: function() {
+          var request = {
+              "jsonrpc": "2.0",
+              "method": "can_perform",
+              "params": {
+                  "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101"
+              },
+              "id": 3
+          };
+          this.ws.send(JSON.stringify(request));
+      },
+
+      sendPerformSimpleAdapter: function() {
+          var request = {
+              "jsonrpc": "2.0",
+              "method": "perform",
+              "params": {
+                  "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101",
+
+                  // Defines the parameters for the list of job items which will be passed to the perform function.
+                  "job_params":
+                      [
+                          {   // This is the dictionary for the first job item.
+
+                              // An input type of "attached" means that the JSON RPC request contains
+                              // the data needed to perform the service. This contrasts to AI services
+                              // which require large input data which is usually not passed with the
+                              // request, but passed by reference using an URL.
+                              "input_type": "attached",
+
+                              // The dictionary entry for "input_data", which is itself a
+                              // dictionary, gets returned from the AgentSimple python
+                              // function: get_attached_job_data. It contains one entry for
+                              // "simple_text". This data will get formatted into the template
+                              // defined in AgentSimple's post_load_initialize function.
+                              "input_data": {"simple_text": "Sophia loves humans"},
+                              //            --------------------------------------
+                              //            ^^^^ dictionary passed to perform ^^^^
+
+                              // This indicates that the JSON RPC request contains the results in
+                              // the response.
+                              "output_type": "attached"
+                          },
+                          {
+                              // This is the dictionary for the second job item.
+                              "input_type": "attached",
+                              "input_data": {"simple_text": "the Singularity is near"},
+                              "output_type": "attached"
+                          }
+                      ]
+              },
+              "id": 3
+          };
+          this.ws.send(JSON.stringify(request));
+      },
+
+      sendPerformMultiAgentAdapter: function() {
+          var request = {
+              "jsonrpc": "2.0",
+              "method": "perform",
+              "params": {
+                  "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
+                  "job_params":
+                      [
+                          {
+                              "input_type": "file",
+                              "input_url": "http://test.com/inputs/test_input.txt",
+                              "output_type": "file_url_put",
+                              "output_url": "test_output.txt"
+                          }
+                      ]
+              },
+              "id": 3
+          };
+          this.ws.send(JSON.stringify(request));
+      },
+
+      sendPerformRelexParse: function() {
+          var request = {
+              "jsonrpc": "2.0",
+              "method": "perform",
+              "params": {
+                  "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000202",
+
+                  // Defines the parameters for the list of job items which will be passed to the perform function.
+                  "job_params":
+                      [
+                          {
+                              "input_type": "attached",
+                              "input_data": {"sentence": "The Singularity will come before we know it."},
+                              "output_type": "attached"
+                          },
+                          {
+                              // This is the dictionary for the second job item.
+                              "input_type": "attached",
+                              "input_data": {"sentence": "Will women robots rule the world?"},
+                              "output_type": "attached"
+                          }
+                      ]
+              },
+              "id": 3
+          };
+          this.ws.send(JSON.stringify(request));
+      },
+
+      sendPerformMNIST: function() {
+          var request = {
+              "jsonrpc": "2.0",
+              "method": "perform",
+              "params": {
+                  "service_node_id": "deadbeef-aaaa-bbbb-cccc-111111111101",
+                  "job_params":
+                      [
+                          {
+                              "input_type": "attached",
+                              "input_data": {
+                                  "images": [
+
+                                      // A 28 x 28 image of a 7 which has been flattened into a single
+                                      // float 784-element vector format as required by the tensorflow mnist adapter.
+                                      [
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.32941177, 0.72549021, 0.62352943, 0.59215689, 0.23529413, 0.14117648,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0.8705883, 0.99607849, 0.99607849, 0.99607849, 0.99607849,
+                                          0.9450981, 0.77647066, 0.77647066, 0.77647066, 0.77647066, 0.77647066,
+                                          0.77647066, 0.77647066, 0.77647066, 0.66666669, 0.20392159, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0.26274511, 0.44705886, 0.28235295,
+                                          0.44705886, 0.63921571, 0.89019614, 0.99607849, 0.88235301, 0.99607849,
+                                          0.99607849, 0.99607849, 0.98039222, 0.89803928, 0.99607849, 0.99607849,
+                                          0.54901963, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0.06666667, 0.25882354,
+                                          0.05490196, 0.26274511, 0.26274511, 0.26274511, 0.23137257, 0.08235294,
+                                          0.92549026, 0.99607849, 0.41568631, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.32549021, 0.99215692, 0.81960791, 0.07058824, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.08627451, 0.91372555, 1., 0.32549021, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0.50588238, 0.99607849, 0.9333334, 0.17254902, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.23137257, 0.97647065, 0.99607849, 0.24313727, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0.52156866, 0.99607849, 0.73333335, 0.01960784, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.03529412, 0.80392164, 0.97254908, 0.227451, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0.49411768, 0.99607849, 0.71372551, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.29411766, 0.98431379, 0.94117653, 0.22352943, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.07450981, 0.86666673, 0.99607849, 0.65098041, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.01176471, 0.7960785, 0.99607849, 0.8588236, 0.13725491, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0.14901961, 0.99607849, 0.99607849, 0.3019608, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.12156864, 0.87843144, 0.99607849, 0.45098042, 0.00392157, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0.52156866, 0.99607849, 0.99607849, 0.20392159, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0.2392157,
+                                          0.94901967, 0.99607849, 0.99607849, 0.20392159, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0,
+                                          0.47450984, 0.99607849, 0.99607849, 0.8588236, 0.15686275, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0.47450984, 0.99607849, 0.81176478, 0.07058824, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0, 0, 0, 0,
+                                          0, 0, 0, 0
+                                      ]
+
+                                  ]
+                              },
+                              "output_type": "attached"
+                          }
+                      ]
+              },
+              "id": 3
+          };
+          this.ws.send(JSON.stringify(request));
+      },
+
+      sendAigentsRequest: function(type, data) {
+           var request = {
+               "jsonrpc": "2.0",
+               "method": "perform",
+               "params": {
+
+                   "service_node_id": "deadbeef-aaaa-bbbb-cccc-100000000001",
+
+                   // Defines the parameters for the list of job items which will be passed to the perform function.
+                   "job_params":
+                       [
+                           {
+                               "input_type": "attached",
+                               "input_data": {"type": type, "data": data},
+                               "output_type": "attached"
+                           }
+                       ]
+               },
+               "id": 3
+           };
+           this.ws.send(JSON.stringify(request));
+       }
     };
 
-    function sendCanPerformSimpleAdapter() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "can_perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101"
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-    }
-
-    // This tests the very simple example adapter defined in singnet/examples/simple_adapter/__init__.py
-    function sendPerformSimpleAdapter() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101",
-
-                // Defines the parameters for the list of job items which will be passed to the perform function.
-                "job_params":
-                    [
-                        {   // This is the dictionary for the first job item.
-
-                            // An input type of "attached" means that the JSON RPC request contains
-                            // the data needed to perform the service. This contrasts to AI services
-                            // which require large input data which is usually not passed with the
-                            // request, but passed by reference using an URL.
-                            "input_type": "attached",
-
-                            // The dictionary entry for "input_data", which is itself a
-                            // dictionary, gets returned from the AgentSimple python
-                            // function: get_attached_job_data. It contains one entry for
-                            // "simple_text". This data will get formatted into the template
-                            // defined in AgentSimple's post_load_initialize function.
-                            "input_data": {"simple_text": "Sophia loves humans"},
-                            //            --------------------------------------
-                            //            ^^^^ dictionary passed to perform ^^^^
-
-                            // This indicates that the JSON RPC request contains the results in
-                            // the response.
-                            "output_type": "attached"
-                        },
-                        {
-                            // This is the dictionary for the second job item.
-                            "input_type": "attached",
-                            "input_data": {"simple_text": "the Singularity is near"},
-                            "output_type": "attached"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-
-    }
-
-    function sendPerformMultiAgentAdapter() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
-                "job_params":
-                    [
-                        {
-                            "input_type": "file",
-                            "input_url": "http://test.com/inputs/test_input.txt",
-                            "output_type": "file_url_put",
-                            "output_url": "test_output.txt"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-
-    }
-
-    // This tests the relex semantic relationship entity extracter defined in singnet/examples/relex/__init__.py
-    function sendPerformRelexParse() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000202",
-
-                // Defines the parameters for the list of job items which will be passed to the perform function.
-                "job_params":
-                    [
-                        {
-                            "input_type": "attached",
-                            "input_data": {"sentence": "The Singularity will come before we know it."},
-                            "output_type": "attached"
-                        },
-                        {
-                            // This is the dictionary for the second job item.
-                            "input_type": "attached",
-                            "input_data": {"sentence": "Will women robots rule the world?"},
-                            "output_type": "attached"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-    }
-
-   function getAigentsResponse(text) {
-       document.getElementById("aigents_out").textContent = text;
-   }
-
-
-   function sendAigentsRequest(type,data) {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-100000000001",
-
-                // Defines the parameters for the list of job items which will be passed to the perform function.
-                "job_params":
-                    [
-                        {
-                            "input_type": "attached",
-                            "input_data": {"type": type, "data": data},
-                            "output_type": "attached"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-    }
-
-
-    function sendPerformMNIST() {
-
-        var request = {
-            "jsonrpc": "2.0",
-            "method": "perform",
-            "params": {
-                "service_node_id": "deadbeef-aaaa-bbbb-cccc-111111111101",
-                "job_params":
-                    [
-                        {
-                            "input_type": "attached",
-                            "input_data": {
-                                "images": [
-
-                                    // A 28 x 28 image of a 7 which has been flattened into a single
-                                    // float 784-element vector format as required by the tensorflow mnist adapter.
-                                    [
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.32941177, 0.72549021, 0.62352943, 0.59215689, 0.23529413, 0.14117648,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0.8705883, 0.99607849, 0.99607849, 0.99607849, 0.99607849,
-                                        0.9450981, 0.77647066, 0.77647066, 0.77647066, 0.77647066, 0.77647066,
-                                        0.77647066, 0.77647066, 0.77647066, 0.66666669, 0.20392159, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0.26274511, 0.44705886, 0.28235295,
-                                        0.44705886, 0.63921571, 0.89019614, 0.99607849, 0.88235301, 0.99607849,
-                                        0.99607849, 0.99607849, 0.98039222, 0.89803928, 0.99607849, 0.99607849,
-                                        0.54901963, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0.06666667, 0.25882354,
-                                        0.05490196, 0.26274511, 0.26274511, 0.26274511, 0.23137257, 0.08235294,
-                                        0.92549026, 0.99607849, 0.41568631, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.32549021, 0.99215692, 0.81960791, 0.07058824, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.08627451, 0.91372555, 1., 0.32549021, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0.50588238, 0.99607849, 0.9333334, 0.17254902, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.23137257, 0.97647065, 0.99607849, 0.24313727, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0.52156866, 0.99607849, 0.73333335, 0.01960784, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.03529412, 0.80392164, 0.97254908, 0.227451, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0.49411768, 0.99607849, 0.71372551, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.29411766, 0.98431379, 0.94117653, 0.22352943, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.07450981, 0.86666673, 0.99607849, 0.65098041, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.01176471, 0.7960785, 0.99607849, 0.8588236, 0.13725491, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0.14901961, 0.99607849, 0.99607849, 0.3019608, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.12156864, 0.87843144, 0.99607849, 0.45098042, 0.00392157, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0.52156866, 0.99607849, 0.99607849, 0.20392159, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0.2392157,
-                                        0.94901967, 0.99607849, 0.99607849, 0.20392159, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0,
-                                        0.47450984, 0.99607849, 0.99607849, 0.8588236, 0.15686275, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0.47450984, 0.99607849, 0.81176478, 0.07058824, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0, 0, 0, 0,
-                                        0, 0, 0, 0
-                                    ]
-
-                                ]
-                            },
-                            "output_type": "attached"
-                        }
-                    ]
-            },
-            "id": 3
-        };
-        ws.send(JSON.stringify(request));
-    }
-
+    var app = sn_app.init({
+      myHost: my_host,
+      aigentsTextarea: document.getElementById("aigents_request"),
+      btnCanPerformSimpleAdapter: document.getElementById("btnCanPerformSimpleAdapter"),
+      btnPerformSimpleAdapter: document.getElementById("btnPerformSimpleAdapter"),
+      btnPerformMultiAgentAdapter: document.getElementById("btnPerformMultiAgentAdapter"),
+      btnPerformRelexParse: document.getElementById("btnPerformRelexParse"),
+      btnPerformMNIST: document.getElementById("btnPerformMNIST"),
+      btnSendAigentsRequestToRSSFeeder: document.getElementById("btnSendAigentsRequestToRSSFeeder"),
+      btnSendRequestToAigentsSocialGrapher: document.getElementById("btnSendRequestToAigentsSocialGrapher"),
+      btnSendRequestToAigentsTextExtractor: document.getElementById("btnSendRequestToAigentsTextExtractor"),
+      aigentsAreas: document.getElementById('aigents_areas'),
+      aigentsNetwork: document.getElementById('aigents_network'),
+      aigentsUserId: document.getElementById('aigents_userid'),
+      aigentsPattern: document.getElementById('aigents_pattern'),
+      aigentsText: document.getElementById('aigents_text')
+    });
 </script>
 
 </body>
