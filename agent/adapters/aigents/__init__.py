@@ -132,6 +132,11 @@ class AigentsAdapter(ServiceAdapterABC):
                 self.request(s,"my sites no '"+pattern+"', trusts no '"+text+"'.")   
                 self.request(s,"my format not json.")
 
+            if job_data["type"] == "texts_cluster":
+                texts = job_data["data"]["texts"]
+                s = self.create_session()
+                r = self.request(s,"You cluster format json texts '"+texts+"'!")
+
             #TODO cleanup to use .request
             if r is None or r.status_code != 200:
                 raise RuntimeError("Aigents - no response")
@@ -149,4 +154,10 @@ class AigentsAdapter(ServiceAdapterABC):
         # Return the list of results that come from appending the results for the
         # individual job items in the job.
         return results
+
+
+class AigentsClustererAdapter(AigentsAdapter):
+    type_name = "AigentsClustererAdapter"
+
+
 
