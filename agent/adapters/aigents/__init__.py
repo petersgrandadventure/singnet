@@ -52,31 +52,29 @@ class AigentsAdapter(ServiceAdapterABC):
     def request(self,session,request):
         url = self.settings.AIGENTS_PATH+"?"+request
         logger.info(url)
-        # TODO use POST
-        r = session.get(url)
+        r = session.post(url)
         if r is None or r.status_code != 200:
             raise RuntimeError("Aigents - no response")
         logger.info(r.text)
         return r
 
     def create_session(self):
-        s = requests.session()
-        # TODO use POST
+        session = requests.session()
         # TODO login in one query, if/when possible
         url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
         logger.info(url)
-        r = s.get(url);
+        r = session.post(url);
         logger.info(r.text)
         url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
         logger.info(url)
-        r = s.get(url)
+        r = session.post(url)
         logger.info(r.text)
         # set language
         url = self.settings.AIGENTS_PATH+"?my language english."
         logger.info(url)
-        r = s.get(url);
+        r = session.post(url);
         logger.info(r.text)
-        return s
+        return session
 
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Aigents job.")
@@ -153,7 +151,8 @@ class AigentsRSSFeederAdapter(AigentsAdapter):
 
     def aigents_perform(self,data):
         area = data["area"]
-        r = requests.get(self.settings.AIGENTS_PATH+"?rss%20"+area)
+        # sessionless request
+        r = requests.post(self.settings.AIGENTS_PATH+"?rss%20"+area)
         logger.info(r)
         return r
 
@@ -168,8 +167,6 @@ class AigentsSocialGrapherAdapter(AigentsAdapter):
         s = self.create_session()
         # get data
         url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days+', format json, authorities, fans, similar to me'
-        logger.info(url)
-        r = s.get(url)
-        logger.info(r.text)
+        r = self.request(s,url)
         return r
 
