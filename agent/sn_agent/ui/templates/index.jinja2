@@ -25,7 +25,7 @@ Aigents:<br>
   <option value="business">business</option>
 </select>
 <br>
-<button onclick="sendAigentsRequest('social_graph',{'network':document.getElementById('aigents_network').value,'userid':document.getElementById('aigents_userid').value},'deadbeef-aaaa-bbbb-cccc-100000000004')">Send request to Aigents social grapher</button>
+<button onclick="sendAigentsRequest('social_graph',{'network':document.getElementById('aigents_network').value,'userid':document.getElementById('aigents_userid').value,period:document.getElementById('aigents_period').value},'deadbeef-aaaa-bbbb-cccc-100000000004')">Send request to Aigents social grapher</button>
 &nbsp;
 <select id="aigents_network" value="steemit">
   <option value="steemit">steemit</option>
@@ -33,18 +33,20 @@ Aigents:<br>
 </select>
 &nbsp;
 <span style="font-size:12">userid:</span><input id="aigents_userid" type="search" value="aigents"></input>
+&nbsp;
+<span style="font-size:12">period days:</span><input id="aigents_period" type="search" value="180" placeholder="Number of days in period"></input>
 <br>
 
 <button onclick="sendAigentsRequest('text_extract',{'pattern':document.getElementById('aigents_pattern').value,'text':document.getElementById('aigents_text').value},'deadbeef-aaaa-bbbb-cccc-100000000003')">Send request to Aigents text extractor</button>
 &nbsp;
 <span style="font-size:12;">pattern:</span><input id="aigents_pattern" type="search" size="50" value="{president presidency presidents presidential}"></input>
 &nbsp;
-<span style="font-size:12;">text:</span><input id="aigents_text" type="search" size="120" value="Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/"></input>
+<span style="font-size:12;">text:</span><input id="aigents_text" type="search" size="120" placeholder="Any text or URL" value="Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/"></input>
 <br>
 
 <button onclick="sendAigentsRequest('texts_cluster',{'texts':document.getElementById('aigents_texts').value},'deadbeef-aaaa-bbbb-cccc-100000000002')">Send request to Aigents texts clusterer</button>
 &nbsp;
-<span style="font-size:12;">texts:</span><input id="aigents_texts" type="search" placeholder="JSON array of URLs or short texts" size="180" 
+<span style="font-size:12;">texts:</span><input id="aigents_texts" type="search" placeholder="JSON array of URLs or short texts" size="190" 
 value="[&quot;http://aigents.com/test/cat/fly.html&quot;,&quot;http://aigents.com/test/cat/eagle.html&quot;,&quot;http://aigents.com/test/cat/snake.html&quot;,&quot;tuna is a fish&quot;,&quot;cat is a mammal&quot;,&quot;http://aigents.com/test/cat/french.html&quot;,&quot;http://aigents.com/test/cat/chinese.html&quot;,&quot;germans live in germany&quot;,&quot;russians live in russia&quot;,&quot;spaniards live in spain&quot;]"
 ></input>
 <br>
@@ -214,7 +216,7 @@ value="[&quot;http://aigents.com/test/cat/fly.html&quot;,&quot;http://aigents.co
             "method": "perform",
             "params": {
 
-                "service_node_id": node_id ? node_id : "deadbeef-aaaa-bbbb-cccc-100000000001",
+                "service_node_id": node_id,
 
                 // Defines the parameters for the list of job items which will be passed to the perform function.
                 "job_params":

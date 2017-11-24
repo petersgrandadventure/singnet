@@ -89,18 +89,14 @@ class AigentsAdapter(ServiceAdapterABC):
             logger.info(job_data)
 
             r = self.aigents_perform(job_data['data'])
-
-            # TODO cleanup to use .request
             if r is None or r.status_code != 200:
                 raise RuntimeError("Aigents - no response")
-
-            output = r.text
 
             # Add the job results to our combined results array for all job items.
             single_job_result = {
 		'adapter_type' : 'aigents',
 		'service_type' : job_data["type"], # TODO cleanup, based on service request and response ontology discussion?
-                'response_data': output
+                'response_data': r.text
             }
             results.append(single_job_result)
 
@@ -162,8 +158,7 @@ class AigentsSocialGrapherAdapter(AigentsAdapter):
     def aigents_perform(self,data):
         network = data["network"]
         userid = data["userid"]
-        # TODO make configurable
-        days = "180"
+        days = data["period"]
         s = self.create_session()
         # get data
         url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days+', format json, authorities, fans, similar to me'
