@@ -58,6 +58,11 @@ class AigentsAdapter(ServiceAdapterABC):
         logger.info(r.text)
         return r
 
+    def validate(self,data,key):
+        if not key in data or len(data[key]) < 1:
+            raise RuntimeError("Aigents - no input data "+key)
+        return data[key]
+
     def create_session(self):
         session = requests.session()
         # TODO login in one query, if/when possible
@@ -84,9 +89,11 @@ class AigentsAdapter(ServiceAdapterABC):
         for job_item in job:
 
             # Get the input data for this job.
-	    # TODO validation
             job_data = self.get_attached_job_data(job_item)
             logger.info(job_data)
+
+            if not 'data' in job_data:
+                raise RuntimeError("Aigents - no input data")
 
             r = self.aigents_perform(job_data['data'])
             if r is None or r.status_code != 200:
@@ -112,7 +119,7 @@ class AigentsTextsClustererAdapter(AigentsAdapter):
     type_name = "AigentsTextsClustererAdapter"
 
     def aigents_perform(self,data):
-        texts = data["texts"]
+        texts = self.validate(data,"texts")
         s = self.create_session()
         r = self.request(s,"You cluster format json texts '"+texts+"'!")
         return r
@@ -121,8 +128,8 @@ class AigentsTextExtractorAdapter(AigentsAdapter):
     type_name = "AigentsTextExtractorAdapter"
 
     def aigents_perform(self,data):
-        pattern = data["pattern"]
-        text = data["text"]
+        pattern = self.validate(data,"pattern")
+        text = self.validate(data,"text")
         s = self.create_session()
         # TODO cleanup and streamline, make json in http header 'Accept': 'application/json'
         # specify format
@@ -146,7 +153,7 @@ class AigentsRSSFeederAdapter(AigentsAdapter):
     type_name = "AigentsRSSFeederAdapter"
 
     def aigents_perform(self,data):
-        area = data["area"]
+        area = self.validate(data,"area")
         # sessionless request
         r = requests.post(self.settings.AIGENTS_PATH+"?rss%20"+area)
         logger.info(r)
@@ -156,11 +163,10 @@ class AigentsSocialGrapherAdapter(AigentsAdapter):
     type_name = "AigentsSocialGrapherAdapter"
 
     def aigents_perform(self,data):
-        network = data["network"]
-        userid = data["userid"]
-        days = data["period"]
+        network = self.validate(data,"network")
+        userid = self.validate(data,"userid")
+        days = self.validate(data,"period")
         s = self.create_session()
-        # get data
         url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days+', format json, authorities, fans, similar to me'
         r = self.request(s,url)
         return r
