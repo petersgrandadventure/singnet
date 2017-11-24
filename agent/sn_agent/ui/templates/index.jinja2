@@ -1,11 +1,8 @@
-<html>
+{% extends 'base.jinja2' %}
 
-<head>
+{% set page_title = '' %}
 
-</head>
-
-<body>
-
+{% block content %}
 <button onclick="sendCanPerformSimpleAdapter()">Can Perform Simple Adapter</button>
 <br>
 <button onclick="sendPerformSimpleAdapter()">Perform Simple Adapter</button>
@@ -376,6 +373,4 @@ Aigents:<br>
     }
 
 </script>
-
-</body>
-</html>
+{% endblock %}
