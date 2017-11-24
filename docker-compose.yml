@@ -17,7 +17,8 @@ services:
         - ./agent-data:/data
       links:
         - testrpc
-#        - bob
+#       - bob
+        - relex
 
     bob:
       build: agent
@@ -93,3 +94,9 @@ services:
         - "8546:8546"
         - "30303:30303"
       command: testrpc
+
+    relex:
+      image: opencog/relex
+      ports:
+        - "9000:9000"
+      command: bash -l -c ./link-grammar-server.sh 9000

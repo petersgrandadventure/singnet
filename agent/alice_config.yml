@@ -22,6 +22,18 @@ services:
     agents:
     - 804be272-1cd8-4e11-8e5d-2eed03d47405
 
+- service: deadbeef-aaaa-bbbb-cccc-000000000000
+  module: adapters.aigents.AigentsAdapter
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000101
+  module: examples.simple_adapter.SimpleAdapter
+
 - service: deadbeef-aaaa-bbbb-cccc-111111111101
-  module: demo.tensorflow_mnist.TensorflowMNIST
+  module: examples.tensorflow_mnist.TensorflowMNIST
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000202
+  module: examples.relex.RelexAdapter
+
+
+
 

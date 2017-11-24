@@ -51,8 +51,27 @@ services:
   name: JSON RPC Service Two
   description: Sample JSON RPC service number two
 
-
+# singnet/examples/tensorflow_mnist - an example Tensorflow MNIST classifier
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-111111111101
   name: Tensorflow MNIST Classifier
   description: Classifies MNIST input handwritten number images
+
+# singnet/examples/agent_simple - a simple example agent to show how to integrate AI code
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000101
+  name: Agent Simple
+  description: Example agent that inserts text into a template.
+
+# singnet/examples/relex - an adapter for the relex OpenCog narror AI
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000202
+  name: Relex Parser
+  description: An English-language semantic dependency relationship extractor, built on the Carnegie-Mellon Link Grammar parser.
+
+# singnet/agent/adapters/aigents - an agent proxy to Aigents services
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000000
+  name: Aigents Services
+  description: Aigents services
+

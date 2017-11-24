@@ -10,11 +10,29 @@
 <br>
 <button onclick="sendPerform()">Perform</button>
 <br>
+<button onclick="sendPerformSimpleAdapter()">Perform SimpleAdapter</button>
+<br>
+<button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
+<br>
 <button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
 <br>
 
+Aigents:<br>
+<button onclick="sendAigentsRSSRequest(document.getElementById('aigents_areas').value)">Send request to Aigents rss</button>
+&nbsp;
+<select id="aigents_areas" value="ai">
+  <option value="ai">ai</option>
+  <option value="business">business</option>
+</select>
+<br>
+<div id="aigents_request"></div>
+
+
+
 <script>
-    var ws = new WebSocket('ws://localhost:9050/api/ws');
+    {% include "settings.js" %}
+
+    var ws = new WebSocket('ws://'+my_host+':9050/api/ws');
 
     var received_msg = "";
 
@@ -27,6 +45,14 @@
     ws.onmessage = function (evt) {
         received_msg = evt.data;
         console.log(received_msg);
+        var json = JSON.parse(received_msg);
+	//TODO: handle multiple responses?
+	//TODO: have adapter_type part of protocol?
+	if (json.result && json.result.length > 0){
+		result = json.result[0];
+		if (result.adapter_type && result.adapter_type == 'aigents' && result && result.response_data)
+			document.getElementById("aigents_request").textContent = result.response_data;
+	}
     };
 
     ws.onclose = function () {
@@ -79,6 +105,111 @@
         ws.send(JSON.stringify(request));
 
     }
+
+    // This tests the very simple example adapter defined in singnet/examples/simple_adapter/__init__.py
+    function sendPerformSimpleAdapter() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000101",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {   // This is the dictionary for the first job item.
+
+                            // An input type of "attached" means that the JSON RPC request contains
+                            // the data needed to perform the service. This contrasts to AI services
+                            // which require large input data which is usually not passed with the
+                            // request, but passed by reference using an URL.
+                            "input_type": "attached",
+
+                            // The dictionary entry for "input_data", which is itself a
+                            // dictionary, gets returned from the SimpleAdapter python
+                            // function: get_attached_job_data. It contains one entry for
+                            // "simple_text". This data will get formatted into the template
+                            // defined in SimpleAdapter's post_load_initialize function.
+                            "input_data": {"simple_text": "Sophia loves humans"},
+                            //            --------------------------------------
+                            //            ^^^^ dictionary passed to perform ^^^^
+
+                            // This indicates that the JSON RPC request contains the results in
+                            // the response.
+                            "output_type": "attached"
+                        },
+                        {
+                            // This is the dictionary for the second job item.
+                            "input_type": "attached",
+                            "input_data": {"simple_text": "the Singularity is near"},
+                            "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+
+    }
+
+    // This tests the relex semantic relationship entity extracter defined in singnet/examples/relex/__init__.py
+    function sendPerformRelexParse() {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000202",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {
+                            "input_type": "attached",
+                            "input_data": {"sentence": "The Singularity will come before we know it."},
+                            "output_type": "attached"
+                        },
+                        {
+                            // This is the dictionary for the second job item.
+                            "input_type": "attached",
+                            "input_data": {"sentence": "Will women robots rule the world?"},
+                            "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+    }
+
+   function getAigentsResponse(text) {
+       document.getElementById("aigents_out").textContent = text;
+   }
+
+   function sendAigentsRSSRequest(area) {
+
+        var request = {
+            "jsonrpc": "2.0",
+            "method": "perform",
+            "params": {
+                "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000000",
+
+                // Defines the parameters for the list of job items which will be passed to the perform function.
+                "job_params":
+                    [
+                        {
+                            "input_type": "attached",
+                            "input_data": {"rss_area": area},
+                            "output_type": "attached"
+                        }
+                    ]
+            },
+            "id": 3
+        };
+        ws.send(JSON.stringify(request));
+    }
+
 
     function sendPerformMNIST() {
 

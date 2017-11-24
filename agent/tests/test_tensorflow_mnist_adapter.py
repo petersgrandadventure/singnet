@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from demo.tensorflow_mnist import TensorflowMNIST, MNIST_CLASSIFIER_ID
+from examples.tensorflow_mnist import TensorflowMNIST, MNIST_CLASSIFIER_ID
 from sn_agent import ontology as onto
 from sn_agent.job.job_descriptor import JobDescriptor
 from sn_agent.log import setup_logging
