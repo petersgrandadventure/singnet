@@ -2,6 +2,6 @@
 
 services:
 - service: deadbeef-aaaa-bbbb-cccc-000000000002
-  module: examples.multi_agent_adapter..word_sense_disambiguater.WordSenseDisambiguater
+  module: examples.multi_agent_adapter.word_sense_disambiguater.WordSenseDisambiguater
 - service: deadbeef-aaaa-bbbb-cccc-000000000003
   module: examples.multi_agent_adapter.face_recognizer.FaceRecognizer

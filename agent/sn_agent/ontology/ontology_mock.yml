@@ -63,7 +63,7 @@ services:
   name: Simple Adapter
   description: Example agent that inserts text into a template.
 
-# singnet/agent/adapters/opencog/relex - an adapter for the relex OpenCog narror AI
+# singnet/agent/adapters/opencog/relex - an adapter for the relex OpenCog narrow AI
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000202
   name: Relex Parser

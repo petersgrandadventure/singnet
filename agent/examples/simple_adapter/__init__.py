@@ -24,7 +24,7 @@ class SimpleAdapter(ServiceAdapterABC):
     def __init__(self, app, service: Service, required_services: List[Service]) -> None:
         super().__init__(app, service, required_services)
 
-        # Initialize member variables heres.
+        # Initialize member variables here.
         self.response_template = None
 
     def post_load_initialize(self, service_manager: ServiceManager):
