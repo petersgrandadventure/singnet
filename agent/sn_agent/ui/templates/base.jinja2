@@ -140,7 +140,16 @@
                                 <a href="/relexparser">Relex Parser</a>
                             </li>
                             <li>
-                                <a href="/aigentsservices">Aigents Services</a>
+                                <a href="/aigentsrssfeeder">Aigents RSS Feeder</a>
+                            </li>
+                            <li>
+                                <a href="/aigentssocialgrapher">Aigents Social Grapher</a>
+                            </li>
+                            <li>
+                                <a href="/aigentstextextractor">Aigents Text Extractor</a>
+                            </li>
+                            <li>
+                                <a href="/aigentstextsclusterer">Aigents Text Clusterer</a>
                             </li>
                         </ul>
                     </li>
@@ -184,6 +193,7 @@
         aigentsText: 'Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/',
         aigentsUserId: 'aigents',
         aigentsNetwork: 'steemit',
+        aigentsPeriod: '180',
         aigentsRequest: ''
       },
       methods: {
@@ -206,7 +216,52 @@
                 "id": 3
             };
             this.ws.send(JSON.stringify(request));
-        }
+        },
+        sendAigentsRequest: function(type) {
+
+            var data = {};
+            var node_id = '';
+
+            switch(type) {
+              case 'rss_feed':
+                data = {'area': this.aigentsArea };
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000005';
+                break;
+              case 'text_extract':
+                data = {'pattern': this.aigentsPattern,'text': this.aigentsText};
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000003';
+                break;
+              case 'social_graph':
+                data = {'network': this.aigentsNetwork,'userid': this.aigentsUserId, 'period': this.aigentsPeriod};
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000004';
+                break;
+              case 'texts_cluster':
+                data = {'texts': this.getTexts()};
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000002';
+                break;
+            }
+
+             var request = {
+                 "jsonrpc": "2.0",
+                 "method": "perform",
+                 "params": {
+
+                     "service_node_id": node_id,
+
+                     // Defines the parameters for the list of job items which will be passed to the perform function.
+                     "job_params":
+                         [
+                             {
+                                 "input_type": "attached",
+                                 "input_data": {"type": type, "data": data},
+                                 "output_type": "attached"
+                             }
+                         ]
+                 },
+                 "id": 3
+             };
+             this.ws.send(JSON.stringify(request));
+         }
       },
       created: function() {
         var self = this;

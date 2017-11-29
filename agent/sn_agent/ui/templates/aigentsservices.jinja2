@@ -19,6 +19,8 @@
       <option value="golos">golos</option>
     </select>
     &nbsp;
+    <span style="font-size:12">period days:</span><input v-model="aigentsPeriod" type="search" placeholder="Number of days in period"></input>
+    <br>
     <span style="font-size:12">userid:</span><input v-model="aigentsUserId" type="text"></input>
     <br>
     <button @click="sendAigentsRequest('text_extract')">Send request to Aigents text extractor</button>
@@ -26,7 +28,13 @@
     <span style="font-size:12;">pattern:</span><input v-model="aigentsPattern"  type="text" size="50"></input>
     &nbsp;
     <span style="font-size:12;">text:</span><input v-model="aigentsText" type="text" size="120"></input>
+
     <br>
+    <button onclick="sendAigentsRequest('texts_cluster',{'texts':document.getElementById('aigents_texts').value},'deadbeef-aaaa-bbbb-cccc-100000000002')">Send request to Aigents texts clusterer</button>
+    &nbsp;
+    <span style="font-size:12;">texts:</span><input v-model="aigentsTexts" type="search" placeholder="JSON array of URLs or short texts" size="190"></input>
+    <br>
+
     <textarea rows="10" cols="80" v-model="aigentsRequest"  style="font-size:10"></textarea>
 </div>
 {% endblock %}
@@ -38,16 +46,24 @@
         sendAigentsRequest: function(type) {
 
             var data = {};
+            var node_id = '';
 
             switch(type) {
               case 'rss_feed':
                 data = {'area': this.aigentsArea };
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000005';
                 break;
               case 'text_extract':
-                data = {'pattern': this.aigentsPattern,'text': this.aigentsText}
+                data = {'pattern': this.aigentsPattern,'text': this.aigentsText};
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000003';
                 break;
               case 'social_graph':
-                data = {'network': this.aigentsNetwork,'userid': this.aigentsUserId}
+                data = {'network': this.aigentsNetwork,'userid': this.aigentsUserId, 'period': this.aigentsPeriod};
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000004';
+                break;
+              case 'texts_cluster':
+                data = {'texts': this.aigentsTexts};
+                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000002';
                 break;
             }
 
@@ -56,7 +72,7 @@
                  "method": "perform",
                  "params": {
 
-                     "service_node_id": "deadbeef-aaaa-bbbb-cccc-100000000001",
+                     "service_node_id": node_id,
 
                      // Defines the parameters for the list of job items which will be passed to the perform function.
                      "job_params":

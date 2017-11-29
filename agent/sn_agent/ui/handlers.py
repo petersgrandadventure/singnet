@@ -45,22 +45,18 @@ def wordsensedisamnbiguater(request):
 def relexparser(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
-@aiohttp_jinja2.template('aigentsservices.jinja2')
-def aigentsservices(request):
-    return {'name': 'Andrew', 'surname': 'Svetlov'}
-
-@aiohttp_jinja2.template('index.jinja2')
+@aiohttp_jinja2.template('aigentstextsclusterer.jinja2')
 def aigentstextsclusterer(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
-@aiohttp_jinja2.template('index.jinja2')
+@aiohttp_jinja2.template('aigentstextextractor.jinja2')
 def aigentstextextractor(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
-@aiohttp_jinja2.template('index.jinja2')
+@aiohttp_jinja2.template('aigentssocialgrapher.jinja2')
 def aigentssocialgrapher(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
-@aiohttp_jinja2.template('index.jinja2')
+@aiohttp_jinja2.template('aigentsrssfeeder.jinja2')
 def aigentsrssfeeder(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
