@@ -32,7 +32,7 @@ AGENT_DIRECTORY = Path(__file__).parent
 
 CHECK_ACCURACY = False
 
-
+MINIMUM_SCORE = 0.20
 
 
 class TensorflowImageNet(ServiceAdapterABC):
@@ -64,7 +64,7 @@ class TensorflowImageNet(ServiceAdapterABC):
     def perform(self, job: JobDescriptor):
 
         # Process the items in the job. A single job may include a request to classify
-        # many different images. Each item, in turn, may be an array of images.
+        # many different images. Each item, in turn, may include an array of images.
         results = []
         for job_item in job:
 
@@ -81,30 +81,60 @@ class TensorflowImageNet(ServiceAdapterABC):
             images_to_classify = input_data.get('images')
             if images_to_classify is None:
                 raise RuntimeError("TensorflowImageNet - job item 'input_data' missing 'images'")
+            image_types = input_data.get('image_types')
+            if image_types is None:
+                raise RuntimeError("TensorflowImageNet - job item 'input_data' missing 'image_types'")
 
-            for image in images_to_classify:
-                decoded_image = base64.b64decode(image)
-                raw_predictions = self.session.run(self.softmax_tensor, {'DecodeJpeg/contents:0': decoded_image})
-
-            # raw_predictions is a 1 element array with an X element array embedded
-
-            logger.debug("Raw predictions[0] {0}, length = {1}".format(raw_predictions[0], len(raw_predictions[0])))
-
-            # squeezed_predictions = numpy.squeeze(raw_predictions)
-            squeezed_predictions = raw_predictions[0]
-
-            logger.debug("Squeezed predictions {0}, length = {1}".format(squeezed_predictions, len(squeezed_predictions)))
-
-            top_predictions = squeezed_predictions.argsort()[-5:][::-1]
-            index = 0
-            for predicted_node_id in top_predictions:
-                index += 1
-                human_string = self.node_lookup.id_to_string(predicted_node_id)
-                score = squeezed_predictions[predicted_node_id]
-                logger.debug("        prediction[{0}] = {1}, {2}".format(index, human_string, score))
-
+            # Clear the predictions for the new job item.
             predictions = []
             prediction_confidences = []
+
+            # Classify all the images for this job item.
+            for image, image_type in zip(images_to_classify, image_types):
+                binary_image = base64.b64decode(image)
+                if (image_type == 'jpeg' or image_type == 'jpg'):
+                    decoder_key = 'DecodeJpeg/contents:0'
+                elif  (image_type == 'png'):
+                    decoder_key = 'DecodeJpeg/contents:0'
+                elif (image_type == 'gif'):
+                    decoder_key = 'DecodeGif/contents:0'
+                    raise RuntimeError("TensorflowImageNet - cannot decode gif images")
+                elif (image_type == 'bmp'):
+                    decoder_key = 'DecodeBmp/contents:0'
+                    raise RuntimeError("TensorflowImageNet - cannot decode bmp images")
+                else:
+                    decoder_key = 'DecodeJpeg/contents:0'
+                    logger.warn("Missing image type {0}".format(image_type))
+
+                raw_predictions = self.session.run(self.softmax_tensor, {decoder_key: binary_image})
+
+                logger.debug("classifying '{0}' image".format(image_type))
+
+                # Pull the predicted scorces out of the raw predictions.
+                predicted_scores = raw_predictions[0]
+
+                # Sort and strip off the top 5 predictions.
+                top_predictions = predicted_scores.argsort()[-5:][::-1]
+                image_predictions = []
+                image_scores = []
+                for predicted_node_id in top_predictions:
+
+                    # Get a text description for the top predicted node.
+                    description = self.node_lookup.id_to_string(predicted_node_id)
+
+                    # Cast to a float so JSON can serialize it. Normal Tensorflow float32 are not serializable.
+                    score = float(predicted_scores[predicted_node_id])
+
+                    logger.debug("        prediction = '{0}', score = {1}".format(description, score))
+
+                    # Add only those that exceed our minimum score to the predictions and scores lists.
+                    if (score > MINIMUM_SCORE):
+                        image_predictions.append(description)
+                        image_scores.append(score)
+
+                # Append the filtered predictions and scores for this image.
+                predictions.append(image_predictions)
+                prediction_confidences.append(image_scores)
 
             # Add the job results to our combined results array for all job items.
             single_job_result = {

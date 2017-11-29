@@ -37,24 +37,42 @@ def test_tensorflow_imagenet_adapter(app):
     setup_logging()
     log.debug("Testing Tensorflow ImageNet Adapter")
 
-    # Load the bucket image and encode it base 64.
+    # Load the bucket JPEG image and encode it base 64.
     image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "bucket.jpg")
     image_file = open(image_path, 'rb')
     image_bytes = image_file.read()
     bucket_image_encoded = base64.b64encode(image_bytes)
 
-    # Load the cup image and encode it base 64.
+    # Load the cup JPEG image and encode it base 64.
     image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "cup.jpg")
     image_file = open(image_path, 'rb')
     image_bytes = image_file.read()
     cup_image_encoded = base64.b64encode(image_bytes)
 
+    # Load the bowtie PNG image and encode it base 64.
+    image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "bowtie.png")
+    image_file = open(image_path, 'rb')
+    image_bytes = image_file.read()
+    bowtie_image_encoded = base64.b64encode(image_bytes)
+
+    # # Load the clock BMP image and encode it base 64.
+    # image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "clock.bmp")
+    # image_file = open(image_path, 'rb')
+    # image_bytes = image_file.read()
+    # clock_image_encoded = base64.b64encode(image_bytes)
+    #
+    # # Load the coffeepot GIF image and encode it base 64.
+    # image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "coffeepot.gif")
+    # image_file = open(image_path, 'rb')
+    # image_bytes = image_file.read()
+    # coffeepot_image_encoded = base64.b64encode(image_bytes)
+
     # Setup a test job for classifying a test images. We are going to test two images, a bucket
     # adnd a cup.
     job_parameters = {  'input_type': 'attached',
                         'input_data': {
-                            'images': [bucket_image_encoded, cup_image_encoded],
-                            'image_types': ['jpg','jpg']
+                            'images': [bucket_image_encoded, cup_image_encoded, bowtie_image_encoded],
+                            'image_types': ['jpg','jpeg','png']
                         },
                         'output_type': 'attached',
                     }
@@ -94,11 +112,11 @@ def test_tensorflow_imagenet_adapter(app):
 
     print(results)
 
-    #
-    # # Check our results for format and content.
-    # assert len(results) == 1
-    # assert results[0]['predictions'] == [7]
-    # assert results[0]['confidences'][0] > 0.9900
-    #
-    # if results[0]['predictions'] == [7]:
-    #     log.debug("Tensorflow NNIST Adapter - CORRECT evaluation of image as 7")
+    # Check our results for format and content.
+    assert len(results) == 1
+    assert results[0]['predictions'] == [['bucket, pail'],['cup','coffee mug'],['bow tie, bow-tie, bowtie']]
+    assert results[0]['confidences'][0][0] > 0.9600 and results[0]['confidences'][2][0] < 1.0
+    assert results[0]['confidences'][1][0] > 0.4000 and results[0]['confidences'][1][1] < 0.4200
+    assert results[0]['confidences'][1][1] > 0.4000 and results[0]['confidences'][1][1] < 0.4100
+    assert results[0]['confidences'][2][0] > 0.9990 and results[0]['confidences'][2][0] < 1.0
+
