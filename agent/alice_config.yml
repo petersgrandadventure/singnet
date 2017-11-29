@@ -31,9 +31,16 @@ services:
 - service: deadbeef-aaaa-bbbb-cccc-000000000202
   module: adapters.opencog.relex.RelexAdapter
 
-- service: deadbeef-aaaa-bbbb-cccc-100000000001
-  module: adapters.aigents.AigentsAdapter
+- service: deadbeef-aaaa-bbbb-cccc-100000000002
+  module: adapters.aigents.AigentsTextsClustererAdapter
 
+- service: deadbeef-aaaa-bbbb-cccc-100000000003
+  module: adapters.aigents.AigentsTextExtractorAdapter
 
+- service: deadbeef-aaaa-bbbb-cccc-100000000004
+  module: adapters.aigents.AigentsSocialGrapherAdapter
+
+- service: deadbeef-aaaa-bbbb-cccc-100000000005
+  module: adapters.aigents.AigentsRSSFeederAdapter
 
 

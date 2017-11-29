@@ -31,6 +31,8 @@ services:
         - "9060:9060"
       volumes:
         - ./agent-data:/data
+      links:
+        - testrpc
 
     charlie:
       build: agent
@@ -44,18 +46,8 @@ services:
         - "9065:9065"
       volumes:
         - ./agent-data:/data
-
-    bob:
-      build: agent
-      environment:
-        - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
-        - SN_NETWORK_WEB_PORT=9060
-        - SN_SERVICE_ADAPTER_CONFIG_FILE=bob_config.yml
-        - PYTHONPATH=/code
-      ports:
-        - "9060:9060"
-      volumes:
-        - ./agent-data:/data
+      links:
+        - testrpc
 
     test:
       build: agent
