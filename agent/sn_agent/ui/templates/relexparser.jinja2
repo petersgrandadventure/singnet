@@ -1,0 +1,46 @@
+{% extends 'base.jinja2' %}
+
+{% set page_title = 'Relex Relationship Extraction' %}
+
+{% block content %}
+<div id="app">
+    <button @click="sendPerformRelexParse">Perform Relex Relationship Extraction</button>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+    var mix = {
+      methods: {
+        sendPerformRelexParse: function() {
+            // This tests the relex semantic relationship entity extracter defined in singnet/examples/relex/__init__.py
+            var request = {
+                "jsonrpc": "2.0",
+                "method": "perform",
+                "params": {
+                    "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000202",
+
+                    // Defines the parameters for the list of job items which will be passed to the perform function.
+                    "job_params":
+                        [
+                            {
+                                "input_type": "attached",
+                                "input_data": {"sentence": "The Singularity will come before we know it."},
+                                "output_type": "attached"
+                            },
+                            {
+                                // This is the dictionary for the second job item.
+                                "input_type": "attached",
+                                "input_data": {"sentence": "Will women robots rule the world?"},
+                                "output_type": "attached"
+                            }
+                        ]
+                },
+                "id": 3
+            };
+            this.ws.send(JSON.stringify(request));
+        }
+      }
+    };
+</script>
+{% endblock %}

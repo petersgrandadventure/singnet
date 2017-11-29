@@ -27,13 +27,14 @@ def create_app():
 
     app = web.Application()
     setup_logging()
-    setup_routes(app)
+
 
     setup_ontology(app)
     setup_network(app)
     setup_service_manager(app)
     setup_api(app)
     setup_agent(app)
+    setup_routes(app)
     setup_ui(app)
     setup_jinja(app)
 

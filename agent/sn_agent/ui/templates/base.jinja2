@@ -19,6 +19,7 @@
     <link href="{{ "vendor/highcharts/css/highcharts.css"|static }}" rel="stylesheet">
 
     <link href="{{ "styles.css"|static }}" rel="stylesheet">
+    <script src="{{ 'vendor/vue/vue.js'|static }}"></script>
 
 </head>
 
@@ -149,8 +150,88 @@
 <script src="{{ 'vendor/bootstrap/js/bootstrap.js'|static }}"></script>
 <script src="{{ 'vendor/metismenu/metisMenu.js'|static }}"></script>
 <script src="{{ 'vendor/highcharts/highcharts.js'|static }}"></script>
-<script src="{{ 'vendor/vue/vue.js'|static }}"></script>
 <script src="{{ 'app.js'|static }}"></script>
 
+<!-- mixins (additional methods) for the Vue app are defined on a per-page basis -->
+{% block page_js %}{% endblock %}
+
+<script>
+    {% include "settings.js" %}
+
+    var app = new Vue({
+      el: '#app',
+      mixins: [mix],
+      data: {
+        ws: null,
+        receivedMsg: '',
+        // set some defaults for the options
+        aigentsArea: 'ai',
+        aigentsPattern: '{president presidency presidents presidential}',
+        aigentsText: 'Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/',
+        aigentsUserId: 'aigents',
+        aigentsNetwork: 'steemit',
+        aigentsRequest: ''
+      },
+      methods: {
+        sendPerformMultiAgentAdapter: function() {
+            var request = {
+                "jsonrpc": "2.0",
+                "method": "perform",
+                "params": {
+                    "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
+                    "job_params":
+                        [
+                            {
+                                "input_type": "file",
+                                "input_url": "http://test.com/inputs/test_input.txt",
+                                "output_type": "file_url_put",
+                                "output_url": "test_output.txt"
+                            }
+                        ]
+                },
+                "id": 3
+            };
+            this.ws.send(JSON.stringify(request));
+        }
+      },
+      created: function() {
+        var self = this;
+        this.ws = new WebSocket('ws://'+my_host+':9050/api/ws');
+
+        this.ws.onopen = function () {
+            console.log('Connection Opened');
+        };
+
+        this.ws.onmessage = function (evt) {
+            self.receivedMsg = evt.data;
+            console.log(self.receivedMsg);
+            var json = JSON.parse(self.receivedMsg);
+    	      //TODO: handle multiple responses?
+    	      //TODO: have adapter_type part of protocol?
+    	      if (json.result && json.result.length > 0) {
+    		      result = json.result[0];
+    		        if (result.adapter_type && result.adapter_type == 'aigents' && result && result.response_data) {
+    			         self.aigentsRequest = result.response_data;
+               }
+    	     }
+        };
+
+        this.ws.onclose = function () {
+            console.log("Connection is closed...");
+        };
+
+        this.ws.onerror = function (a, b, c, d) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+            console.log(d);
+        };
+
+        window.onbeforeunload = function (event) {
+            self.ws.close();
+        };
+      }
+    });
+</script>
 </body>
 </html>
