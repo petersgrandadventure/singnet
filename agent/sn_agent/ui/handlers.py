@@ -48,3 +48,19 @@ def relexparser(request):
 @aiohttp_jinja2.template('aigentsservices.jinja2')
 def aigentsservices(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
+
+@aiohttp_jinja2.template('index.jinja2')
+def aigentstextsclusterer(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
+
+@aiohttp_jinja2.template('index.jinja2')
+def aigentstextextractor(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
+
+@aiohttp_jinja2.template('index.jinja2')
+def aigentssocialgrapher(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
+
+@aiohttp_jinja2.template('index.jinja2')
+def aigentsrssfeeder(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
