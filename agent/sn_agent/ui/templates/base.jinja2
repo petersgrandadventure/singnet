@@ -16,7 +16,6 @@
     <link href="{{ "vendor/bootstrap/css/bootstrap.css"|static }}" rel="stylesheet">
     <link href="{{ "vendor/metismenu/metisMenu.css"|static }}" rel="stylesheet">
     <link href="{{ "vendor/font-awesome/css/font-awesome.css"|static }}" rel="stylesheet">
-    <link href="{{ "vendor/highcharts/css/highcharts.css"|static }}" rel="stylesheet">
 
     <link href="{{ "styles.css"|static }}" rel="stylesheet">
     <script src="{{ 'vendor/vue/vue.js'|static }}"></script>
@@ -128,7 +127,23 @@
                     <li>
                         <a href="#"><i class="fa fa-table fa-fw"></i> Network</a>
                     </li>
-
+                    <li>
+                        <a href="#"><i class="fa fa-cog  fa-fw" aria-hidden="true"></i> Services<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="/simpleadapter">Simple Adapter</a>
+                            </li>
+                            <li>
+                                <a href="/tensorflowmnistclassifier">MNIST Classifier</a>
+                            </li>
+                            <li>
+                                <a href="/relexparser">Relex Parser</a>
+                            </li>
+                            <li>
+                                <a href="/aigentsservices">Aigents Services</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -149,7 +164,6 @@
 <script src="{{ 'vendor/jquery/jquery.js'|static }}"></script>
 <script src="{{ 'vendor/bootstrap/js/bootstrap.js'|static }}"></script>
 <script src="{{ 'vendor/metismenu/metisMenu.js'|static }}"></script>
-<script src="{{ 'vendor/highcharts/highcharts.js'|static }}"></script>
 <script src="{{ 'app.js'|static }}"></script>
 
 <!-- mixins (additional methods) for the Vue app are defined on a per-page basis -->
