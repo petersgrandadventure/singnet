@@ -57,6 +57,12 @@ services:
   name: Tensorflow MNIST Classifier
   description: Classifies MNIST input handwritten number images
 
+# singnet/agent/adapters/tensorflow/mnist - an example Tensorflow MNIST classifier
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-111111111102
+  name: Tensorflow ImageNet Classifier
+  description: Classifies images using ImageNet
+
 # singnet/examples/simple_adapter - a simple example agent to show how to integrate AI code
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000101
