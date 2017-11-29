@@ -60,3 +60,7 @@ def aigentssocialgrapher(request):
 @aiohttp_jinja2.template('aigentsrssfeeder.jinja2')
 def aigentsrssfeeder(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
+
+@aiohttp_jinja2.template('tensorflowimagenetclassifier.jinja2')
+def tensorflowimagenetclassifier(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
