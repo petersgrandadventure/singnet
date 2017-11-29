@@ -34,19 +34,19 @@ def setup_logging():
 
         'loggers': {
 
-            '': {
-                'handlers': ['console'],
-                'level': 'DEBUG',
-                'propagate': False,
-            },
-
             'sn_agent': {
                 'handlers': ['console'],
                 'level': 'DEBUG',
                 'propagate': False,
             },
 
-            'demo': {
+            'adapters': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+
+            'examples': {
                 'handlers': ['console'],
                 'level': 'DEBUG',
                 'propagate': False,
