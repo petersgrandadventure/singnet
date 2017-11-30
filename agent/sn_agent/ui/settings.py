@@ -6,5 +6,5 @@ class WebSettings(SettingsBase):
         self.STATIC_ROOT_URL = '/static'
         self.ETH_CLIENT = 'http://geth:8545'
         self._ENV_PREFIX = 'SN_WEB_'
-        self.COOKIE_SECRET = Required(str)
+        self.COOKIE_SECRET = 'S^L/<cJUd$"p$5kH' # Required(str)
         super().__init__(**custom_settings)
