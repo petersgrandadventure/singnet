@@ -14,7 +14,7 @@ const account = "0x951BE8FAE44CD16a1152DA1CcC8c414f7aEC7bd6",
   JOB_DESCRIPTOR = process.env.JOB_DESC || "0x0"
 
 async function create() {
-  marketJob.setProvider(new Web3.providers.HttpProvider("http://52.18.144.116:8545"))
+  marketJob.setProvider(new Web3.providers.HttpProvider("http://localhost:8545"))
 
   let tx 
   try {
