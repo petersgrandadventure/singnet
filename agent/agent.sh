@@ -12,7 +12,8 @@ noop)
     ;;
 
 run)
-    python3 agent.py
+    export PYTHONPATH=/code
+    python3 sn_agent/cli.py run
     ;;
 
 docs)

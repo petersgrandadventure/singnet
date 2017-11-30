@@ -3,52 +3,6 @@ version: "3"
 
 services:
 
-    alice:
-      build: agent
-      environment:
-        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
-        - SN_NETWORK_WEB_PORT=9050
-        - SN_SERVICE_ADAPTER_CONFIG_FILE=alice_config.yml
-        - PYTHONPATH=/code
-        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
-      ports:
-        - "9050:9050"
-      volumes:
-        - ./agent-data:/data
-      links:
-        - testrpc
-#       - bob
-        - relex
-
-    bob:
-      build: agent
-      environment:
-        - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
-        - SN_NETWORK_WEB_PORT=9060
-        - SN_SERVICE_ADAPTER_CONFIG_FILE=bob_config.yml
-        - PYTHONPATH=/code
-      ports:
-        - "9060:9060"
-      volumes:
-        - ./agent-data:/data
-      links:
-        - testrpc
-
-    charlie:
-      build: agent
-      environment:
-        - SN_AGENT_ID=b545478a-971a-cccc-bc56-bbbbbbbbbbbb
-        - SN_NETWORK_WEB_PORT=9065
-        - SN_SERVICE_ADAPTER_CONFIG_FILE=charlie_config.yml
-        - PYTHONPATH=/code
-        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
-      ports:
-        - "9065:9065"
-      volumes:
-        - ./agent-data:/data
-      links:
-        - testrpc
-
     test:
       build: agent
       environment:
@@ -60,22 +14,7 @@ services:
       ports:
         - "9070:9070"
       volumes:
-        - ./agent-data:/data
-      links:
-        - testrpc
-
-    agent-web:
-      build: agent-web
-      ports:
-        - "9080:9080"
-      environment:
-        - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
-        - PYTHONPATH=/code
-
-    dao:
-      build: dao
-      volumes:
-        - ./dao:/dao
+        - ./data/agent/test:/data
       links:
         - testrpc
 
@@ -86,9 +25,3 @@ services:
         - "8546:8546"
         - "30303:30303"
       command: testrpc
-
-    relex:
-      image: opencog/relex
-      ports:
-        - "9000:9000"
-      command: bash -l -c ./link-grammar-server.sh 9000

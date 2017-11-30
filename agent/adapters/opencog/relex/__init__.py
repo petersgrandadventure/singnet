@@ -7,14 +7,10 @@
 #
 
 import logging
-from typing import List
 import socket
-import json
-import select
-import asyncio
+from typing import List
 
 from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.service_adapter import ServiceAdapterABC
 from sn_agent.ontology import Service
 from sn_agent.service_adapter import ServiceAdapterABC, ServiceManager
 
@@ -24,12 +20,26 @@ logger = logging.getLogger(__name__)
 class RelexAdapter(ServiceAdapterABC):
     type_name = "RelexAdapter"
 
-
     def __init__(self, app, service: Service, required_services: List[Service]) -> None:
         super().__init__(app, service, required_services)
 
         # Initialize member variables heres.
         self.response_template = None
+
+    def example_job(self):
+        return [
+            {
+                "input_type": "attached",
+                "input_data": {"sentence": "The Singularity will come before we know it."},
+                "output_type": "attached"
+            },
+            {
+
+                "input_type": "attached",
+                "input_data": {"sentence": "Will women robots rule the world?"},
+                "output_type": "attached"
+            }
+        ]
 
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
@@ -93,7 +103,6 @@ class RelexAdapter(ServiceAdapterABC):
 
         return received_message
 
-
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Relex parse job.")
 
@@ -121,9 +130,3 @@ class RelexAdapter(ServiceAdapterABC):
         # Return the list of results that come from appending the results for the
         # individual job items in the job.
         return results
-
-
-
-
-
-

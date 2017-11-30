@@ -8,6 +8,6 @@ logger = logging.getLogger(__name__)
 
 def setup_network(app):
     settings = NetworkSettings()
+    logger.debug('Loading network class: %s', settings.CLASS)
     klass = import_string(settings.CLASS)
-    logger.debug('Loading network class: %s', klass)
     app['network'] = klass(app)

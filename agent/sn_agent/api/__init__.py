@@ -25,6 +25,7 @@ async def can_perform(service_node_id=None, context=None):
 
 @methods.add
 async def perform(service_node_id=None, job_params=None, context=None):
+    logging.debug('Starting perform for %s with params of %s', service_node_id, job_params)
     service_descriptor = ServiceDescriptor(service_node_id)
 
     job = JobDescriptor(service_descriptor, job_params)
