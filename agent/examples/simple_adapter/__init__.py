@@ -1,16 +1,7 @@
-#
-# simple_adapter/__init__.py - a very simple example service adapter...
-#
-# Copyright (c) 2017 SingularityNET
-#
-# Distributed under the MIT software license, see LICENSE file.
-#
-
 import logging
 from typing import List
 
 from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.service_adapter import ServiceAdapterABC
 from sn_agent.ontology import Service
 from sn_agent.service_adapter import ServiceAdapterABC, ServiceManager
 
@@ -20,19 +11,25 @@ logger = logging.getLogger(__name__)
 class SimpleAdapter(ServiceAdapterABC):
     type_name = "SimpleAdapter"
 
-
     def __init__(self, app, service: Service, required_services: List[Service]) -> None:
         super().__init__(app, service, required_services)
 
         # Initialize member variables here.
         self.response_template = None
 
+    def example_job(self):
+        return [
+            {
+                'input_type': 'attached',
+                'input_data': {'simple_text': 'test'}
+            }
+        ]
+
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
 
         # Do any agent initialization here.
         self.response_template = "This AI takes the input and places it at the end: '{0}'."
-
 
     def get_attached_job_data(self, job_item: dict) -> dict:
 
@@ -48,7 +45,6 @@ class SimpleAdapter(ServiceAdapterABC):
             raise RuntimeError("SimpleAdapter - job item 'input_data' must be defined.")
 
         return input_data
-
 
     def perform(self, job: JobDescriptor):
         logger.debug("Performing SimpleAdapter job.")

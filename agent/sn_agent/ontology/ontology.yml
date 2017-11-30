@@ -77,6 +77,10 @@ services:
 
 # singnet/agent/adapters/aigents - an agent proxy to Aigents services
 - service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000001
+  name: Unknown
+
+- service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000002
   name: Aigents Texts Clusterer
   description: Aigents services - texts clusterer
@@ -95,5 +99,4 @@ services:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000005
   name: Aigents RSS Feeder
   description: Aigents services - RSS feeder
-
 

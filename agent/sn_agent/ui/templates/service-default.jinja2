@@ -1,0 +1,50 @@
+{% extends 'service-base.jinja2' %}
+
+
+{% block content %}
+    <div id="app">
+        <button class="btn btn-success" @click="sendCanPerform">Can Perform</button>
+        <button class="btn btn-success" @click="sendOffer">Offer</button>
+        <button class="btn btn-success" @click="sendPerform">Perform</button>
+    </div>
+
+   <fieldset id="console-log-div"></fieldset>
+
+    <script src="{{ static('console-log-div.js') }}"></script>
+
+{% endblock %}
+
+{% block service_js %}
+
+    <script>
+
+        var service_node_id = '{{ service_adapter.service.node_id }}';
+        var job_params = JSON.parse('{{ service_adapter.example_job_json() }}');
+
+        function successCB(response){
+            var result = JSON.parse(response.bodyText)["result"];
+
+            var string_result = JSON.stringify(result, null, 2);
+
+            console.log(string_result);
+        }
+
+        function errorCB(response){
+            console.log(response);
+        }
+
+        var mix = {
+            methods: {
+                sendCanPerform: function () {
+                    this.sendJSONRPC("can_perform", service_node_id, false, successCB, errorCB);
+                },
+                sendOffer: function () {
+                    this.sendJSONRPC("offer", service_node_id, successCB, errorCB);
+                },
+                sendPerform: function () {
+                    this.sendJSONRPC("perform", service_node_id, job_params, successCB, errorCB);
+                }
+            }
+        };
+    </script>
+{% endblock %}

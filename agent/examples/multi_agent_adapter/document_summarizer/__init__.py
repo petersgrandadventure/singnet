@@ -34,6 +34,16 @@ class DocumentSummarizer(ServiceAdapterABC):
         self.video_summarizer = None
         self.entity_extractor = None
 
+    def example_job(self):
+        return [
+            {
+                "input_type": "file",
+                "input_url": "http://test.com/inputs/test_input.txt",
+                "output_type": "file_url_put",
+                "output_url": "test_output.txt"
+            }
+        ]
+
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
 

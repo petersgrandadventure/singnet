@@ -8,17 +8,30 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="{{ "favicon.ico"|static }}">
+    <link rel="icon" href="{{ static("favicon.ico") }}">
 
     <title>singularityNET</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{ "vendor/bootstrap/css/bootstrap.css"|static }}" rel="stylesheet">
-    <link href="{{ "vendor/metismenu/metisMenu.css"|static }}" rel="stylesheet">
-    <link href="{{ "vendor/font-awesome/css/font-awesome.css"|static }}" rel="stylesheet">
+    <link href="{{ static("vendor/bootstrap/css/bootstrap.css") }}" rel="stylesheet">
+    <link href="{{ static("vendor/metismenu/metisMenu.css") }}" rel="stylesheet">
+    <link href="{{ static("vendor/font-awesome/css/font-awesome.css") }}" rel="stylesheet">
 
-    <link href="{{ "styles.css"|static }}" rel="stylesheet">
-    <script src="{{ 'vendor/vue/vue.js'|static }}"></script>
+    <link href="{{ static("styles.css") }}" rel="stylesheet">
+    <script src="{{ static('vendor/vue/vue.js') }}"></script>
+    <script src="{{ static('vendor/vue-resource/vue-resource.js') }}"></script>
+
+
+    <style>
+        .console-log-div {
+            border: 1px solid #3c3c3c;
+            padding: 5px 10px;
+            border-radius: 1px;
+            width: 95% !important;
+            background-color: #efefef;
+            white-space: normal;
+        }
+    </style>
 
 </head>
 
@@ -105,17 +118,20 @@
                 <ul class="nav" id="side-menu">
 
                     <li>
-                        <a href="/" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
+
                     <li>
-                        <a href="#"><i class="fa fa-plug  fa-fw" aria-hidden="true"></i> Workers<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-plug  fa-fw" aria-hidden="true"></i> Services<span
+                                class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a href="/workers/dfcbee73-df66-4de3-85ed-c66a63a577c2">Image Recognizer</a>
-                            </li>
-                            <li>
-                                <a href="/workers/88f9eba0-5c29-46f9-a20e-cdaa2496ed2e">Language Recognizer</a>
-                            </li>
+
+                            {% for service_adapter in service_adapters %}
+                                <li>
+                                    <a href="{{ url('service', service_id=service_adapter.service.node_id) }}">{{ service_adapter.service.name }}</a>
+                                </li>
+                            {% endfor %}
+
                         </ul>
                     </li>
                     <li>
@@ -127,35 +143,7 @@
                     <li>
                         <a href="#"><i class="fa fa-table fa-fw"></i> Network</a>
                     </li>
-                    <li>
-                        <a href="#"><i class="fa fa-cog  fa-fw" aria-hidden="true"></i> Services<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="/simpleadapter">Simple Adapter</a>
-                            </li>
-                            <li>
-                                <a href="/tensorflowmnistclassifier">MNIST Classifier</a>
-                            </li>
-                            <li>
-                                <a href="/tensorflowimagenetclassifier">ImageNet Classifier</a>
-                            </li>
-                            <li>
-                                <a href="/relexparser">Relex Parser</a>
-                            </li>
-                            <li>
-                                <a href="/aigentsrssfeeder">Aigents RSS Feeder</a>
-                            </li>
-                            <li>
-                                <a href="/aigentssocialgrapher">Aigents Social Grapher</a>
-                            </li>
-                            <li>
-                                <a href="/aigentstextextractor">Aigents Text Extractor</a>
-                            </li>
-                            <li>
-                                <a href="/aigentstextsclusterer">Aigents Text Clusterer</a>
-                            </li>
-                        </ul>
-                    </li>
+
                 </ul>
             </div>
         </div>
@@ -166,6 +154,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">{{ page_title|default("page_title not set") }}</h1>
+                    {% if description %}<p class="small">{{ description }}</p>{% endif %}
+
                     {% block content %}{% endblock %}
                 </div>
             </div>
@@ -173,137 +163,13 @@
     </div>
 </div>
 
-<script src="{{ 'vendor/jquery/jquery.js'|static }}"></script>
-<script src="{{ 'vendor/bootstrap/js/bootstrap.js'|static }}"></script>
-<script src="{{ 'vendor/metismenu/metisMenu.js'|static }}"></script>
-<script src="{{ 'app.js'|static }}"></script>
+<script src="{{ static('vendor/jquery/jquery.js') }}"></script>
+<script src="{{ static('vendor/bootstrap/js/bootstrap.js') }}"></script>
+<script src="{{ static('vendor/metismenu/metisMenu.js') }}"></script>
+<script src="{{ static('app.js') }}"></script>
 
-<!-- mixins (additional methods) for the Vue app are defined on a per-page basis -->
 {% block page_js %}{% endblock %}
 
-<script>
-    {% include "settings.js" %}
 
-    var app = new Vue({
-      el: '#app',
-      mixins: [mix],
-      data: {
-        ws: null,
-        receivedMsg: '',
-        // set some defaults for the options
-        aigentsArea: 'ai',
-        aigentsPattern: '{president presidency presidents presidential}',
-        aigentsText: 'Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/',
-        aigentsUserId: 'aigents',
-        aigentsNetwork: 'steemit',
-        aigentsPeriod: '180',
-        aigentsRequest: ''
-      },
-      methods: {
-        sendPerformMultiAgentAdapter: function() {
-            var request = {
-                "jsonrpc": "2.0",
-                "method": "perform",
-                "params": {
-                    "service_node_id": "deadbeef-aaaa-bbbb-cccc-000000000001",
-                    "job_params":
-                        [
-                            {
-                                "input_type": "file",
-                                "input_url": "http://test.com/inputs/test_input.txt",
-                                "output_type": "file_url_put",
-                                "output_url": "test_output.txt"
-                            }
-                        ]
-                },
-                "id": 3
-            };
-            this.ws.send(JSON.stringify(request));
-        },
-        sendAigentsRequest: function(type) {
-
-            var data = {};
-            var node_id = '';
-
-            switch(type) {
-              case 'rss_feed':
-                data = {'area': this.aigentsArea };
-                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000005';
-                break;
-              case 'text_extract':
-                data = {'pattern': this.aigentsPattern,'text': this.aigentsText};
-                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000003';
-                break;
-              case 'social_graph':
-                data = {'network': this.aigentsNetwork,'userid': this.aigentsUserId, 'period': this.aigentsPeriod};
-                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000004';
-                break;
-              case 'texts_cluster':
-                data = {'texts': this.getTexts()};
-                node_id = 'deadbeef-aaaa-bbbb-cccc-100000000002';
-                break;
-            }
-
-             var request = {
-                 "jsonrpc": "2.0",
-                 "method": "perform",
-                 "params": {
-
-                     "service_node_id": node_id,
-
-                     // Defines the parameters for the list of job items which will be passed to the perform function.
-                     "job_params":
-                         [
-                             {
-                                 "input_type": "attached",
-                                 "input_data": {"type": type, "data": data},
-                                 "output_type": "attached"
-                             }
-                         ]
-                 },
-                 "id": 3
-             };
-             this.ws.send(JSON.stringify(request));
-         }
-      },
-      created: function() {
-        var self = this;
-        this.ws = new WebSocket('ws://'+my_host+':9050/api/ws');
-
-        this.ws.onopen = function () {
-            console.log('Connection Opened');
-        };
-
-        this.ws.onmessage = function (evt) {
-            self.receivedMsg = evt.data;
-            console.log(self.receivedMsg);
-            var json = JSON.parse(self.receivedMsg);
-    	      //TODO: handle multiple responses?
-    	      //TODO: have adapter_type part of protocol?
-    	      if (json.result && json.result.length > 0) {
-    		      result = json.result[0];
-    		        if (result.adapter_type && result.adapter_type == 'aigents' && result && result.response_data) {
-    			         self.aigentsRequest = result.response_data;
-               }
-    	     }
-        };
-
-        this.ws.onclose = function () {
-            console.log("Connection is closed...");
-        };
-
-        this.ws.onerror = function (a, b, c, d) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-            console.log(d);
-        };
-
-        window.onbeforeunload = function (event) {
-            self.ws.close();
-        };
-      }
-    });
-</script>
 </body>
 </html>

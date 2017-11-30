@@ -1,0 +1,19 @@
+
+version: "3"
+
+services:
+
+    dao:
+      build: dao
+      volumes:
+        - ./dao:/dao
+      links:
+        - testrpc
+
+    testrpc:
+      build: testrpc
+      ports:
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+      command: testrpc

@@ -70,7 +70,8 @@ class Agent(object):
         print(client.read('secret/foo'))
         client.delete('secret/foo')
 
-#| {'keys': ['86dfb323fc678f993af9d8876209297e56d6ab880dc056944f635b7949c816ca'], 'keys_base64': ['ht+zI/xnj5k6+diHYgkpflbWq4gNwFaUT2NbeUnIFso='], 'root_token': '71e608b7-ae2f-0c80-bb99-d1a4848cf549'}
+
+# | {'keys': ['86dfb323fc678f993af9d8876209297e56d6ab880dc056944f635b7949c816ca'], 'keys_base64': ['ht+zI/xnj5k6+diHYgkpflbWq4gNwFaUT2NbeUnIFso='], 'root_token': '71e608b7-ae2f-0c80-bb99-d1a4848cf549'}
 
 if __name__ == '__main__':
     fire.Fire(Agent)

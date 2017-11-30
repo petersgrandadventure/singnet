@@ -24,7 +24,7 @@ recommonmark
 aiohttp-jinja2
 bson
 
-tensorflow
+tensorflow<1.4.0
 
 web3
 requests
