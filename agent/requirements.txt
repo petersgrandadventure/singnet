@@ -9,14 +9,13 @@ jsonrpcserver
 rdflib
 pyaml
 
-# For some reason jsonrpcclient is using this even though we are using the aiohttp implementation - perhaps under the covers?
-requests
-
+# Testing
 pytest
 mock
 pytest-cov
 coveralls
 
+# Documentation
 sphinx
 sphinx-autobuild
 sphinx_rtd_theme
@@ -29,3 +28,6 @@ tensorflow
 
 web3
 requests
+
+fire
+hvac

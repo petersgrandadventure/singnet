@@ -3,6 +3,26 @@ version: "3"
 
 services:
 
+    demo:
+      build: agent
+      environment:
+        - VAULT_TOKEN=71e608b7-ae2f-0c80-bb99-d1a4848cf549
+        - SN_AGENT_ID=b545478a-FFFF-FFFF-FFFF-4b9b7176FFFF
+        - SN_NETWORK_WEB_PORT=9250
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=demo_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+        - SN_NETWORK_CLIENT_URL=http://parity:8545
+        - SN_NETWORK_ACCOUNT=0x1934ab10860362eabcfaa111847bc75ecf43fcbd
+      ports:
+        - "9250:9250"
+      volumes:
+        - ./agent-data:/data
+      links:
+        - vault
+#        - parity
+#        - relex
+
     alice:
       build: agent
       environment:
@@ -48,6 +68,50 @@ services:
         - ./agent-data:/data
       links:
         - testrpc
+
+    opendht:
+      build: openDHT
+      ports:
+        - "4222:4222"
+        - "9100:9100"
+
+    geth:
+      build: geth
+      volumes:
+        - ./data/geth-data:/geth-data
+      ports:
+        - "8080:8080"
+        - "8180:8180"
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+        - "30303:30303/udp"
+        - "30304:30304/udp"
+
+    parity:
+      build: parity
+      ports:
+        - "8080:8080"
+        - "8180:8180"
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+        - "30303:30303/udp"
+
+      volumes:
+        - ./data/parity-data:/parity-data
+
+    vault:
+      build: vault
+      hostname: vault
+      ports:
+        - "8200:8200"
+      volumes:
+        - ./data/vault-data/file:/vault/file
+        - ./data/vault-data/config:/vault/config
+        - ./data/vault-data/logs:/vault/logs
+      cap_add:
+        - IPC_LOCK
 
     test:
       build: agent

@@ -22,8 +22,6 @@ services:
         - SN_WEB_COOKIE_SECRET=kubr6DvIuYj4GREdgXq5CCoL5qHQWglj8IECTsI79mY=
         - PYTHONPATH=/code
 
-
-
     parity:
       build: parity
       volumes:

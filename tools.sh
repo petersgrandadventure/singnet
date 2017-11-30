@@ -7,8 +7,13 @@ set -o nounset
 
 case "$1" in
 
+init)
+    #https://www.vaultproject.io/intro/getting-started/deploy.html#initializing-the-vault+
+    ;;
+
 demo)
-    docker-compose up --build --force-recreate
+    docker-compose create --build --force-recreate demo
+    docker-compose run --service-ports demo ./agent.sh $2
     ;;
 
 alice)
@@ -40,8 +45,14 @@ agent-web)
     docker-compose run --service-ports agent-web ./agent-web.sh run
     ;;
 
+opendht)
+    docker-compose create --build --force-recreate opendht
+    docker-compose run --service-ports opendht
+    ;;
+
 geth)
-    docker-compose run --service-ports geth geth --datadir=/geth-data --metrics --shh --rpc --rpcaddr 0.0.0.0 --ws --wsaddr 0.0.0.0 --nat none --verbosity 5 --vmdebug --dev --maxpeers 0 --gasprice 0 --debug --pprof
+    docker-compose create --build --force-recreate geth
+    docker-compose run --service-ports geth $2
     ;;
 
 solc)
@@ -49,7 +60,13 @@ solc)
     ;;
 
 parity)
-    docker-compose run --service-ports parity
+    docker-compose create --build --force-recreate parity
+    docker-compose run --service-ports parity $2
+    ;;
+
+vault)
+    docker-compose create --build --force-recreate vault
+    docker-compose run --service-ports vault $2
     ;;
 
 relex)

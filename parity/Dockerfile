@@ -1,3 +1,9 @@
 FROM parity/parity:stable
 
-ENV DEBIAN_FRONTEND noninteractive
+WORKDIR /parity
+COPY config.toml .
+COPY parity.sh .
+
+ENTRYPOINT ["/parity/parity.sh"]
+CMD ["run"]
+
