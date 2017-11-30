@@ -11,4 +11,5 @@ __pycache__/
 /agent-web-data/
 /agent/app.log
 agent/tests/app.log
+settings.json
 

@@ -1,20 +1,41 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "../tokens/SingularityNetToken.sol";
 import "./MarketJobInterface.sol";
 
 
-contract MarketJob is MarketJobInterface, Ownable {
+contract MarketJob is MarketJobInterface {
+    using SafeMath for uint256;
 
-    address public payer;
-    bytes public lastPacket;
-    bytes public firstPacket;
+    SingularityNetToken public token;
+    address public masterAgent;
+    bytes public jobDescriptor;
     bool public jobCompleted;
+    bool public jobAccepted;
+    bytes public jobResult;
+    address public payer;
 
-    mapping (address => uint) public amounts;
+    event Deposited(address payer, uint256 amount);
+    event Withdrew(address payee, uint256 amount);
+    event JobCompleted();
+    event JobAccepted();
+
+
+    struct Job {
+        uint256 amount;
+        uint256 idService;
+    }
+
+    mapping (address => Job) public amounts;
 
     modifier jobDone {
         require(jobCompleted == true);
+        _;
+    }
+
+    modifier jobApproved {
+        require(jobAccepted == true);
         _;
     }
 
@@ -23,32 +44,60 @@ contract MarketJob is MarketJobInterface, Ownable {
         _;
     }
 
+    modifier onlyPayer {
+        require(msg.sender == payer);
+        _;
+    }
+
+    modifier onlyMasterAgent {
+        require(msg.sender == masterAgent);
+        _;
+    }
+
     function MarketJob(
         address[] _agents,
-        uint[] _amounts,
+        uint256[] _amounts,
+        uint256[] _services,
+        address _token,
         address _payer,
-        bytes _firstPacket,
-        bytes _lastPacket ) payable 
-    {
+        bytes _jobDescriptor
+    ) {
         require(_agents.length == _amounts.length);
+        require(_amounts.length == _services.length);
+        masterAgent = msg.sender;
         payer = _payer;
-        lastPacket = _lastPacket;
-        firstPacket = _firstPacket;
+        jobDescriptor = _jobDescriptor;
+        jobCompleted = false;
+        token = SingularityNetToken(_token);
 
-        for (uint i = 0; i < _amounts.length; i++) {
-            amounts[_agents[i]] = _amounts[i];
+        for (uint256 i = 0; i < _amounts.length; i++) {
+            amounts[_agents[i]] = Job(_amounts[i],_services[i]);
         }
     }
 
-    function withdraw() external jobDone {
-        require(amounts[msg.sender] > 0);
-        uint256 amount = amounts[msg.sender];
-
-        amounts[msg.sender] = 0;
-        msg.sender.transfer(amount);
+    function deposit(uint256 amount) onlyPayer jobPending public {
+        require(token.transferFrom(msg.sender, address(this), amount));
+        Deposited(msg.sender,amount);
     }
 
-    function setJobCompleted() external jobPending {
+    function setJobCompleted(bytes _jobResult) onlyMasterAgent jobPending public {
         jobCompleted = true;
+        jobResult = _jobResult;
+        JobCompleted();
+    }
+
+    function setJobAccepted() onlyPayer jobDone public {
+        jobAccepted = true;
+        JobAccepted();
+    }
+
+    function withdraw() jobDone jobApproved public {
+        address agent = msg.sender;
+        uint256 amount = amounts[agent].amount;
+        require(amount > 0);
+
+        amounts[agent].amount = 0;
+        require(token.transfer(agent,amount));
+        Withdrew(agent,amount);
     }
 }

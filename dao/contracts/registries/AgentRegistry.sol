@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import "./AgentRegistryInterface.sol";
 
@@ -30,7 +30,6 @@ contract AgentRegistry is AgentRegistryInterface {
         uint price, 
         address agent ) external 
     {
-        // require(services[service].unit == 0 && services[service].pricePerUnit == 0);
         services[service].push(Service(unit, price));
         
         uint id = agents.length;

@@ -1,15 +1,12 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import "./AgentInterface.sol";
-import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract Agent is AgentInterface, Ownable {
 
     bytes[] public packets;
     MarketJobInterface public job;
-
-    function() payable { }
 
     function sendPacket(address target, bytes packet) external onlyOwner {
         Agent(target).appendPacket(packet);

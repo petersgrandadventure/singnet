@@ -14,6 +14,10 @@
 <br>
 <button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
 <br>
+<button onclick="sendPerformSimpleAdapter()">Perform SimpleAdapter</button>
+<br>
+<button onclick="sendPerformRelexParse()">Perform Relex Relationship Extraction</button>
+<br>
 <button onclick="sendPerformMNIST()">Perform MNIST Classification</button>
 <br>
 <button onclick="sendPerformImageNet()">Perform ImageNet Classification</button>
@@ -54,6 +58,18 @@ value="[&quot;http://aigents.com/test/cat/fly.html&quot;,&quot;http://aigents.co
 <br>
 
 <textarea rows="10" cols="80" id="aigents_response"  style="font-size:10"></textarea>
+
+
+
+Aigents:<br>
+<button onclick="sendAigentsRSSRequest(document.getElementById('aigents_areas').value)">Send request to Aigents rss</button>
+&nbsp;
+<select id="aigents_areas" value="ai">
+  <option value="ai">ai</option>
+  <option value="business">business</option>
+</select>
+<br>
+<div id="aigents_request"></div>
 
 
 
