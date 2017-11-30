@@ -16,6 +16,13 @@ from sn_agent.network.settings import NetworkSettings
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
 
+class ResolverABC(ABC):
+    @abstractmethod
+    def resolve(self, agent_id):
+        """Resolve the url for an agent given only its ID"""
+        pass
+
+
 class NetworkABC(ABC):
     def __init__(self, app):
         self.app = app

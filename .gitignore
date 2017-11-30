@@ -1,14 +1,8 @@
 .DS_Store
 *.egg-info/
 .tox/
-agent/tests/output/*
 .cache
 .idea
-__pycache__/
-/geth-data/
-/parity-data/
-/agent-data/
-/agent-web-data/
-/agent/app.log
-agent/tests/app.log
+__pycache__
+/data/
 

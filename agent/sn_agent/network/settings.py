@@ -10,6 +10,8 @@ THIS_DIR = Path(__file__).parent
 
 class NetworkSettings(SettingsBase):
     def __init__(self, **custom_settings):
+
+
         self._ENV_PREFIX = 'SN_NETWORK_'
 
         self.GATEWAY = '0.0.0.0'
@@ -21,8 +23,10 @@ class NetworkSettings(SettingsBase):
         self.WEB_HOST = "0.0.0.0"
         self.WEB_PORT = 8000
 
+        self.SSL_CERTIFICATE_FILE = None
+        self.SSL_KEYFILE = None
+
         self.AGENT_URL_LOOKUP_FILE = os.path.join(THIS_DIR, 'data', 'agent_to_url_lookup.json')
-        self.COINBASE = '0x633a490e1d3022a90e49cfb79ff8789d264ae753'
 
         super().__init__(**custom_settings)
 

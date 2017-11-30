@@ -11,8 +11,14 @@ case "$1" in
 noop)
     ;;
 
+vault)
+    export PYTHONPATH=/code
+    python3 sn_agent/cli.py vault
+    ;;
+
 run)
-    python3 agent.py
+    export PYTHONPATH=/code
+    python3 sn_agent/cli.py run
     ;;
 
 docs)
