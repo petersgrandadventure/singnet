@@ -1,0 +1,29 @@
+{% extends 'base.jinja2' %}
+
+{% set page_title = 'Social Grapher' %}
+
+{% block content %}
+<div id="app">
+    Aigents:<br>
+    <button @click="sendAigentsRequest('social_graph')">Send request to Aigents social grapher</button>
+    &nbsp;
+    <select v-model="aigentsNetwork">
+      <option value="steemit">steemit</option>
+      <option value="golos">golos</option>
+    </select>
+    &nbsp;
+    <span style="font-size:12">period days:</span><input v-model="aigentsPeriod" type="search" placeholder="Number of days in period"></input>
+    <br>
+    <span style="font-size:12">userid:</span><input v-model="aigentsUserId" type="text"></input>
+    <br>
+    <textarea rows="10" cols="80" v-model="aigentsRequest"  style="font-size:10"></textarea>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+    var mix = {
+      methods: {}
+    }
+</script>
+{% endblock %}
