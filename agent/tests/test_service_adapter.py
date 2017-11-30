@@ -19,6 +19,8 @@ from sn_agent.ontology.service_descriptor import ServiceDescriptor
 from sn_agent.service_adapter import setup_service_manager, ServiceAdapterABC
 from sn_agent.test.mocks import MockApp
 
+import tests
+
 log = logging.getLogger(__name__)
 
 TEST_DIRECTORY = Path(__file__).parent
@@ -111,19 +113,19 @@ def test_perform_services(app):
     assert (not app['service_manager'] is None)
     service_manager = app['service_manager']
 
-    perform_one_service(app, service_manager, onto.DOCUMENT_SUMMARIZER_ID)
-    perform_one_service(app, service_manager, onto.ENTITY_EXTRACTER_ID)
-    perform_one_service(app, service_manager, onto.FACE_RECOGNIZER_ID)
-    perform_one_service(app, service_manager, onto.TEXT_SUMMARIZER_ID)
-    perform_one_service(app, service_manager, onto.VIDEO_SUMMARIZER_ID)
-    perform_one_service(app, service_manager, onto.WORD_SENSE_DISAMBIGUATER_ID)
+    perform_one_service(app, service_manager, tests.DOCUMENT_SUMMARIZER_ID)
+    perform_one_service(app, service_manager, tests.ENTITY_EXTRACTER_ID)
+    perform_one_service(app, service_manager, tests.FACE_RECOGNIZER_ID)
+    perform_one_service(app, service_manager, tests.TEXT_SUMMARIZER_ID)
+    perform_one_service(app, service_manager, tests.VIDEO_SUMMARIZER_ID)
+    perform_one_service(app, service_manager, tests.WORD_SENSE_DISAMBIGUATER_ID)
 
-    start_stop_start_one_service(app, service_manager, onto.DOCUMENT_SUMMARIZER_ID)
-    start_stop_start_one_service(app, service_manager, onto.ENTITY_EXTRACTER_ID)
-    start_stop_start_one_service(app, service_manager, onto.FACE_RECOGNIZER_ID)
-    start_stop_start_one_service(app, service_manager, onto.TEXT_SUMMARIZER_ID)
-    start_stop_start_one_service(app, service_manager, onto.VIDEO_SUMMARIZER_ID)
-    start_stop_start_one_service(app, service_manager, onto.WORD_SENSE_DISAMBIGUATER_ID)
+    start_stop_start_one_service(app, service_manager, tests.DOCUMENT_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, tests.ENTITY_EXTRACTER_ID)
+    start_stop_start_one_service(app, service_manager, tests.FACE_RECOGNIZER_ID)
+    start_stop_start_one_service(app, service_manager, tests.TEXT_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, tests.VIDEO_SUMMARIZER_ID)
+    start_stop_start_one_service(app, service_manager, tests.WORD_SENSE_DISAMBIGUATER_ID)
 
 # Test performance of services - all of them
 def test_bogus_yaml_config(app):

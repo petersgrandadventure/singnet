@@ -7,18 +7,19 @@
 # Distributed under the MIT software license, see LICENSE file.
 #
 
-import urllib.parse
-import requests
 import logging
+import urllib.parse
 from typing import List
+
+import requests
 
 from adapters.aigents.settings import AigentsSettings
 from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.service_adapter import ServiceAdapterABC
 from sn_agent.ontology import Service
 from sn_agent.service_adapter import ServiceAdapterABC, ServiceManager
 
 logger = logging.getLogger(__name__)
+
 
 class AigentsAdapter(ServiceAdapterABC):
     type_name = "AigentsAdapter"
@@ -49,8 +50,8 @@ class AigentsAdapter(ServiceAdapterABC):
 
         return input_data
 
-    def request(self,session,request):
-        url = self.settings.AIGENTS_PATH+"?"+request
+    def request(self, session, request):
+        url = self.settings.AIGENTS_PATH + "?" + request
         logger.info(url)
         r = session.post(url)
         if r is None or r.status_code != 200:
@@ -58,24 +59,25 @@ class AigentsAdapter(ServiceAdapterABC):
         logger.info(r.text)
         return r
 
-    def validate(self,data,key):
+    def validate(self, data, key):
         if not key in data or len(data[key]) < 1:
-            raise RuntimeError("Aigents - no input data "+key)
+            raise RuntimeError("Aigents - no input data " + key)
         return data[key]
 
     def create_session(self):
         session = requests.session()
         # TODO login in one query, if/when possible
-        url = self.settings.AIGENTS_PATH+"?my email "+self.settings.AIGENTS_LOGIN_EMAIL+"."
+        url = self.settings.AIGENTS_PATH + "?my email " + self.settings.AIGENTS_LOGIN_EMAIL + "."
         logger.info(url)
         r = session.post(url);
         logger.info(r.text)
-        url = self.settings.AIGENTS_PATH+"?"+urllib.parse.quote_plus("my "+self.settings.AIGENTS_SECRET_QUESTION+" "+self.settings.AIGENTS_SECRET_ANSWER+".")
+        url = self.settings.AIGENTS_PATH + "?" + urllib.parse.quote_plus(
+            "my " + self.settings.AIGENTS_SECRET_QUESTION + " " + self.settings.AIGENTS_SECRET_ANSWER + ".")
         logger.info(url)
         r = session.post(url)
         logger.info(r.text)
         # set language
-        url = self.settings.AIGENTS_PATH+"?my language english."
+        url = self.settings.AIGENTS_PATH + "?my language english."
         logger.info(url)
         r = session.post(url);
         logger.info(r.text)
@@ -101,8 +103,9 @@ class AigentsAdapter(ServiceAdapterABC):
 
             # Add the job results to our combined results array for all job items.
             single_job_result = {
-		'adapter_type' : 'aigents',
-		'service_type' : job_data["type"], # TODO cleanup, based on service request and response ontology discussion?
+                'adapter_type': 'aigents',
+                'service_type': job_data["type"],
+                # TODO cleanup, based on service request and response ontology discussion?
                 'response_data': r.text
             }
             results.append(single_job_result)
@@ -112,62 +115,143 @@ class AigentsAdapter(ServiceAdapterABC):
         return results
 
     # Placeholder or virtual method for child override
-    def aigents_perform(self,data):
+    def aigents_perform(self, data):
         return None
+
 
 class AigentsTextsClustererAdapter(AigentsAdapter):
     type_name = "AigentsTextsClustererAdapter"
 
-    def aigents_perform(self,data):
-        texts = self.validate(data,"texts")
+    def example_job(self):
+        return [
+            {
+                "input_type": "attached",
+                "input_data": {"type": "texts_cluster", "data": {
+                    "texts": [
+                        "http://aigents.com/test/cat/fly.html",
+                        "http://aigents.com/test/cat/eagle.html",
+                        "http://aigents.com/test/cat/snake.html",
+                        "tuna is a fish",
+                        "cat is a mammal",
+                        "http://aigents.com/test/cat/french.html",
+                        "http://aigents.com/test/cat/chinese.html",
+                        "germans live in germany",
+                        "russians live in russia",
+                        "spaniards live in spain"
+                    ]
+                }},
+                "output_type": "attached"
+            }
+        ]
+
+    def aigents_perform(self, data):
+        texts = self.validate(data, "texts")
         s = self.create_session()
-        r = self.request(s,"You cluster format json texts '"+texts+"'!")
+        r = self.request(s, "You cluster format json texts %s!" % texts)
         return r
+
 
 class AigentsTextExtractorAdapter(AigentsAdapter):
     type_name = "AigentsTextExtractorAdapter"
 
-    def aigents_perform(self,data):
-        pattern = self.validate(data,"pattern")
-        text = self.validate(data,"text")
+    def example_job(self):
+        return [
+            {
+                "input_type": "attached",
+                "input_data": {"type": "text_extract", "data": {
+                    "pattern": "{president presidency presidents presidential}",
+                    "text": 'Yo! Washington was first president of the United States. Also, can place url here: https://www.nytimes.com/'
+                }},
+                "output_type": "attached"
+            }
+        ]
+
+    def aigents_perform(self, data):
+        pattern = self.validate(data, "pattern")
+        text = self.validate(data, "text")
         s = self.create_session()
         # TODO cleanup and streamline, make json in http header 'Accept': 'application/json'
         # specify format
-        self.request(s,"peer has format.")
-        self.request(s,"my format json.")
+        self.request(s, "peer has format.")
+        self.request(s, "my format json.")
         # set user context
-        self.request(s,"my knows '"+pattern+"', trusts '"+pattern+"'.")
-        self.request(s,"my sites '"+pattern+"', trusts '"+text+"'.")
-        self.request(s,"is '"+pattern+"' new false.")
-        self.request(s,"no there is '"+pattern+"'.")
+        self.request(s, "my knows '" + pattern + "', trusts '" + pattern + "'.")
+        self.request(s, "my sites '" + pattern + "', trusts '" + text + "'.")
+        self.request(s, "is '" + pattern + "' new false.")
+        self.request(s, "no there is '" + pattern + "'.")
         # do extraction and request data
-        self.request(s,"You reading '"+pattern+"' in '"+text+"'!")
-        r = self.request(s,"what is '"+pattern+"' text, about, context?")
+        self.request(s, "You reading '" + pattern + "' in '" + text + "'!")
+        r = self.request(s, "what is '" + pattern + "' text, about, context?")
         # clear user context
-        self.request(s,"my knows no '"+pattern+"', trusts no '"+pattern+"'.")
-        self.request(s,"my sites no '"+pattern+"', trusts no '"+text+"'.")
-        self.request(s,"my format not json.")
+        self.request(s, "my knows no '" + pattern + "', trusts no '" + pattern + "'.")
+        self.request(s, "my sites no '" + pattern + "', trusts no '" + text + "'.")
+        self.request(s, "my format not json.")
         return r
+
 
 class AigentsRSSFeederAdapter(AigentsAdapter):
     type_name = "AigentsRSSFeederAdapter"
 
-    def aigents_perform(self,data):
-        area = self.validate(data,"area")
+    def example_job(self):
+        return [
+            {
+                "input_type": "attached",
+                "input_data": {"type": "rss_feed", "data": {
+                    "area": 'ai'
+                }},
+                "output_type": "attached"
+            },
+            {
+                "input_type": "attached",
+                "input_data": {"type": "rss_feed", "data": {
+                    "area": 'business'
+                }},
+                "output_type": "attached"
+            }
+        ]
+
+    def aigents_perform(self, data):
+        area = self.validate(data, "area")
         # sessionless request
-        r = requests.post(self.settings.AIGENTS_PATH+"?rss%20"+area)
+        r = requests.post(self.settings.AIGENTS_PATH + "?rss%20" + area)
         logger.info(r)
         return r
+
 
 class AigentsSocialGrapherAdapter(AigentsAdapter):
     type_name = "AigentsSocialGrapherAdapter"
 
-    def aigents_perform(self,data):
-        network = self.validate(data,"network")
-        userid = self.validate(data,"userid")
-        days = self.validate(data,"period")
-        s = self.create_session()
-        url = self.settings.AIGENTS_PATH+"?"+network+' id '+userid+' report, period '+days+', format json, authorities, fans, similar to me'
-        r = self.request(s,url)
-        return r
+    def example_job(self):
+        return [
+            {
+                "input_type": "attached",
+                "input_data": {
+                    "type": "social_graph",
+                    "data": {
+                        'network': 'steemit',
+                        'userid': 'aigents',
+                        'period': "180"}
+                },
+                "output_type": "attached"
+            },
+            {
+                "input_type": "attached",
+                "input_data": {
+                    "type": "social_graph",
+                    "data": {
+                        'network': 'golos',
+                        'userid': 'aigents',
+                        'period': "180"}
+                },
+                "output_type": "attached"
+            }
+        ]
 
+    def aigents_perform(self, data):
+        network = self.validate(data, "network")
+        userid = self.validate(data, "userid")
+        days = self.validate(data, "period")
+        s = self.create_session()
+        url = self.settings.AIGENTS_PATH + "?" + network + ' id ' + userid + ' report, period ' + days + ', format json, authorities, fans, similar to me'
+        r = self.request(s, url)
+        return r

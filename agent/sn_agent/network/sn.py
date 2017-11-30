@@ -7,11 +7,33 @@ from web3 import Web3, HTTPProvider
 
 from sn_agent.agent.base import AgentABC
 from sn_agent.network import NetworkSettings
-from sn_agent.network.base import NetworkABC
+from sn_agent.network.base import NetworkABC, ResolverABC
 from sn_agent.network.enum import NetworkStatus
 from sn_agent.ontology.service_descriptor import ServiceDescriptor
 
 logger = logging.getLogger(__name__)
+
+
+class UnresolvedAgentException(Exception):
+    pass
+
+
+class FileResolver(ResolverABC):
+    def __init__(self, lookup_file):
+        self.lookup_file = lookup_file
+
+    def resolve(self, agent_id):
+        filename = self.lookup_file
+
+        with open(filename, encoding='utf-8') as data_file:
+            agent_urls = json.loads(data_file.read())
+
+        return agent_urls.get(agent_id)
+
+
+class DHTResolver(ResolverABC):
+    def resolve(self, agent_id):
+        return None
 
 
 class SNNetwork(NetworkABC):
@@ -23,17 +45,24 @@ class SNNetwork(NetworkABC):
         self.payload = None
         self.agent = None
 
+        self.resolvers = []
+        self.resolvers.append(FileResolver(self.settings.AGENT_URL_LOOKUP_FILE))
+        self.resolvers.append(DHTResolver())
 
     async def startup(self):
-        logger.debug('Registering agent on DHT')
+        logger.debug('Starting up the network')
 
         self.agent = self.app['agent']
 
         try:
+            account_address = self.client_connection.eth.coinbase
+
+            logger.debug('Using account: %s', account_address)
+
             self.payload = {
-                'from': self.client_connection.eth.coinbase,
+                'from': account_address,
                 'gas': 1500000,
-                'gasPrice': 30000000000000
+                'gasPrice': 30000000
             }
             current_block = self.client_connection.eth.blockNumber
             logger.debug('Current client blocknumber: %s', current_block)
@@ -46,8 +75,8 @@ class SNNetwork(NetworkABC):
     # Implemented methods
     def join_network(self):
         logger.debug('Joining Network')
-        contract = self.get_agent_factory_contract()
-        contract.transact(self.payload).create()
+        # contract = self.get_agent_factory_contract()
+        # contract.transact(self.payload).create()
         logger.debug('Joined network')
 
     def advertise_service(self, service: ServiceDescriptor):
@@ -66,19 +95,12 @@ class SNNetwork(NetworkABC):
 
     def get_url_for_agent(self, agent_id):
 
-        filename = self.settings.AGENT_URL_LOOKUP_FILE
+        for resolver in self.resolvers:
+            agent_url = resolver.resolve(agent_id)
+            if agent_url:
+                return agent_url
 
-        with open(filename, encoding='utf-8') as data_file:
-            agent_urls = json.loads(data_file.read())
-
-        url = agent_urls.get(agent_id)
-
-        if url is None:
-            # Fallback to blockchain if none specified in the lookup file
-            blockchain_result = None
-            # TODO implement grabbing from blockchain
-
-        return url
+        raise UnresolvedAgentException(agent_id)
 
     # TODO: Unimplemented methods
 

@@ -10,6 +10,7 @@ from sn_agent.log import setup_logging
 from sn_agent.network import setup_network
 from sn_agent.ontology import setup_ontology
 from sn_agent.routes import setup_routes
+
 from sn_agent.service_adapter import setup_service_manager
 from sn_agent.ui import setup_ui
 
@@ -26,13 +27,13 @@ def create_app():
 
     app = web.Application()
     setup_logging()
-    setup_routes(app)
 
     setup_ontology(app)
     setup_network(app)
     setup_service_manager(app)
     setup_api(app)
     setup_agent(app)
+    setup_routes(app)
     setup_ui(app)
 
     app['name'] = 'SingularityNET Agent'

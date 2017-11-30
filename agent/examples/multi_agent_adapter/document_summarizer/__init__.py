@@ -19,6 +19,13 @@ from sn_agent.service_adapter import ServiceAdapterABC, ServiceManager
 
 logger = logging.getLogger(__name__)
 
+DOCUMENT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000001'
+WORD_SENSE_DISAMBIGUATER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000002'
+FACE_RECOGNIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000003'
+TEXT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000004'
+VIDEO_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000005'
+ENTITY_EXTRACTER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000006'
+
 
 class DocumentSummarizer(ServiceAdapterABC):
     type_name = "DocumentSummarizer"
@@ -34,14 +41,24 @@ class DocumentSummarizer(ServiceAdapterABC):
         self.video_summarizer = None
         self.entity_extractor = None
 
+    def example_job(self):
+        return [
+            {
+                "input_type": "file",
+                "input_url": "http://test.com/inputs/test_input.txt",
+                "output_type": "file_url_put",
+                "output_url": "test_output.txt"
+            }
+        ]
+
     def post_load_initialize(self, service_manager: ServiceManager):
         super().post_load_initialize(service_manager)
 
-        self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(ontology.WORD_SENSE_DISAMBIGUATER_ID)
-        self.face_recognizer = service_manager.get_service_adapter_for_id(ontology.FACE_RECOGNIZER_ID)
-        self.text_summarizer = service_manager.get_service_adapter_for_id(ontology.TEXT_SUMMARIZER_ID)
-        self.video_summarizer = service_manager.get_service_adapter_for_id(ontology.VIDEO_SUMMARIZER_ID)
-        self.entity_extractor = service_manager.get_service_adapter_for_id(ontology.ENTITY_EXTRACTER_ID)
+        self.word_sense_disambiguater = service_manager.get_service_adapter_for_id(WORD_SENSE_DISAMBIGUATER_ID)
+        self.face_recognizer = service_manager.get_service_adapter_for_id(FACE_RECOGNIZER_ID)
+        self.text_summarizer = service_manager.get_service_adapter_for_id(TEXT_SUMMARIZER_ID)
+        self.video_summarizer = service_manager.get_service_adapter_for_id(VIDEO_SUMMARIZER_ID)
+        self.entity_extractor = service_manager.get_service_adapter_for_id(ENTITY_EXTRACTER_ID)
 
     def transform_output_url(self, tag: str, item_count: int, output_url: str):
         last_part = output_url.split("/")[-1]

@@ -4,14 +4,8 @@ import yaml
 
 from sn_agent.ontology.settings import OntologySettings
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
-DOCUMENT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000001'
-WORD_SENSE_DISAMBIGUATER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000002'
-FACE_RECOGNIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000003'
-TEXT_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000004'
-VIDEO_SUMMARIZER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000005'
-ENTITY_EXTRACTER_ID = 'deadbeef-aaaa-bbbb-cccc-000000000006'
 
 class Service(dict):
     def __init__(self, node_id, name, description):
@@ -19,14 +13,6 @@ class Service(dict):
         self.node_id = node_id
         self.name = name
         self.description = description
-
-    @property
-    def node_id(self):
-        return self.__node_id
-
-    @node_id.setter
-    def node_id(self, node_id):
-        self.__node_id = node_id
 
 
 class Ontology(object):
@@ -76,13 +62,12 @@ def setup_ontology(app):
 
     config_file = settings.CONFIG_FILE
 
+    logger.debug("Loading config file: %s", config_file)
     with open(config_file, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
 
-    # jobs = []
-
     for section, section_items in cfg.items():
-        log.debug('parsing section: {0}'.format(section))
+        logger.debug('parsing section: {0}'.format(section))
         if section == 'services':
             for service_data in section_items:
                 ontology_node_id = service_data.get('ontology_node_id')
@@ -98,7 +83,7 @@ def setup_ontology(app):
                     description = name
 
                 # Add the rest of the items to the service.
-                log.debug("adding Service to ontology %s - %s", ontology_node_id, name)
+                logger.debug("adding Service to ontology %s - %s", ontology_node_id, name)
                 # print("adding Service to ontology {0} - {1}".format(ontology_node_id, name))
                 service = Service(ontology_node_id, name, description)
                 service.update(service_data)

@@ -1,3 +1,4 @@
+import json
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -34,6 +35,7 @@ class ServiceManager:
             self.services_by_id[service.node_id] = service_adapter
 
     def post_load_initialize(self):
+        logger.debug("Starting post load initialization phase")
         for service_adapter in self.service_adapters:
             logger.debug("Calling post load initialization for %s", service_adapter)
             service_adapter.post_load_initialize(self)
@@ -68,6 +70,12 @@ class ServiceAdapterABC(ABC):
         self.required_service_adapters = []
         self.requirements_met = False
         self.available = False
+
+    def __str__(self):
+        return self.service.name
+
+    def example_job_json(self):
+        return json.dumps(self.example_job())
 
     def post_load_initialize(self, service_manager: ServiceManager):
         """
