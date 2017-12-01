@@ -8,18 +8,6 @@ services:
 - service: deadbeef-aaaa-bbbb-cccc-111111111101
   module: adapters.tensorflow.mnist.TensorflowMNIST
 
-- service: deadbeef-aaaa-bbbb-cccc-000000000202
-  module: adapters.opencog.relex.RelexAdapter
-
-- service: deadbeef-aaaa-bbbb-cccc-100000000001
-  module: adapters.aigents.AigentsAdapter
-
-- service: deadbeef-aaaa-bbbb-cccc-000000000101
-  module: examples.simple_adapter.SimpleAdapter
-
-- service: deadbeef-aaaa-bbbb-cccc-111111111101
-  module: adapters.tensorflow.mnist.TensorflowMNIST
-
 - service: deadbeef-aaaa-bbbb-cccc-111111111102
   module: adapters.tensorflow.imagenet.TensorflowImageNet
 
