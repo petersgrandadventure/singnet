@@ -8,6 +8,8 @@
 
 import logging
 import socket
+import json
+import time
 from typing import List
 
 from sn_agent.job.job_descriptor import JobDescriptor
@@ -50,12 +52,12 @@ class RelexAdapter(ServiceAdapterABC):
         input_type = job_item['input_type']
         if input_type != 'attached':
             logger.error("BAD input dict %s", str(job_item))
-            raise RuntimeError("AgentSimple - job item 'input_type' must be 'attached'.")
+            raise RuntimeError("RelexAdapter - job item 'input_type' must be 'attached'.")
 
         # Pull the input data from the job item
         input_data = job_item['input_data']
         if input_data is None:
-            raise RuntimeError("AgentSimple - job item 'input_data' must be defined.")
+            raise RuntimeError("RelexAdapter - job item 'input_data' must be defined.")
 
         return input_data
 
@@ -65,6 +67,7 @@ class RelexAdapter(ServiceAdapterABC):
         relex_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         time_out_seconds = 10.0
         relex_socket.settimeout(time_out_seconds)
+        start_time = time.time();
         received_message = "NOT RECEIVED"
 
         try:
@@ -80,28 +83,43 @@ class RelexAdapter(ServiceAdapterABC):
             relex_socket.sendall(relex_sentence.encode('utf-8'))
 
             # Read the first parts
-            received_message = relex_socket.recv(1024)
+            received_chars = relex_socket.recv(1024)
 
             # Strip off the length from the message
-            if b'\n' in received_message:
-                length_string, received_message = received_message.split(b'\n', 1)
-                bytes = int(length_string) - len(length_string)
+            if b'\n' in received_chars:
+                length_string, received_message = received_chars.split(b'\n', 1)
+                bytes = int(length_string)
+                bytes_left = bytes - len(received_message)
 
                 # Read the rest if we don't already have the full JSON reply.
-                if bytes > 1024:
-                    received_message = received_message + relex_socket.recv(bytes)
+                while (len(received_chars) > 0 and
+                        bytes_left > 0 and
+                        time.time() - start_time < time_out_seconds):
+                    received_chars = relex_socket.recv(bytes_left)
+                    received_message = received_message + received_chars
+                    bytes_left = bytes_left - len(received_chars)
+
+            if (bytes_left > 0):
+                raise RuntimeError("RelexAdapter - relex server timed out.")
+
+            logger.debug("    relex server received message bytes: {0}".format(len(received_message)))
 
             # Decode this since the rest of the system expects unicode strings and not the
             # bytes returned from the socket.
             received_message = received_message.decode('utf-8')
 
+            # Now parse the text since the JSON-RPC code expects a Python dict.
+            parsed_message = json.loads(received_message)
+
         except socket.timeout:
             print("Socket timed out")
+            raise RuntimeError("RelexAdapter - relex server timed out.")
 
         finally:
             relex_socket.close()
 
-        return received_message
+        return parsed_message
+
 
     def perform(self, job: JobDescriptor):
         logger.debug("Performing Relex parse job.")
@@ -113,7 +131,7 @@ class RelexAdapter(ServiceAdapterABC):
             # Get the input data for this job.
             job_data = self.get_attached_job_data(job_item)
 
-            # Check to make sure you have the data required.
+            # Check to make sure we have the data required.
             sentence = job_data.get('sentence')
             if sentence is None:
                 raise RuntimeError("RelexAdapter - job item 'input_data' missing 'sentence'")
@@ -121,12 +139,11 @@ class RelexAdapter(ServiceAdapterABC):
             # Send the sentence to the relex server for parsing.
             parsed_sentence = self.relex_parse_sentence(sentence)
 
-            # Add the job results to our combined results array for all job items.
+            # Append this job item results to our combined results array.
             single_job_result = {
                 'relex_parse': parsed_sentence,
             }
             results.append(single_job_result)
 
-        # Return the list of results that come from appending the results for the
-        # individual job items in the job.
+        # Return the concatenated list of results of each of the individual job items.
         return results
