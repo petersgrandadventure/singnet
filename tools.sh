@@ -66,8 +66,8 @@ solc)
     ;;
 
 parity)
-    docker-compose create --build --force-recreate parity
-    docker-compose run --service-ports parity $2
+    docker-compose -f docker-compose.dev.yml create --build --force-recreate parity
+    docker-compose -f docker-compose.dev.yml run --service-ports parity $2
     ;;
 
 vault)
@@ -85,9 +85,9 @@ testrpc)
     ;;
 
 prepare-dao)
-    docker-compose create --build --force-recreate testrpc
-    docker-compose create --build --force-recreate dao
-    docker-compose run --service-ports dao ./dao.sh run
+    docker-compose -f docker-compose.dao.yml create --build --force-recreate testrpc
+    docker-compose -f docker-compose.dao.yml create --build --force-recreate dao
+    docker-compose -f docker-compose.dao.yml run --service-ports dao ./dao.sh run
     ;;
 
 ipfs)

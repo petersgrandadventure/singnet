@@ -12,6 +12,7 @@ noop)
 run)
     cd /dao
     npm install zeppelin-solidity
+    npm install truffle-hdwallet-provider
     truffle compile-all
     truffle migrate --reset
 #    truffle test
