@@ -12,6 +12,8 @@ import urllib.parse
 from typing import List
 
 import requests
+import json
+import feedparser
 
 from adapters.aigents.settings import AigentsSettings
 from sn_agent.job.job_descriptor import JobDescriptor
@@ -97,7 +99,7 @@ class AigentsAdapter(ServiceAdapterABC):
             if not 'data' in job_data:
                 raise RuntimeError("Aigents - no input data")
 
-            r = self.aigents_perform(job_data['data'])
+            r, parsed_text = self.aigents_perform(job_data['data'])
             if r is None or r.status_code != 200:
                 raise RuntimeError("Aigents - no response")
 
@@ -106,7 +108,7 @@ class AigentsAdapter(ServiceAdapterABC):
                 'adapter_type': 'aigents',
                 'service_type': job_data["type"],
                 # TODO cleanup, based on service request and response ontology discussion?
-                'response_data': r.text
+                'response_data': parsed_text
             }
             results.append(single_job_result)
 
@@ -116,7 +118,7 @@ class AigentsAdapter(ServiceAdapterABC):
 
     # Placeholder or virtual method for child override
     def aigents_perform(self, data):
-        return None
+        return None, None
 
 
 class AigentsTextsClustererAdapter(AigentsAdapter):
@@ -148,7 +150,8 @@ class AigentsTextsClustererAdapter(AigentsAdapter):
         texts = self.validate(data, "texts")
         s = self.create_session()
         r = self.request(s, "You cluster format json texts %s!" % texts)
-        return r
+        parsed_text = json.loads(r.text)
+        return r, parsed_text
 
 
 class AigentsTextExtractorAdapter(AigentsAdapter):
@@ -186,7 +189,8 @@ class AigentsTextExtractorAdapter(AigentsAdapter):
         self.request(s, "my knows no '" + pattern + "', trusts no '" + pattern + "'.")
         self.request(s, "my sites no '" + pattern + "', trusts no '" + text + "'.")
         self.request(s, "my format not json.")
-        return r
+        parsed_text = json.loads(r.text)
+        return r, parsed_text
 
 
 class AigentsRSSFeederAdapter(AigentsAdapter):
@@ -215,7 +219,8 @@ class AigentsRSSFeederAdapter(AigentsAdapter):
         # sessionless request
         r = requests.post(self.settings.AIGENTS_PATH + "?rss%20" + area)
         logger.info(r)
-        return r
+        parsed_text = feedparser.parse(r.text)
+        return r, parsed_text
 
 
 class AigentsSocialGrapherAdapter(AigentsAdapter):
@@ -254,4 +259,5 @@ class AigentsSocialGrapherAdapter(AigentsAdapter):
         s = self.create_session()
         url = self.settings.AIGENTS_PATH + "?" + network + ' id ' + userid + ' report, period ' + days + ', format json, authorities, fans, similar to me'
         r = self.request(s, url)
-        return r
+        parsed_text = json.loads(r.text)
+        return r, parsed_text

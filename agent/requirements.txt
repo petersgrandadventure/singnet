@@ -31,3 +31,5 @@ requests
 
 fire
 hvac
+
+feedparser
