@@ -9,13 +9,14 @@ case "$1" in
 noop)
     ;;
 
+bash)
+    /bin/bash
+    ;;
+
 run)
-    cd /dao
-    npm install zeppelin-solidity
-    npm install truffle-hdwallet-provider
     truffle compile-all
     truffle migrate --reset
-#    truffle test
+    truffle test
     ;;
 
 *) echo 'No operation specified'

@@ -5,7 +5,7 @@ const host = "http://localhost:8545"//NODE
 module.exports = {
   networks: {
     development: {
-      host: "localhost",
+      host: "testrpc",
       port: 8545,
       network_id: "*" // Match any network id
     },

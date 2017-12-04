@@ -2,4 +2,4 @@ FROM node:6
 
 WORKDIR /code
 
-RUN npm install -g ethereumjs-testrpc
+RUN npm install -g ganache-cli
