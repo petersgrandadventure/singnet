@@ -85,9 +85,8 @@ testrpc)
     ;;
 
 prepare-dao)
-    docker-compose -f docker-compose.dao.yml create --build --force-recreate testrpc
     docker-compose -f docker-compose.dao.yml create --build --force-recreate dao
-    docker-compose -f docker-compose.dao.yml run --service-ports dao ./dao.sh run
+    docker-compose -f docker-compose.dao.yml run --service-ports dao ./dao.sh $2
     ;;
 
 ipfs)

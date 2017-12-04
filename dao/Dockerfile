@@ -1,7 +1,9 @@
-FROM node:6
+FROM node:latest
 
-WORKDIR /code
-
-ADD . /code
-
+WORKDIR /dao
 RUN npm install -g truffle
+
+ADD . /dao
+
+RUN npm install
+RUN npm install zeppelin-solidity

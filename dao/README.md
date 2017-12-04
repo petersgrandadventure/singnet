@@ -21,9 +21,9 @@ npm i -g truffle
 ### Ethereum  
 You can choose between Parity or local testrpc
 
-### testRPC
+### ganache (formerly testrpc)
 ```bash
-npm install -g ethereumjs-testrpc
+npm install -g ganache-cli
 ```
 
 ### Parity
