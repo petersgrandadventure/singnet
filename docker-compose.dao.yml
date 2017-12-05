@@ -6,7 +6,7 @@ services:
     dao:
       build: dao
       volumes:
-        - ./dao:/dao
+        - ./data/dao:/data
       links:
         - testrpc
 
