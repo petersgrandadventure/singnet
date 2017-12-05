@@ -19,7 +19,7 @@
     <script>
 
         var service_node_id = '{{ service_adapter.service.node_id }}';
-        var job_params = JSON.parse('{{ service_adapter.example_job_json() }}');
+        var job_params = JSON.parse('{{ service_adapter.example_job_json()|safe }}');
 
         function successCB(response){
             var result = JSON.parse(response.bodyText)["result"];
