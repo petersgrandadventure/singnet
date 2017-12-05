@@ -22,6 +22,7 @@ class IncorrectContractState(Exception):
     pass
 
 
+
 class Accounting(ABC):
     def __init__(self, app):
         self.app = app
