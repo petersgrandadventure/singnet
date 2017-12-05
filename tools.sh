@@ -5,6 +5,8 @@ set -o errexit
 set -o xtrace
 set -o nounset
 
+SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD:=no_password_set}
+
 case "$1" in
 
 init)

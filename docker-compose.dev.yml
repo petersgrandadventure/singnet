@@ -9,6 +9,7 @@ services:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
         - SN_NETWORK_WEB_PORT=8000
         - SN_SERVICE_ADAPTER_CONFIG_FILE=dev_config.yml
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
       ports:
         - "8000:8000"
       volumes:
@@ -17,17 +18,17 @@ services:
         - testrpc
         - relex
 
-    parity:
-      build: parity
-      ports:
-        - "8080:8080"
-        - "8180:8180"
-        - "8545:8545"
-        - "8546:8546"
-        - "30303:30303"
-        - "30303:30303/udp"
-      volumes:
-        - ./data/parity:/parity-data
+#    parity:
+#      build: parity
+#      ports:
+#        - "8080:8080"
+#        - "8180:8180"
+#        - "8545:8545"
+#        - "8546:8546"
+#        - "30303:30303"
+#        - "30303:30303/udp"
+#      volumes:
+#        - ./data/parity:/parity-data
 
     testrpc:
       build: testrpc

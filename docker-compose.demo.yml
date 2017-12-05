@@ -13,6 +13,7 @@ services:
         - SN_DS_TEST_OUTPUT_DIRECTORY=/data
         - SN_NETWORK_CLIENT_URL=http://parity:8545
         - SN_NETWORK_ACCOUNT=0x1934ab10860362eabcfaa111847bc75ecf43fcbd
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
       ports:
         - "9250:9250"
       volumes:

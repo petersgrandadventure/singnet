@@ -14,7 +14,19 @@ from sn_agent.ontology.service_descriptor import ServiceDescriptor
 logger = logging.getLogger(__name__)
 
 
+class MarketJob(object):
+    UNKNOWN = None
+    PENDING = 'pending'
+    COMPLETED = 'completed'
+
+    def __init__(self):
+        self.state = self.UNKNOWN
+
+
 class UnresolvedAgentException(Exception):
+    pass
+
+class AccountNotUnlockedException(Exception):
     pass
 
 
@@ -31,10 +43,6 @@ class FileResolver(ResolverABC):
         return agent_urls.get(agent_id)
 
 
-class DHTResolver(ResolverABC):
-    def resolve(self, agent_id):
-        return None
-
 
 class SNNetwork(NetworkABC):
     def __init__(self, app):
@@ -47,7 +55,6 @@ class SNNetwork(NetworkABC):
 
         self.resolvers = []
         self.resolvers.append(FileResolver(self.settings.AGENT_URL_LOOKUP_FILE))
-        self.resolvers.append(DHTResolver())
 
     async def startup(self):
         logger.debug('Starting up the network')
@@ -135,7 +142,10 @@ class SNNetwork(NetworkABC):
         contract = self.get_agent_registry_contract()
         return contract.call(self.payload).getAgent(id)
 
-    def createMarketJob(self, agents, amounts, payer, firstService, lastService):
+    def create_market_job(self, agents, amounts, payer, firstService, lastService):
+
+        self.ensure_unlocked()
+
         contract = self.get_market_job_contract()
         return contract.deploy(
             transaction={
@@ -150,12 +160,19 @@ class SNNetwork(NetworkABC):
             )
         )
 
-    def setJobCompleted(self):
+    def set_market_job_completed(self):
         contract = self.get_market_job_contract()
+
+        self.ensure_unlocked()
+
         return contract.call(self.payload).setJobCompleted()
 
     def payAgent(self, agentAccounts):
+
         contract = self.get_market_job_contract()
+
+        self.ensure_unlocked()
+
         return contract.call({'from': agentAccounts[0]}).withdraw()
 
     # Utility Functions
@@ -188,3 +205,9 @@ class SNNetwork(NetworkABC):
         address = self.getAddress(type_name)
         contract = self.client_connection.eth.contract(abi=abi, address=address)
         return contract
+
+    def ensure_unlocked(self):
+        unlock_state = self.client_connection.personal.unlockAccount(self.account, self.settings.ACCOUNT_PASSWORD, duration=30)
+
+        if not unlock_state:
+            raise AccountNotUnlockedException()
