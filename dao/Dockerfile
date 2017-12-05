@@ -1,9 +1,12 @@
-FROM node:latest
+FROM node:8
 
 WORKDIR /dao
-RUN npm install -g truffle
 
-ADD . /dao
+COPY package.json .
 
-RUN npm install
-RUN npm install zeppelin-solidity
+RUN \
+    npm install -g truffle && \
+    npm install
+
+COPY . .
+
