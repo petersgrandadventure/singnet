@@ -3,7 +3,7 @@ from pathlib import Path
 
 from urllib3.util import Url
 
-from sn_agent import SettingsBase
+from sn_agent import SettingsBase, Required
 
 THIS_DIR = Path(__file__).parent
 
@@ -17,6 +17,7 @@ class NetworkSettings(SettingsBase):
         self.GATEWAY = '0.0.0.0'
 
         self.CLIENT_URL = 'http://testrpc:8545'
+        self.ACCOUNT_PASSWORD = Required(str)
 
         self.CLASS = 'sn_agent.network.sn.SNNetwork'
 

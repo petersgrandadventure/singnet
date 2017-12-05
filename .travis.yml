@@ -13,7 +13,7 @@ before_install:
   - pip install coveralls
 
 script:
-  - docker run --volume ${PWD}/test-results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
+  - docker run -e SN_NETWORK_ACCOUNT_PASSWORD=abcd --volume ${PWD}/test-results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
 
 after_success:
   - coveralls

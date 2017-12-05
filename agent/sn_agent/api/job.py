@@ -6,6 +6,25 @@ from sn_agent.ontology.service_descriptor import ServiceDescriptor
 logger = logging.getLogger(__name__)
 
 
+async def internal_can_perform(app, service_node_id):
+    # figure out what we are being asked to perform and answer
+    service = ServiceDescriptor(service_node_id)
+    return await can_perform_service(app, service)
+
+
+async def internal_offer(app, service_node_id, price):
+    service_descriptor = ServiceDescriptor(service_node_id)
+    result = app['accounting'].incoming_offer(service_descriptor, price)
+    return result
+
+
+async def internal_perform_job(app, service_node_id, job_params):
+    service_descriptor = ServiceDescriptor(service_node_id)
+    job = JobDescriptor(service_descriptor, job_params)
+    result = await perform_job(app, job)
+    return result
+
+
 async def can_perform_service(app, service_descriptor: ServiceDescriptor):
     logger.debug("get_can_perform: %s", service_descriptor)
 
@@ -40,4 +59,3 @@ async def perform_job(app, job_descriptor: JobDescriptor):
         }]
 
     return results
-

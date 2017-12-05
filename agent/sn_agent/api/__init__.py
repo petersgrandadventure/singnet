@@ -5,10 +5,7 @@ from aiohttp import web, WSMsgType
 from aiohttp.web_response import Response
 from jsonrpcserver.aio import methods
 
-from sn_agent import ontology
-from sn_agent.api.job import can_perform_service, perform_job
-from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.ontology.service_descriptor import ServiceDescriptor
+from sn_agent.api.job import internal_perform_job, internal_offer, internal_can_perform
 
 logger = logging.getLogger(__name__)
 
@@ -17,22 +14,26 @@ WS_FILE = os.path.join(os.path.dirname(__file__), 'websocket.html')
 
 @methods.add
 async def can_perform(service_node_id=None, context=None):
-    # figure out what we are being asked to perform and answer
-    service = ServiceDescriptor(service_node_id)
-    app = context
-    return await can_perform_service(app, service)
+    logging.debug('Starting can perform for %s with params of %s', service_node_id)
+    result = await internal_can_perform(context, service_node_id)
+    logging.debug('Result of perform was %s', result)
+    return result
 
 
 @methods.add
 async def perform(service_node_id=None, job_params=None, context=None):
     logging.debug('Starting perform for %s with params of %s', service_node_id, job_params)
-    service_descriptor = ServiceDescriptor(service_node_id)
-
-    job = JobDescriptor(service_descriptor, job_params)
-    app = context
-
-    result = await perform_job(app, job)
+    result = await internal_perform_job(context, service_node_id, job_params)
     logging.debug('Result of perform was %s', result)
+    return result
+
+
+@methods.add
+async def offer(service_node_id=None, job_params=None, context=None):
+    price = job_params
+    logging.debug('Starting offer for %s with price of %s', service_node_id, price)
+    result = await internal_offer(context, service_node_id, price)
+    logging.debug('Result of offer was %s', result)
     return result
 
 
