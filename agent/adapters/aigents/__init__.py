@@ -128,28 +128,33 @@ class AigentsTextsClustererAdapter(AigentsAdapter):
         return [
             {
                 "input_type": "attached",
-                "input_data": {"type": "texts_cluster", "data": {
-                    "texts": [
-                        "http://aigents.com/test/cat/fly.html",
-                        "http://aigents.com/test/cat/eagle.html",
-                        "http://aigents.com/test/cat/snake.html",
-                        "tuna is a fish",
-                        "cat is a mammal",
-                        "http://aigents.com/test/cat/french.html",
-                        "http://aigents.com/test/cat/chinese.html",
-                        "germans live in germany",
-                        "russians live in russia",
-                        "spaniards live in spain"
-                    ]
-                }},
+                "input_data": {
+                    "type": "texts_cluster",
+                    "data": {
+                        "texts": [
+                            "http://aigents.com/test/cat/fly.html",
+                            "http://aigents.com/test/cat/eagle.html",
+                            "http://aigents.com/test/cat/snake.html",
+                            "tuna is a fish",
+                            "cat is a mammal",
+                            "http://aigents.com/test/cat/french.html",
+                            "http://aigents.com/test/cat/chinese.html",
+                            "germans live in germany",
+                            "russians live in russia",
+                            "spaniards live in spain"
+                        ]
+                    }
+                },
                 "output_type": "attached"
             }
         ]
 
     def aigents_perform(self, data):
         texts = self.validate(data, "texts")
+        texts_as_string = json.dumps(texts)
+        request_text = "You cluster format json texts '%s'!" % texts_as_string
         s = self.create_session()
-        r = self.request(s, "You cluster format json texts %s!" % texts)
+        r = self.request(s, request_text)
         parsed_text = json.loads(r.text)
         return r, parsed_text
 
