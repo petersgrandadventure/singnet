@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
 set -o errexit
+set -o verbose
+set -o xtrace
 set -o nounset
 
 
@@ -14,7 +16,8 @@ bash)
     ;;
 
 run)
-    truffle compile-all
+    cd /dao
+    truffle compile
     truffle migrate --reset
     truffle test
     ;;
