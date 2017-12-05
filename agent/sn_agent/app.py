@@ -4,6 +4,7 @@ import logging
 import uvloop
 from aiohttp import web
 
+from sn_agent.accounting import setup_accounting
 from sn_agent.agent import setup_agent
 from sn_agent.api import setup_api
 from sn_agent.log import setup_logging
@@ -31,6 +32,7 @@ def create_app():
     setup_ontology(app)
     setup_network(app)
     setup_service_manager(app)
+    setup_accounting(app)
     setup_api(app)
     setup_agent(app)
     setup_routes(app)
