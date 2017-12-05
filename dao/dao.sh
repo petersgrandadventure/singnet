@@ -16,6 +16,7 @@ bash)
     ;;
 
 run)
+    cd /dao
     truffle compile
     truffle migrate --reset
     truffle test
