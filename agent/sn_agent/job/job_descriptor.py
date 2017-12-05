@@ -50,6 +50,13 @@ class JobDescriptor(object):
     def __len__(self):
         return len(self.job_parameters)
 
+    def error_description(self):
+        if self.service is None:
+            description = ""
+        else:
+            description = self.service.name()
+        return 'Job for service %s' % (description)
+
     def append_job_item(self, job_item: dict):
         self.job_parameters.append(job_item)
 
