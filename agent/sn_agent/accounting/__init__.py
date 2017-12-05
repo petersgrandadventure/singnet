@@ -21,6 +21,14 @@ class PriceTooLowException(Exception):
 class IncorrectContractState(Exception):
     pass
 
+from sn_agent.network.sn import MarketJob
+
+
+class PriceTooLowException(Exception):
+    pass
+
+class IncorrectContractState(Exception):
+    pass
 
 class Accounting(ABC):
     def __init__(self, app):
@@ -55,6 +63,27 @@ class Accounting(ABC):
         market_job.set_state = MarketJob.COMPLETED
         return result
 
+
+    def incoming_offer(self, service_id, price):
+
+        if price < 0:
+            raise PriceTooLowException()
+
+        market_job = self.network.create_market_job(service_id, price)
+
+        return market_job.address
+
+    def perform_job(self, market_job_address, service_id, job_params):
+
+        market_job = self.network.get_market_job(market_job_address)
+
+        if market_job.state != MarketJob.PENDING:
+            raise IncorrectContractState()
+
+        result = internal_perform_job(self.app, service_id, job_params)
+
+        market_job.set_state = MarketJob.COMPLETED
+        return result
 
 def setup_accounting(app):
     app['accounting'] = Accounting(app)
