@@ -63,14 +63,29 @@
         var mix = {
             methods: {
                 sendCanPerform: function () {
-                    this.sendJSONRPC("can_perform", service_node_id, false, successCB, errorCB);
+
+                    var params = {"service_node_id": service_node_id};
+
+                    this.sendJSONRPC("can_perform", params, successCB, errorCB);
                 },
                 sendOffer: function () {
-                    this.sendJSONRPC("offer", service_node_id, 1.00, successCB, errorCB);
+
+                    var params = {
+                        "service_node_id": service_node_id,
+                        "price": 1.0
+                    };
+
+                    this.sendJSONRPC("offer", params, successCB, errorCB);
                 },
                 sendPerform: function () {
                     job_params = editor.get();
-                    this.sendJSONRPC("perform", service_node_id, job_params, successCB, errorCB);
+
+                    var params = {
+                        "service_node_id": service_node_id,
+                        "job_params": job_params
+                    };
+
+                    this.sendJSONRPC("perform", params, successCB, errorCB);
                 }
             }
         };

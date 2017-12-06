@@ -15,14 +15,12 @@
             mixins: [mix],
             data: {},
             methods: {
-                sendJSONRPC: function (method, service_node_id, job_params, successCallback, errorCallback) {
+                sendJSONRPC: function (method, params, successCallback, errorCallback) {
                     seq = seq + 1;
                     var request = {
                         "jsonrpc": "2.0",
                         "method": method,
-                        "params": {
-                            "service_node_id": service_node_id
-                        },
+                        "params": params,
                         "id": seq
                     };
 
