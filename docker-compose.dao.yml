@@ -5,6 +5,7 @@ services:
 
     dao:
       build: dao
+      container_name: dao
       volumes:
         - ./data/dao:/data
       links:
@@ -12,6 +13,7 @@ services:
 
     testrpc:
       build: testrpc
+      container_name: testrpc
       ports:
         - "8545:8545"
         - "8546:8546"

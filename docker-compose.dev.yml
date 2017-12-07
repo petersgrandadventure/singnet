@@ -5,6 +5,7 @@ services:
 
     dev:
       build: agent
+      container_name: agent
       environment:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
         - SN_NETWORK_WEB_PORT=8000
@@ -31,6 +32,7 @@ services:
 #        - ./data/parity:/parity-data
 
     testrpc:
+      container_name: testrpc
       build: testrpc
       ports:
         - "8545:8545"
@@ -39,6 +41,7 @@ services:
       command: ganache-cli
 
     relex:
+      container_name: relex
       image: opencog/relex
       ports:
         - "9000:9000"

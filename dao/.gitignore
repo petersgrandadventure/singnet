@@ -1,8 +1,9 @@
 build
-node_modules
+node_modules/
+MetaCoin/
+package-lock.json
 yarn-error.log
 /.DS_Store
 npm-debug.log
 addresses.json
-package-lock.json
 /.vscode
