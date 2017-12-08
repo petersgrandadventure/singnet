@@ -19,7 +19,7 @@ class NetworkSettings(SettingsBase):
         self.CLIENT_URL = 'http://testrpc:8545'
         self.ACCOUNT_PASSWORD = Required(str)
 
-        self.CLASS = 'sn_agent.network.sn.SNNetwork'
+        self.CLASS = 'sn_agent.network.ethereum.SNNetwork'
 
         self.WEB_HOST = "0.0.0.0"
         self.WEB_PORT = 8000
