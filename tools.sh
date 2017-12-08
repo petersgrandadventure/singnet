@@ -14,57 +14,61 @@ init)
     ;;
 
 demo)
-    docker-compose -f docker-compose.demo.yml create --build --force-recreate demo
-    docker-compose -f docker-compose.demo.yml run --service-ports demo ./agent.sh $2
+    docker-compose -f docker/docker-compose.demo.yml create --build --force-recreate demo
+    docker-compose -f docker/docker-compose.demo.yml run --service-ports demo ./agent.sh run
+    ;;
+
+demo-down)
+    docker-compose -f docker/docker-compose.demo.yml down --remove-orphans
     ;;
 
 dev)
-    docker-compose -f docker-compose.dev.yml create --build --force-recreate dev
-    docker-compose -f docker-compose.dev.yml run --service-ports dev ./agent.sh run
+    docker-compose -f docker/docker-compose.dev.yml create --build --force-recreate dev
+    docker-compose -f docker/docker-compose.dev.yml run --service-ports dev ./agent.sh run
+    ;;
+
+dev-down)
+    docker-compose -f docker/docker-compose.dev.yml down --remove-orphans
     ;;
 
 alice)
-    docker-compose -f docker-compose.abc.yml create --build --force-recreate alice
-    docker-compose -f docker-compose.abc.yml run --service-ports alice ./agent.sh run
+    docker-compose -f docker/docker-compose.abc.yml create --build --force-recreate alice
+    docker-compose -f docker/docker-compose.abc.yml run --service-ports alice ./agent.sh run
     ;;
 
 bob)
-    docker-compose -f docker-compose.abc.yml create --build --force-recreate bob
-    docker-compose -f docker-compose.abc.yml run --service-ports bob ./agent.sh run
+    docker-compose -f docker/docker-compose.abc.yml create --build --force-recreate bob
+    docker-compose -f docker/docker-compose.abc.yml run --service-ports bob ./agent.sh run
     ;;
 
 charlie)
-    docker-compose -f docker-compose.abc.yml create --build --force-recreate charlie
-    docker-compose -f docker-compose.abc.yml run --service-ports charlie ./agent.sh run
+    docker-compose -f docker/docker-compose.abc.yml create --build --force-recreate charlie
+    docker-compose -f docker/docker-compose.abc.yml run --service-ports charlie ./agent.sh run
     ;;
 
 agent-docs)
-    docker-compose create --build --force-recreate test
-    docker-compose run test ./agent.sh docs
+    docker-compose -f docker/docker-compose.yml create --build --force-recreate test
+    docker-compose -f docker/docker-compose.ymlrun test ./agent.sh docs
     ;;
 
 agent-test)
-    docker-compose start testrpc
-    docker-compose create --build test
-    docker-compose run test ./agent.sh test
-    ;;
-
-agent-web)
-    docker-compose run --service-ports agent-web ./agent-web.sh run
+    docker-compose -f docker/docker-compose.yml start testrpc
+    docker-compose -f docker/docker-compose.yml create --build test
+    docker-compose -f docker/docker-compose.yml run test ./agent.sh test
     ;;
 
 opendht)
-    docker-compose create --build --force-recreate opendht
-    docker-compose run --service-ports opendht
+    docker-compose -f docker/docker-compose.yml create --build --force-recreate opendht
+    docker-compose -f docker/docker-compose.yml run --service-ports opendht
     ;;
 
 geth)
-    docker-compose create --build --force-recreate geth
-    docker-compose run --service-ports geth $2
+    docker-compose -f docker/docker-compose.yml create --build --force-recreate geth
+    docker-compose -f docker/docker-compose.yml run --service-ports geth $2
     ;;
 
 solc)
-    docker-compose run --service-ports geth solc --help
+    docker-compose -f docker/docker-compose.yml run --service-ports geth solc --help
     ;;
 
 parity)
@@ -73,17 +77,17 @@ parity)
     ;;
 
 vault)
-    docker-compose create --build --force-recreate vault
-    docker-compose run --service-ports vault $2
+    docker-compose -f docker/docker-compose.yml create --build --force-recreate vault
+    docker-compose -f docker/docker-compose.yml run --service-ports vault $2
     ;;
 
 relex)
-    docker-compose -f docker-compose.dev.yml  run --service-ports relex
+    docker-compose -f docker/docker-compose.dev.yml  run --service-ports relex
     ;;
 
 testrpc)
-    docker-compose create --build --force-recreate testrpc
-    docker-compose run --service-ports testrpc
+    docker-compose -f docker/docker-compose.yml create --build --force-recreate testrpc
+    docker-compose -f docker/docker-compose.yml run --service-ports testrpc
     ;;
 
 prepare-dao)
@@ -92,16 +96,17 @@ prepare-dao)
     ;;
 
 ipfs)
-    docker-compose run --service-ports ipfs daemon
+    docker-compose -f docker/docker-compose.yml run --service-ports ipfs daemon
     ;;
 
 clean)
-    docker-compose down --rmi all --remove-orphans
+    docker-compose -f docker/docker-compose.yml down --rmi all --remove-orphans
     ;;
 
 hard-clean)
     docker image prune
-    docker-compose down --rmi all --remove-orphans
+    docker-compose -f docker/docker-compose.dev.yml down --rmi all --remove-orphans
+    docker-compose -f docker/docker-compose.yml down --rmi all --remove-orphans
     docker kill `docker ps -q` || true
     docker rm `docker ps -a -q`
     docker rmi `docker images -q`
@@ -109,7 +114,7 @@ hard-clean)
     ;;
 
 create-web-cookie)
-    docker-compose run agent-web-cookie
+    docker-compose -f docker/docker-compose.yml run agent-web-cookie
     ;;
 
 gen-ssl)
