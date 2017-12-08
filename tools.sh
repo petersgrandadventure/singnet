@@ -19,8 +19,8 @@ demo)
     ;;
 
 dev)
-    docker-compose -f docker-compose.dev.yml create --build --force-recreate dev
-    docker-compose -f docker-compose.dev.yml run --service-ports dev ./agent.sh run
+    docker-compose -f docker/docker-compose.dev.yml create --build --force-recreate dev
+    docker-compose -f docker/docker-compose.dev.yml run --service-ports dev ./agent.sh run
     ;;
 
 alice)

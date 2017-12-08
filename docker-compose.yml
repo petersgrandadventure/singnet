@@ -19,7 +19,7 @@ services:
         - testrpc
 
     testrpc:
-      build: testrpc
+      build: docker/testrpc
       ports:
         - "8545:8545"
         - "8546:8546"
