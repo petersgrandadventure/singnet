@@ -11,7 +11,7 @@ from abc import ABC
 from sn_agent.accounting.settings import AccountingSettings
 from sn_agent.api import internal_perform_job
 from sn_agent.job.job_descriptor import JobDescriptor
-from sn_agent.network.sn import MarketJob
+from sn_agent.network.ethereum.__init__ import MarketJob
 
 
 class PriceTooLowException(Exception):
