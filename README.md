@@ -18,7 +18,9 @@ framework, Google Tensorflow and other powerful tools, interacting within the
 SingularityNET; will bootstrap the research and development of an AGI economy.
 
 
+
 ## Contents
+
 
 * [**Architectural Overview**](#architectural-overview) - the system architecture
  and high-level design
@@ -57,7 +59,9 @@ There are seven major interacting components in the SingularityNET architecture:
  agents in the SingularityNET universe.
 
 
-# Getting Started
+
+## Getting Started
+
 
 These instructions will get you a copy of the project up and running on your local
 machine for development and testing purposes. See deployment for notes on how to
@@ -68,7 +72,9 @@ to individual AI systems and the rest of the network. You can run an Agent conne
  to the SingularityNET network as a server that runs stand-alone or as one that
  forwareds requests for work to other servers running specialized AI services.
 
-## Prerequisites
+
+### Prerequisites
+
 SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
 Docker or Docker for Mac installed.
 
@@ -93,7 +99,9 @@ http://localhost:8000
 
 in a modern browser.
 
-## Adapter Examples
+
+### Adapter Examples
+
 There are two kinds of Service Adapter examples in the project: real AI integration
 and template examples designed to teach concepts.
 
@@ -106,7 +114,7 @@ The directory `singnet/agent/examples` contains examples that are designed to
 show how to do something without necessarily implementing real AI so you can
 understand the mechanics without needing to understnd any particular AI sytems.
 
-## Running tests
+### Running tests
 
 Tests are handled by PyTest via Tox, but we've made it very easy for you.
 
@@ -128,24 +136,22 @@ project.
 ./tools.sh agent-docs
 ```
 
-## Built With
+### Contributing
 
-* [AIOHttp](https://aiohttp.readthedocs.io/en/stable/) - The async web
-framework used to handle JSONRPC and HTML requests
-* [SQLAlchemy](https://www.sqlalchemy.org/) - Internal data storage
-
-
-## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
 
+See also the list of [contributors](https://github.com/opencog/singnet/graphs/contributors) who participated in this project.
 
-## Versioning
+### Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/opencog/singnet/tags). 
 
-See also the list of [contributors](https://github.com/opencog/singnet/graphs/contributors) who participated in this project.
+
+
 ## Example Scenario
+
+
 A SingularityNET Agent provides document summarization services for corporate work
 groups. As inputs for this service, it might require:
 
@@ -194,6 +200,7 @@ provide subsets or all of the services required to deliver any Service in the
 ontology.
 
 
+
 ## SingularityNET API
 
 
@@ -231,6 +238,12 @@ Additionally, ServiceAdapterABC subclasses may also implement:
 * **`all_required_agents_can_perform`** - check if dependent agents can perform
  sub-services
 
+---
+## Built With
+
+* [AIOHttp](https://aiohttp.readthedocs.io/en/stable/) - The async web
+framework used to handle JSONRPC and HTML requests
+* [SQLAlchemy](https://www.sqlalchemy.org/) - Internal data storage
 
 ## License
 
