@@ -1,0 +1,68 @@
+
+version: "3"
+
+services:
+
+    alice:
+      build: ../agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+        - SN_NETWORK_WEB_PORT=9050
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=alice_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "9050:9050"
+      volumes:
+        - ./data/agent/alice:/data
+      links:
+        - testrpc
+        - bob
+        - charlie
+        - relex
+
+    bob:
+      build: ../agent
+      environment:
+        - SN_AGENT_ID=c545478a-971a-48ec-bc56-aaaaaaaaaaaa
+        - SN_NETWORK_WEB_PORT=9060
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=bob_config.yml
+        - PYTHONPATH=/code
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "9060:9060"
+      volumes:
+        - ./data/agent/bob:/data
+      links:
+        - testrpc
+
+    charlie:
+      build: ../agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-cccc-bc56-bbbbbbbbbbbb
+        - SN_NETWORK_WEB_PORT=9065
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=charlie_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "9065:9065"
+      volumes:
+        - ./data/agent/charlie:/data
+      links:
+        - testrpc
+
+    testrpc:
+      build: testrpc
+      ports:
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+      command: ganache-cli
+
+    relex:
+      image: opencog/relex
+      ports:
+        - "9000:9000"
+      command: bash -l -c ./link-grammar-server.sh 9000

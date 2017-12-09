@@ -1,0 +1,41 @@
+
+version: "3"
+
+services:
+
+    demo:
+      build: ../agent
+      environment:
+        - SN_AGENT_ID=b545478a-FFFF-FFFF-FFFF-4b9b7176FFFF
+        - SN_NETWORK_WEB_PORT=9250
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=demo_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+        - SN_NETWORK_CLIENT_URL=http://parity:8545
+        - SN_NETWORK_ACCOUNT=0x1934ab10860362eabcfaa111847bc75ecf43fcbd
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "9250:9250"
+      volumes:
+        - ./data/agent/demo:/data
+      links:
+        - parity
+        - relex
+
+    parity:
+      build: parity
+      ports:
+        - "8080:8080"
+        - "8180:8180"
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+        - "30303:30303/udp"
+      volumes:
+        - ./data/parity:/parity-data
+
+    relex:
+      image: opencog/relex
+      ports:
+        - "9000:9000"
+      command: bash -l -c ./link-grammar-server.sh 9000

@@ -22,8 +22,25 @@ demo-down)
     docker-compose -f docker/docker-compose.demo.yml down --remove-orphans
     ;;
 
+truffle)
+    docker-compose -f docker/docker-compose.dev.yml create --build --force-recreate truffle
+    docker-compose -f docker/docker-compose.dev.yml run --service-ports truffle
+    ;;
+
 dev)
+    docker-compose -f docker/docker-compose.dev.yml create --build dev
+    docker-compose -f docker/docker-compose.dev.yml run --service-ports dev ./agent.sh run
+    ;;
+
+dev-force-build)
     docker-compose -f docker/docker-compose.dev.yml create --build --force-recreate dev
+    ;;
+
+dev-build)
+    docker-compose -f docker/docker-compose.dev.yml create --build dev
+    ;;
+
+dev-run)
     docker-compose -f docker/docker-compose.dev.yml run --service-ports dev ./agent.sh run
     ;;
 

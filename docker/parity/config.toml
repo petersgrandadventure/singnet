@@ -1,0 +1,7 @@
+[parity]
+chain = "kovan"
+base_path = "/parity-data"
+
+[rpc]
+force = true
+interface = "all"

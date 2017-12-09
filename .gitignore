@@ -3,7 +3,7 @@
 .tox/
 .cache
 .idea
+data
 __pycache__
-/data/
 agent/tests/output
 
