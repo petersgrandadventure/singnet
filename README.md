@@ -18,7 +18,7 @@ framework, Google Tensorflow and other powerful tools, interacting within the
 SingularityNET; will bootstrap the research and development of an AGI economy.
 
 
-## Contents ##
+## Contents
 
 * [**Architectural Overview**](#architectural-overview) - the system architecture
  and high-level design
@@ -30,7 +30,7 @@ SingularityNET; will bootstrap the research and development of an AGI economy.
  SingularityNET running on your system
 
 
-## Architectural Overview ##
+## Architectural Overview
 
 There are seven major interacting components in the SingularityNET architecture:
 
@@ -58,7 +58,7 @@ There are seven major interacting components in the SingularityNET architecture:
  agents in the SingularityNET universe.
 
 
-## Example Scenario ##
+## Example Scenario
 A SingularityNET Agent provides document summarization services for corporate work
 groups. As inputs for this service, it might require:
 
@@ -76,7 +76,7 @@ extract objects, people and a textual description; and generating
 a ranked summary of the document.
 
 
-### Internal Services ###
+### Internal Services
 
 The SingularityNET Agent might perform the following services internally:
 
@@ -85,7 +85,7 @@ The SingularityNET Agent might perform the following services internally:
 * **Text Summary** - processing the text to build a summary of text-only portions
 
 
-### External Services ###
+### External Services
 
 The Agent might use ExternalServiceProvider agents to perform the following services:
 
@@ -107,10 +107,10 @@ provide subsets or all of the services required to deliver any Service in the
 ontology.
 
 
-## SingularityNET API ##
+## SingularityNET API
 
 
-### NetworkABC ###
+### NetworkABC
 The base class for block-chain networks. NetworkABC defines the protocol for
 managing the interactions of Agents, Ontology, ServiceDescriptors, as well as 
 Agent discovery, and negotiation. Each block-chain implementation will require a
@@ -129,7 +129,7 @@ NetworkABC subclasses must implement:
 * **`find_service_providers`** - returns a list of external service provider agents
 
 
-### ServiceAdapterABC ###
+### ServiceAdapterABC
 This is the base class for all Service Adapters. Services can be AI services or
 other services of use by the network like file storage, backup, etc.
 
@@ -145,7 +145,7 @@ Additionally, ServiceAdapterABC subclasses may also implement:
  sub-services
 
 
-## Getting Started ##
+# Getting Started
 
 These instructions will get you a copy of the project up and running on your local
 machine for development and testing purposes. See deployment for notes on how to
@@ -156,77 +156,52 @@ of the network. You can run an agent connected to the network as a client or as
 a client with underlying workers.
 
 
-### Prerequisites ###
+## Prerequisites
+SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
+Docker or Docker for Mac installed.
 
-At this time, the only OS that this has been tested on is Ubuntu 16.04 LTS. This
-may change in the future but for now, you must start there. There are only a
-few system level requirements.
+The core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and
+Linux Ubuntu 16.04 LTS among others.
 
-Docker and Docker Compose are used heavily. You must have a recent version of
-Docker installed.
+Docker and Docker Compose are used heavily, so you must have a recent version of
+Docker installed to take advantage of most of the automation and to isolatedd
+yourself from dependency hell.
 
-The current demo uses a 3-node setup, Alice, Bob and Charlie.
-
-The following command will create and run the Alice node.
-
-```
-./tools.sh alice
-```
-
-In a separate terminal, you can run the Bob agent.
+The current development demo runs from a `dev` docker container which can be
+launched from your host computer command line using our helper tool shell
+script: `tools.sh`.
 
 ```
-./tools.sh bob
+./tools.sh dev
 ```
+This will bring up a set of docker containers and expose port 8000 to the 
+local host machine. Visit the demo via:
 
-In yet another separate terminal, you can run the Charlie agent.
+http://localhost:8000
 
-```
-./tools.sh charlie
-```
+in a modern browser.
 
+## Running the tests
 
-### Installing ###
+Tests are handled by PyTest via Tox, but we've made it very easy for you.
 
-The install process can take a bit of time. If you run into any issue, please
-do not hesitate to file a bug report. Be sure to include the last few lines of
-the console output to help us determine where it failed.
-
-You will not need sudo for the install as long as the items in the prerequisites
-section have been installed properly.
+Just run:
 
 ```
-./tools.sh prep
-```
-You can re-run prep over and over again as it, in most cases, will not
-re-install because it does checks to make sure the component exists or not,
-if it exists it does not run again.
-
-## Running the tests ##
-
-Tests are handled by PyTest via Tox
-
-```
-./tools.sh test
+./tools.sh agent-test
 ```
 
-
-### Generating docs ###
+### Generating docs
 
 Docs are not currently included in the source as they are changing rapidly. We
 do suggest you create the docs and look them over. Once this settles, we will
-likely have an online reference to these.
+likely have an online reference to these. We could use some help if you like
+writing documentation and don't mind trying to keep up with a fast-moving
+project.
 
 ```
-./tools.sh docs
+./tools.sh agent-docs
 ```
-
-
-## Deployment
-
-We are working on Docker images for easy deployment. For the moment, the
-installation relies on building from source on the target machine.
-
 
 ## Built With
 
@@ -237,8 +212,7 @@ framework used to handle JSONRPC and HTML requests
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of
-conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
 
 
 ## Versioning
