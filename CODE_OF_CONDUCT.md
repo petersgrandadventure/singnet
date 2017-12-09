@@ -55,7 +55,7 @@ If a community member engages in unacceptable behavior, the community organizers
 
 If you are subject to or witness unacceptable behavior, or have any other concerns, please notify a community organizer as soon as possible. conduct@singularitynet.io.
 
-[Reporting Guidelines](https://github.com/singnet/singnet/wiki/SincularityNET-Conduct-Violation-Reporting-and-Grievance-Policy)
+[Reporting Guidelines](CONDUCT_REPORTING.md)
 
 Additionally, community organizers are available to help community members engage with local law enforcement or to otherwise help those experiencing unacceptable behavior feel safe. In the context of in-person events, organizers will also provide escorts as desired by the person experiencing distress.
 
@@ -63,7 +63,7 @@ Additionally, community organizers are available to help community members engag
 
 If you feel you have been falsely or unfairly accused of violating this Code of Conduct, you should notify SigularityNET Code of Conduct Committtee with a concise description of your grievance. Your grievance will be handled in accordance with our existing governing policies.
 
-[Policy](https://github.com/singnet/singnet/wiki/SincularityNET-Conduct-Violation-Reporting-and-Grievance-Policy)
+[Policy](CONDUCT_REPORTING.md)
 
 ## 8. Scope
 
