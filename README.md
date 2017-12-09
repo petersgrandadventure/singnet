@@ -139,9 +139,9 @@ project.
 ### Contributing
 
 
-Please read [CONTRIBUTING](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
+Please read [CONTRIBUTING](CONTRIBUTING.md) for details on the process for submitting pull requests to the SingularityNET project.
 
-See also the list of [contributors](https://github.com/opencog/singnet/graphs/contributors) who participated in this project.
+Here are some of list of the [contributors](https://github.com/opencog/singnet/graphs/contributors) who participate in this project.
 
 ### Versioning
 
