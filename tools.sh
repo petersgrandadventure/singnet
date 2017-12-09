@@ -2,10 +2,11 @@
 
 set -o errexit
 #set -o verbose
-set -o xtrace
+#set -o xtrace
 set -o nounset
 
 SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD:=no_password_set}
+export SN_NETWORK_ACCOUNT_PASSWORD
 
 case "$1" in
 
@@ -22,7 +23,28 @@ demo-down)
     docker-compose -f docker/docker-compose.demo.yml down --remove-orphans
     ;;
 
-truffle)
+deploy-contracts)
+    DOCKERNET=$(docker network ls | grep dockernet | awk '{print $2}')
+    if [ "$DOCKERNET" != "dockernet" ]
+    then
+        echo "Starting docker network: dockernet"
+        docker network create -d bridge --subnet 192.168.0.0/24 --gateway 192.168.0.1 dockernet
+    else
+        echo "Docker network 'dockernet' already running."
+    fi
+    echo ""
+    HOST_OS=$(uname)
+    echo "HOST_OS = '$HOST_OS'"
+    if [ "$HOST_OS" == "Darwin" ]
+    then
+        echo "Using Truffle network - docker_host_mac"
+        TRUFFLE_NETWORK=docker_host_mac
+    else
+        echo "Using Truffle network - docker_host"
+        TRUFFLE_NETWORK=docker_host
+    fi
+    export TRUFFLE_NETWORK
+    echo "TRUFFLE_NETWORK = '$TRUFFLE_NETWORK'"
     docker-compose -f docker/docker-compose.dev.yml create --build --force-recreate truffle
     docker-compose -f docker/docker-compose.dev.yml run --service-ports truffle
     ;;
