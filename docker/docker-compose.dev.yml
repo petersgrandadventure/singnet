@@ -4,13 +4,14 @@ version: "3"
 services:
 
     dev:
-      build: ../agent
       container_name: agent
+      build: ../agent
       environment:
         - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
         - SN_NETWORK_WEB_PORT=8000
         - SN_SERVICE_ADAPTER_CONFIG_FILE=dev_config.yml
         - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
         - "8000:8000"
       volumes:
         - ./data/agent/dev:/data
@@ -49,6 +50,17 @@ services:
     truffle:
       container_name: truffle
       build: ../agent/sn_agent/network/ethereum/core
+      environment:
+        - TRUFFLE_NETWORK=${TRUFFLE_NETWORK}
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "7545:7545"
       volumes:
         - ./data/agent/dev:/data
-      command: bash -l -c 'pwd; ls -al; ./truffle_tools.sh'
+      command: bash -l -c './truffle_tools.sh deploy ${TRUFFLE_NETWORK} /data'
+      networks:
+        - dockernet
+
+networks:
+  dockernet:
+    external: true
