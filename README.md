@@ -22,13 +22,12 @@ SingularityNET; will bootstrap the research and development of an AGI economy.
 
 * [**Architectural Overview**](#architectural-overview) - the system architecture
  and high-level design
+* [**Getting Started**](#getting-started) - instructions for getting
+ SingularityNET running on your system
 * [**Example Scenario**](#example-scenario) - a non-trivial example of
  SingularityNET agent interaction
 * [**SingularityNET API**](#singularitynet-api) - the interfaces required to
  implement or call agents to perform services
-* [**Getting Started**](#getting-started) - instructions for getting
- SingularityNET running on your system
-
 
 ## Architectural Overview
 
@@ -58,6 +57,94 @@ There are seven major interacting components in the SingularityNET architecture:
  agents in the SingularityNET universe.
 
 
+# Getting Started
+
+These instructions will get you a copy of the project up and running on your local
+machine for development and testing purposes. See deployment for notes on how to
+deploy the project on a live system.
+
+The agent servver is responsible for communicating with AI Adapters which connect
+to individual AI systems and the rest of the network. You can run an Agent connected
+ to the SingularityNET network as a server that runs stand-alone or as one that
+ forwareds requests for work to other servers running specialized AI services.
+
+## Prerequisites
+SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
+Docker or Docker for Mac installed.
+
+The core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and
+Linux Ubuntu 16.04 LTS among others.
+
+Docker and Docker Compose are used heavily, so you must have a recent version of
+Docker installed to take advantage of most of the automation and to isolated
+yourself from dependency hell.
+
+The current development demo runs from a `dev` docker container which can be
+launched from your host computer command line using our helper tool shell
+script: `tools.sh`.
+
+```
+./tools.sh dev
+```
+This will bring up a set of docker containers and expose port 8000 to the 
+local host machine. Visit the demo via:
+
+http://localhost:8000
+
+in a modern browser.
+
+## Adapter Examples
+There are two kinds of Service Adapter examples in the project: real AI integration
+and template examples designed to teach concepts.
+
+The directory `singnet/agent/adapters` contains working AI adapters that connect
+with AI services from OpenCog, TensorFlow, and Aigents, among others... Some
+knowledge of the underlying AI architectures and systems will be necessary to
+understand the code in these Service Adapters.
+
+The directory `singnet/agent/examples` contains examples that are designed to
+show how to do something without necessarily implementing real AI so you can
+understand the mechanics without needing to understnd any particular AI sytems.
+
+## Running tests
+
+Tests are handled by PyTest via Tox, but we've made it very easy for you.
+
+Just run:
+
+```
+./tools.sh agent-test
+```
+
+### Generating docs
+
+Docs are not currently included in the source as they are changing rapidly. We
+do suggest you create the docs and look them over. Once this settles, we will
+likely have an online reference to these. We could use some help if you like
+writing documentation and don't mind trying to keep up with a fast-moving
+project.
+
+```
+./tools.sh agent-docs
+```
+
+## Built With
+
+* [AIOHttp](https://aiohttp.readthedocs.io/en/stable/) - The async web
+framework used to handle JSONRPC and HTML requests
+* [SQLAlchemy](https://www.sqlalchemy.org/) - Internal data storage
+
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
+
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/opencog/singnet/tags). 
+
+See also the list of [contributors](https://github.com/opencog/singnet/graphs/contributors) who participated in this project.
 ## Example Scenario
 A SingularityNET Agent provides document summarization services for corporate work
 groups. As inputs for this service, it might require:
@@ -143,96 +230,6 @@ Additionally, ServiceAdapterABC subclasses may also implement:
 * **`can_perform`** - override to implement service specific logic
 * **`all_required_agents_can_perform`** - check if dependent agents can perform
  sub-services
-
-
-# Getting Started
-
-These instructions will get you a copy of the project up and running on your local
-machine for development and testing purposes. See deployment for notes on how to
-deploy the project on a live system.
-
-The agent servver is responsible for communicating with AI Adapters which connect
-to individual AI systems and the rest of the network. You can run an Agent connected
- to the SingularityNET network as a server that runs stand-alone or as one that
- forwareds requests for work to other servers running specialized AI services.
-
-@ Adapter Examples
-There are two kinds of Service Adapter examples in the project: real AI integration
-and template examples designed to teach concepts.
-
-The directory `singnet/agent/adapters` contains working AI adapters that connect
-with AI services from OpenCog, TensorFlow, and Aigents, among others... Some
-knowledge of the underlying AI architectures and systems will be necessary to
-understand the code in these Service Adapters.
-
-The directory `singnet/agent/examples` contains examples that are designed to
-show how to do something without necessarily implementing real AI so you can
-understand the mechanics without needing to understnd any particular AI sytems.
-
-## Prerequisites
-SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
-Docker or Docker for Mac installed.
-
-The core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and
-Linux Ubuntu 16.04 LTS among others.
-
-Docker and Docker Compose are used heavily, so you must have a recent version of
-Docker installed to take advantage of most of the automation and to isolated
-yourself from dependency hell.
-
-The current development demo runs from a `dev` docker container which can be
-launched from your host computer command line using our helper tool shell
-script: `tools.sh`.
-
-```
-./tools.sh dev
-```
-This will bring up a set of docker containers and expose port 8000 to the 
-local host machine. Visit the demo via:
-
-http://localhost:8000
-
-in a modern browser.
-
-## Running the tests
-
-Tests are handled by PyTest via Tox, but we've made it very easy for you.
-
-Just run:
-
-```
-./tools.sh agent-test
-```
-
-### Generating docs
-
-Docs are not currently included in the source as they are changing rapidly. We
-do suggest you create the docs and look them over. Once this settles, we will
-likely have an online reference to these. We could use some help if you like
-writing documentation and don't mind trying to keep up with a fast-moving
-project.
-
-```
-./tools.sh agent-docs
-```
-
-## Built With
-
-* [AIOHttp](https://aiohttp.readthedocs.io/en/stable/) - The async web
-framework used to handle JSONRPC and HTML requests
-* [SQLAlchemy](https://www.sqlalchemy.org/) - Internal data storage
-
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
-
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/opencog/singnet/tags). 
-
-See also the list of [contributors](https://github.com/opencog/singnet/graphs/contributors) who participated in this project.
 
 
 ## License
