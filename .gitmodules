@@ -1,4 +1,4 @@
 [submodule "agent/sn_agent/network/ethereum/core"]
 	path = agent/sn_agent/network/ethereum/core
-	url = https://github.com/singnet/core
+	url = https://github.com/singnet/core.git
 	branch = agent-stable
