@@ -151,10 +151,23 @@ These instructions will get you a copy of the project up and running on your loc
 machine for development and testing purposes. See deployment for notes on how to
 deploy the project on a live system.
 
-The agent is service responsible for communicating with the workers and the rest
-of the network. You can run an agent connected to the network as a client or as
-a client with underlying workers.
+The agent servver is responsible for communicating with AI Adapters which connect
+to individual AI systems and the rest of the network. You can run an Agent connected
+ to the SingularityNET network as a server that runs stand-alone or as one that
+ forwareds requests for work to other servers running specialized AI services.
 
+@ Adapter Examples
+There are two kinds of Service Adapter examples in the project: real AI integration
+and template examples designed to teach concepts.
+
+The directory `singnet/agent/adapters` contains working AI adapters that connect
+with AI services from OpenCog, TensorFlow, and Aigents, among others... Some
+knowledge of the underlying AI architectures and systems will be necessary to
+understand the code in these Service Adapters.
+
+The directory `singnet/agent/examples` contains examples that are designed to
+show how to do something without necessarily implementing real AI so you can
+understand the mechanics without needing to understnd any particular AI sytems.
 
 ## Prerequisites
 SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
@@ -164,7 +177,7 @@ The core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and
 Linux Ubuntu 16.04 LTS among others.
 
 Docker and Docker Compose are used heavily, so you must have a recent version of
-Docker installed to take advantage of most of the automation and to isolatedd
+Docker installed to take advantage of most of the automation and to isolated
 yourself from dependency hell.
 
 The current development demo runs from a `dev` docker container which can be
