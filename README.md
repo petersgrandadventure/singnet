@@ -139,7 +139,7 @@ project.
 ### Contributing
 
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
+Please read [CONTRIBUTING](CONTRIBUTING.md) for details on  the process for submitting pull requests to us.
 
 See also the list of [contributors](https://github.com/opencog/singnet/graphs/contributors) who participated in this project.
 
@@ -247,4 +247,4 @@ framework used to handle JSONRPC and HTML requests
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
