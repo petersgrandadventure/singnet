@@ -82,8 +82,9 @@ The core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and
 Linux Ubuntu 16.04 LTS among others.
 
 Docker and Docker Compose are used heavily, so you must have a recent version of
-Docker installed to take advantage of most of the automation and to isolated
-yourself from dependency hell.
+Docker installed to take advantage of most of the automation and to isolate
+yourself from the dependency hell which often results from installing software
+with complex dependencies directly onto your host development OS.
 
 The current development demo runs from a `dev` docker container which can be
 launched from your host computer command line using our helper tool shell
