@@ -22,6 +22,7 @@ sphinx_rtd_theme
 recommonmark
 
 aiohttp-jinja2
+aiohttp-cors
 bson
 
 tensorflow<1.4.0
