@@ -1,5 +1,6 @@
 import logging
 import os
+import aiohttp_cors
 
 from aiohttp import web, WSMsgType
 from aiohttp.web_response import Response
@@ -98,6 +99,31 @@ async def on_shutdown(app):
 
 def setup_api(app):
     app['sockets'] = []
-    app.router.add_post('/api', http_handler)
-    app.router.add_get('/api/ws', ws_handler)
+    # app.router.add_post('/api', http_handler)
+    # app.router.add_get('/api/ws', ws_handler)
+
+    # Setup CORS - cross domain support
+    cors = aiohttp_cors.setup(app)
+    resource = cors.add(app.router.add_resource("/api"))
+    cors.add(
+        resource.add_route("POST", http_handler), {
+            "*": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        })
+
+    resource = cors.add(app.router.add_resource("/api/ws"))
+    cors.add(
+        resource.add_route("GET", http_handler), {
+            "*": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        })
+
     app.on_shutdown.append(on_shutdown)
