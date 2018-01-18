@@ -1,19 +1,19 @@
+sudo: required
 
 language: python
 
 python:
   - "3.6"
-env:
-  global:
-    - PYTHONPATH=$PYTHONPATH:$(pwd)/agent
-    - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
-    - SN_SERVICE_ADAPTER_CONFIG_FILE=agent/service_adapter_config_example.yml
 
-install:
-  - pip install -r agent/requirements.txt
+services:
+  - docker
+
+before_install:
+  - docker build -t singularitynet_agent agent
+  - pip install coveralls
 
 script:
-  - py.test --verbose --cov-config agent/.coveragerc --cov=sn_agent agent/tests
+  - docker run -e SN_NETWORK_ACCOUNT_PASSWORD=abcd --volume ${PWD}/test-results:/data singularitynet_agent /bin/sh -c "./agent.sh test"
 
 after_success:
   - coveralls
