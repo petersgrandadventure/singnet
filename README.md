@@ -67,16 +67,17 @@ These instructions will get you a copy of the project up and running on your loc
 machine for development and testing purposes. See deployment for notes on how to
 deploy the project on a live system.
 
-The agent servver is responsible for communicating with AI Adapters which connect
+The agent server is responsible for communicating with AI Adapters which connect
 to individual AI systems and the rest of the network. You can run an Agent connected
  to the SingularityNET network as a server that runs stand-alone or as one that
- forwareds requests for work to other servers running specialized AI services.
+ forwards requests for work to other servers running specialized AI services.
 
 
 ### Prerequisites
 
 SingularityNET runs on Mac OS X, or any Linux which has Python 3 installed and
-Docker or Docker for Mac installed.
+Docker or Docker for Mac installed. For Windows you'll also need Git Bash/MinGW 
+or Ubuntu on Windows 10 WSL.
 
 The core devs regularly develop on Mac OS X Sierra, Linux Mint Mate 18.2, and
 Linux Ubuntu 16.04 LTS among others.
@@ -87,7 +88,7 @@ yourself from the dependency hell which often results from installing software
 with complex dependencies directly onto your host development OS.
 
 The current development demo runs from a `dev` docker container which can be
-launched from your host computer command line using our helper tool shell
+launched from your favorite bash terminal using our helper tool shell
 script: `tools.sh`.
 
 ```
@@ -99,6 +100,14 @@ local host machine. Visit the demo via:
 http://localhost:8000
 
 in a modern browser.
+
+> Notes on running on Ubuntu under Windows Subsystem for Linux (WSL, Bash on Windows, etc)
+> The trick to this is to install docker on Windows, then ensure the docker is in your path
+>
+> * In Ubuntu: 
+>   * Validate the docker path and add it to your ~/.bashrc file.
+>   * ```PATH="$PATH:/mnt/c/Program\ Files/Docker/Docker/resources/bin"```
+
 
 
 ### Adapter Examples
