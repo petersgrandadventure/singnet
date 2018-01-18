@@ -10,7 +10,7 @@ export SN_NETWORK_ACCOUNT_PASSWORD
 
 case "$1" in
 
-# Deploys the Smart Contracts in agent/sn_agent/network/ethereum/core to the specified network via a
+# Deploys the Smart Contracts in agent/sn_agent/network/ethereum/core to the specififed network via a
 # dockerized version of the Truffle environment and copies the compiled code and deployed addresses to
 # the docker/agent/data/dev directory where the Agent's web3.py network class can find it.
 deploy-contracts)
@@ -68,7 +68,7 @@ dev-down)
 
 # ABC - Alice, Bob and Charlie (she's a girl)
 
-# Brings up the Alice server to demonstrate many agents interacting.
+# Brings up the Alice server fo demonstrate many agents interacting.
 alice)
     docker-compose -f docker/docker-compose.abc.yml create --build alice
     docker-compose -f docker/docker-compose.abc.yml run --service-ports alice ./agent.sh run
@@ -135,7 +135,7 @@ init)
 # Builds the docs
 agent-docs)
     docker-compose -f docker/docker-compose.yml create --build test
-    docker-compose -f docker/docker-compose.yml run test ./agent.sh docs
+    docker-compose -f docker/docker-compose.ymlrun test ./agent.sh docs
     ;;
 
 # Runs the test suite
