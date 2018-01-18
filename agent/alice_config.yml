@@ -1,0 +1,25 @@
+---
+
+services:
+- service: deadbeef-aaaa-bbbb-cccc-000000000001
+  module: examples.multi_agent_adapter.document_summarizer.DocumentSummarizer
+  required_services:
+  - id: deadbeef-aaaa-bbbb-cccc-000000000002
+    agents:
+    - b545478a-971a-cccc-bc56-bbbbbbbbbbbb
+
+  - id: deadbeef-aaaa-bbbb-cccc-000000000003
+    agents:
+    - b545478a-971a-cccc-bc56-bbbbbbbbbbbb
+
+  - id: deadbeef-aaaa-bbbb-cccc-000000000004
+    agents:
+    - 804be272-1cd8-4e11-8e5d-2eed03d47405
+
+  - id: deadbeef-aaaa-bbbb-cccc-000000000005
+    agents:
+    - 804be272-1cd8-4e11-8e5d-2eed03d47405
+
+  - id: deadbeef-aaaa-bbbb-cccc-000000000006
+    agents:
+    - 804be272-1cd8-4e11-8e5d-2eed03d47405

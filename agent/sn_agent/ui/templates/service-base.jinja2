@@ -1,0 +1,39 @@
+{% extends 'base.jinja2' %}
+
+
+{% block page_js %}
+
+    {% block service_js %}{% endblock %}
+
+    <script>
+
+        var seq = 0;
+        var app;
+
+        app = new Vue({
+            el: '#app',
+            mixins: [mix],
+            data: {},
+            methods: {
+                sendJSONRPC: function (method, params, successCallback, errorCallback) {
+                    seq = seq + 1;
+                    var request = {
+                        "jsonrpc": "2.0",
+                        "method": method,
+                        "params": params,
+                        "id": seq
+                    };
+
+                    if (!!job_params) {
+                        request['params']['job_params'] = job_params
+                    }
+
+                    this.$http.post('/api', JSON.stringify(request)).then(successCallback, errorCallback);;
+                }
+            }
+        });
+    </script>
+
+
+
+{% endblock %}

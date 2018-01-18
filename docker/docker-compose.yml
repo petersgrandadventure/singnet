@@ -1,0 +1,28 @@
+
+version: "3"
+
+services:
+
+    test:
+      build: ../agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+        - SN_NETWORK_WEB_PORT=9070
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=test_config.yml
+        - PYTHONPATH=/code
+        - SN_DS_TEST_OUTPUT_DIRECTORY=/data
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "9070:9070"
+      volumes:
+        - ./data/agent/test:/data
+      links:
+        - testrpc
+
+    testrpc:
+      build: testrpc
+      ports:
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+      command: ganache-cli

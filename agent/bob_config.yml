@@ -1,0 +1,9 @@
+---
+
+services:
+- service: deadbeef-aaaa-bbbb-cccc-000000000004
+  module: examples.multi_agent_adapter.text_summarizer.TextSummarizer
+- service: deadbeef-aaaa-bbbb-cccc-000000000005
+  module: examples.multi_agent_adapter.video_summarizer.VideoSummarizer
+- service: deadbeef-aaaa-bbbb-cccc-000000000006
+  module: examples.multi_agent_adapter.entity_extracter.EntityExtracter

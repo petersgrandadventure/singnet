@@ -1,0 +1,9 @@
+services:
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000001
+  name: Document Summarizer
+  extra_test: Some extra for one service
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
+  description: Differentiates between different possible grammatical word senses using context

@@ -8,6 +8,7 @@
 
 from sn_agent.app import create_app
 
+
 def test_aop():
     app = create_app()
-    assert(not app is None)
+    assert (not app is None)

@@ -4,10 +4,10 @@ import logging.config
 def setup_logging():
     _logging = {
         'version': 1,
-        'disable_existing_loggers': True,
+        'disable_existing_loggers': False,
 
         'root': {
-            'level': 'WARNING',
+            'level': 'INFO',
             'handlers': ['console'],
         },
 
@@ -28,20 +28,32 @@ def setup_logging():
                 'level': 'DEBUG',
                 'class': 'logging.FileHandler',
                 'formatter': 'standard',
-                'filename': 'app.log'
+                'filename': '/data/app.log'
             },
         },
 
         'loggers': {
 
-            '': {
-                'handlers': ['console', 'file'],
+            'sn_agent': {
+                'handlers': ['console'],
                 'level': 'DEBUG',
                 'propagate': False,
             },
 
-            'sn_agent': {
-                'handlers': ['console', 'file'],
+            'adapters': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+
+            'examples': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+
+            'tests': {
+                'handlers': ['console'],
                 'level': 'DEBUG',
                 'propagate': False,
             },

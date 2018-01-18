@@ -1,0 +1,14 @@
+#
+# sn_agent/accounting/accounting.yml - configuration parameters for the accounting module,
+#
+# Copyright (c) 2017 SingularityNET
+#
+# Distributed under the MIT software license, see LICENSE file.
+#
+
+accounting:
+  token_id: AGI
+
+  # One COG is 1 / 10^8 of an AGI
+  sub_token_id: COG
+  sub_token_divisor: 8

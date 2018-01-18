@@ -1,0 +1,95 @@
+{% extends 'service-base.jinja2' %}
+
+
+{% block content %}
+
+    <link href="{{ static('jsoneditor/jsoneditor.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ static('jsoneditor/jsoneditor.js') }}"></script>
+
+    <style type="text/css">
+        #jsoneditor {
+            width: 100%;
+            height: 500px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div id="jsoneditor"></div>
+
+    <div id="app">
+        <button class="btn btn-success" @click="sendCanPerform">Can Perform</button>
+        <button class="btn btn-success" @click="sendOffer">Offer</button>
+        <button class="btn btn-success" @click="sendPerform">Perform</button>
+    </div>
+
+    <fieldset id="console-log-div"></fieldset>
+
+    <script src="{{ static('console-log-div.js') }}"></script>
+
+{% endblock %}
+
+{% block service_js %}
+
+    <script>
+
+        var service_node_id = '{{ service_adapter.service.node_id }}';
+        var job_params = JSON.parse('{{ service_adapter.example_job_json()|safe }}');
+
+        // create the editor
+        var container = document.getElementById("jsoneditor");
+
+        var options = {
+
+            mode: 'code'
+
+        };
+
+        var editor = new JSONEditor(container, options);
+
+        editor.set(job_params);
+
+        function successCB(response) {
+            var result = JSON.parse(response.bodyText)["result"];
+
+            var string_result = JSON.stringify(result, null, 2);
+
+            console.log(string_result);
+        }
+
+        function errorCB(response) {
+            console.log(response);
+        }
+
+        var mix = {
+            methods: {
+                sendCanPerform: function () {
+
+                    var params = {"service_node_id": service_node_id};
+
+                    this.sendJSONRPC("can_perform", params, successCB, errorCB);
+                },
+                sendOffer: function () {
+
+                    var params = {
+                        "service_node_id": service_node_id,
+                        "price": 1.0
+                    };
+
+                    this.sendJSONRPC("offer", params, successCB, errorCB);
+                },
+                sendPerform: function () {
+                    job_params = editor.get();
+
+                    var params = {
+                        "service_node_id": service_node_id,
+                        "job_params": job_params
+                    };
+
+                    this.sendJSONRPC("perform", params, successCB, errorCB);
+                }
+            }
+        };
+
+    </script>
+
+{% endblock %}

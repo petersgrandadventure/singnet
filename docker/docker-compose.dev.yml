@@ -1,0 +1,66 @@
+
+version: "3"
+
+services:
+
+    dev:
+      container_name: agent
+      build: ../agent
+      environment:
+        - SN_AGENT_ID=b545478a-971a-48ec-bc56-4b9b7176799c
+        - SN_NETWORK_WEB_PORT=8000
+        - SN_SERVICE_ADAPTER_CONFIG_FILE=dev_config.yml
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "8000:8000"
+      volumes:
+        - ./data/agent/dev:/data
+      links:
+        - testrpc
+        - relex
+
+#    parity:
+#      build: parity
+#      ports:
+#        - "8080:8080"
+#        - "8180:8180"
+#        - "8545:8545"
+#        - "8546:8546"
+#        - "30303:30303"
+#        - "30303:30303/udp"
+#      volumes:
+#        - ./data/parity:/parity-data
+
+    testrpc:
+      container_name: testrpc
+      build: testrpc
+      ports:
+        - "8545:8545"
+        - "8546:8546"
+        - "30303:30303"
+      command: ganache-cli
+
+    relex:
+      container_name: relex
+      image: opencog/relex
+      ports:
+        - "9000:9000"
+      command: bash -l -c ./link-grammar-server.sh 9000
+
+    truffle:
+      container_name: truffle
+      build: ../agent/sn_agent/network/ethereum/core
+      environment:
+        - TRUFFLE_NETWORK=${TRUFFLE_NETWORK}
+        - SN_NETWORK_ACCOUNT_PASSWORD=${SN_NETWORK_ACCOUNT_PASSWORD}
+      ports:
+        - "7545:7545"
+      volumes:
+        - ./data/agent/dev:/data
+      command: bash -l -c './truffle_tools.sh deploy ${TRUFFLE_NETWORK} /data'
+      networks:
+        - dockernet
+
+networks:
+  dockernet:
+    external: true

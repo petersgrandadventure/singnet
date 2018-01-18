@@ -1,0 +1,26 @@
+---
+
+services:
+- service: deadbeef-aaaa-bbbb-cccc-000000000001
+  module: examples.multi_agent_adapter.document_summarizer.DocumentSummarizer
+  required_services:
+  - id: deadbeef-aaaa-bbbb-cccc-000000000002
+  - id: deadbeef-aaaa-bbbb-cccc-000000000003
+  - id: deadbeef-aaaa-bbbb-cccc-000000000004
+  - id: deadbeef-aaaa-bbbb-cccc-000000000005
+  - id: deadbeef-aaaa-bbbb-cccc-000000000006
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000002
+  module: examples.multi_agent_adapter.word_sense_disambiguater.WordSenseDisambiguater
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000003
+  module: examples.multi_agent_adapter.face_recognizer.FaceRecognizer
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000004
+  module: examples.multi_agent_adapter.text_summarizer.TextSummarizer
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000005
+  module: examples.multi_agent_adapter.video_summarizer.VideoSummarizer
+
+- service: deadbeef-aaaa-bbbb-cccc-000000000006
+  module: examples.multi_agent_adapter.entity_extracter.EntityExtracter

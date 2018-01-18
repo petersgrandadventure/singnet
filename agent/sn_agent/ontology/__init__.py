@@ -1,17 +1,10 @@
-import yaml
-
 import logging
+
+import yaml
 
 from sn_agent.ontology.settings import OntologySettings
 
-log = logging.getLogger(__name__)
-
-DOCUMENT_SUMMARIZER_ID          = 'deadbeef-aaaa-bbbb-cccc-000000000001'
-WORD_SENSE_DISAMBIGUATER_ID     = 'deadbeef-aaaa-bbbb-cccc-000000000002'
-FACE_RECOGNIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000003'
-TEXT_SUMMARIZER_ID              = 'deadbeef-aaaa-bbbb-cccc-000000000004'
-VIDEO_SUMMARIZER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000005'
-ENTITY_EXTRACTER_ID             = 'deadbeef-aaaa-bbbb-cccc-000000000006'
+logger = logging.getLogger(__name__)
 
 
 class Service(dict):
@@ -21,17 +14,8 @@ class Service(dict):
         self.name = name
         self.description = description
 
-    @property
-    def node_id(self):
-        return self.__node_id
-
-    @node_id.setter
-    def node_id(self, node_id):
-        self.__node_id = node_id
-
 
 class Ontology(object):
-
     # Note: We are not going to rely solely on the app['ontology'] access mechanism because the
     # ontology is currently a mock of our eventual implementation which will be global and
     # accessed through updates driven by the blockchain. Since there will only be one implementation
@@ -44,7 +28,7 @@ class Ontology(object):
 
     def __init__(self, app):
         super().__init__()
-        self.services =  {}
+        self.services = {}
         Ontology.register_global_ontology(self)
 
     @classmethod
@@ -67,10 +51,8 @@ class Ontology(object):
         return service['name']
 
     def get_service_description(self, node_id) -> str:
-        description = self.services[node_id]['description']
-        if description is None:
-            description = ''
-        return description
+        service = self.services[node_id]
+        return service['description']
 
 
 def setup_ontology(app):
@@ -80,28 +62,28 @@ def setup_ontology(app):
 
     config_file = settings.CONFIG_FILE
 
+    logger.debug("Loading config file: %s", config_file)
     with open(config_file, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
 
-    # jobs = []
-
     for section, section_items in cfg.items():
-        log.debug('parsing section: {0}'.format(section))
+        logger.debug('parsing section: {0}'.format(section))
         if section == 'services':
             for service_data in section_items:
-                ontology_node_id = service_data['ontology_node_id']
-                # ontology_node_id = data.get('ontology_node_id')
+                ontology_node_id = service_data.get('ontology_node_id')
                 if ontology_node_id is None:
                     raise RuntimeError('You must supply a ontology_node_id for each service')
 
-                name = service_data['name']
+                name = service_data.get('name')
                 if name is None:
                     raise RuntimeError('You must supply a name for each service')
 
-                description = service_data['name']
+                description = service_data.get('description')
+                if description is None:
+                    description = name
 
                 # Add the rest of the items to the service.
-                log.debug("adding Service to ontology %s - %s", ontology_node_id, name)
+                logger.debug("adding Service to ontology %s - %s", ontology_node_id, name)
                 # print("adding Service to ontology {0} - {1}".format(ontology_node_id, name))
                 service = Service(ontology_node_id, name, description)
                 service.update(service_data)
@@ -110,4 +92,3 @@ def setup_ontology(app):
 
         else:
             raise RuntimeError('Unknown ontology section type specified: %s' % section)
-

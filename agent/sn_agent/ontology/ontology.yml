@@ -1,0 +1,102 @@
+services:
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000001
+  name: Document Summarizer
+  description: Summarizes documents with text, video and images
+  extra_test: Some extra for one service
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
+  name: Word Sense Disamnbiguater
+  description: Differentiates between different possible grammatical word senses using context
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000003
+  name: Face Recognizer
+  description: Recognizes personds present in images from a list of persons reference images
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000004
+  name: Text Summarizer
+  description: Summarizes supplied text
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000005
+  name: Video Summarizer
+  description: Summarizes videos with a textual description of contents
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000006
+  name: Entity Extracter
+  description: Extracts the entity descriptions from a document
+
+
+- service:
+  ontology_node_id: 613cfd03-14a2-45dd-a94c-3c7798aca958
+  name: Opencog Service One
+  description: Sample Opencog service number one
+
+- service:
+  ontology_node_id: 413cfd03-14a2-45dd-a94c-3c7798aca992
+  name: Opencog Service Two
+  description: Sample Opencog service number two
+
+- service:
+  ontology_node_id: 86717381-0b4c-440f-9ed6-41206fbba0bc
+  name: JSON RPC Service One
+  description: Sample JSON RPC service number one
+
+- service:
+  ontology_node_id: b95fb615-cb03-4d19-bf71-2a892c3d45a8
+  name: JSON RPC Service Two
+  description: Sample JSON RPC service number two
+
+# singnet/agent/adapters/tensorflow/mnist - an example Tensorflow MNIST classifier
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-111111111101
+  name: Tensorflow MNIST Classifier
+  description: Classifies MNIST input handwritten number images
+
+# singnet/agent/adapters/tensorflow/mnist - an example Tensorflow MNIST classifier
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-111111111102
+  name: Tensorflow ImageNet Classifier
+  description: Classifies images using ImageNet
+
+# singnet/examples/simple_adapter - a simple example agent to show how to integrate AI code
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000101
+  name: Simple Adapter
+  description: Example agent that inserts text into a template.
+
+# singnet/agent/adapters/opencog/relex - an adapter for the relex OpenCog narrow AI
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000202
+  name: Relex Parser
+  description: An English-language semantic dependency relationship extractor, built on the Carnegie-Mellon Link Grammar parser.
+
+# singnet/agent/adapters/aigents - an agent proxy to Aigents services
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000001
+  name: Unknown
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000002
+  name: Aigents Texts Clusterer
+  description: Aigents services - texts clusterer
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000003
+  name: Aigents Text Extractor
+  description: Aigents services - text extractor
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000004
+  name: Aigents Social Grapher
+  description: Aigents services - social grapher
+
+- service:
+  ontology_node_id: deadbeef-aaaa-bbbb-cccc-100000000005
+  name: Aigents RSS Feeder
+  description: Aigents services - RSS feeder
+

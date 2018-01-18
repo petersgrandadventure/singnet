@@ -1,0 +1,10 @@
+{
+  "Agent": "0x9cbb753d83cc3ef86d26ca9e4c0215f0bba642b5",
+  "Escrow": "0x118b20b1ad37b23cc89e324ef6a80e0f8190a6a1",
+  "ownable": "0xb8698f307b09d662c868826302d54376d851676e",
+  "MarketJob": "0x152a9b3a15b287704e507c5ba2558ac576217aca",
+  "AgentFactory": "0xb2eed4473b2e4107e7a43f79a23d3500acfe3ac2",
+  "AgentRegistry": "0x67677a048cbb4ce817443834ed3f467a0768146c",
+  "SingularityNetToken": "0x7ca4fab9fc9ad30f58be12ba635fe25ca0c95752",
+  "AgiCrowdsale": "0x0d53dd68e892cf23a41aa39c0926d0afe73ec423"
+}
