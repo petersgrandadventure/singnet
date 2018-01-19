@@ -21,7 +21,7 @@ fi
 
 case "$1" in
 
-# Deploys the Smart Contracts in agent/sn_agent/network/ethereum/core to the specififed network via a
+# Deploys the Smart Contracts in agent/sn_agent/network/ethereum/core to the specified network via a
 # dockerized version of the Truffle environment and copies the compiled code and deployed addresses to
 # the docker/agent/data/dev directory where the Agent's web3.py network class can find it.
 deploy-contracts)
@@ -50,7 +50,7 @@ deploy-contracts)
     $dockercompose -f docker/docker-compose.dev.yml run --service-ports truffle
     ;;
 
-# The main developer command for testing and bring up a developer agent
+# The main developer command for testing and bringing up a developer agent
 dev)
     $dockercompose -f docker/docker-compose.dev.yml create --build dev
     $dockercompose -f docker/docker-compose.dev.yml run --service-ports dev ./agent.sh run
@@ -61,7 +61,7 @@ dev-force-build)
     $dockercompose -f docker/docker-compose.dev.yml create --build --force-recreate dev
     ;;
 
-# Builds the image only but does not run ig
+# Builds the image only but does not run it
 dev-build)
     $dockercompose -f docker/docker-compose.dev.yml create --build dev
     ;;
@@ -79,7 +79,7 @@ dev-down)
 
 # ABC - Alice, Bob and Charlie (she's a girl)
 
-# Brings up the Alice server fo demonstrate many agents interacting.
+# Brings up the Alice server to demonstrate many agents interacting.
 alice)
     $dockercompose -f docker/docker-compose.abc.yml create --build alice
     $dockercompose -f docker/docker-compose.abc.yml run --service-ports alice ./agent.sh run

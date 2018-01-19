@@ -1,7 +1,7 @@
 # Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the SingularityNET dvelopment team before making a change. 
+email, or any other method with the SingularityNET development team before making a change. 
 
 Please note we have a SingularityNET [Code of Conduct](https://github.com/singnet/singnet/blob/master/CODE_OF_CONDUCT.md), please
 read it and follow it in all your interactions with the project.

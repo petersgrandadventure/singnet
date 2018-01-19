@@ -1,3 +1,9 @@
+# tests/test_jobs.py - Test performance of services - all of them
+#
+# Copyright (c) 2018 SingularityNET
+#
+# Distributed under the MIT software license, see LICENSE file.
+
 import logging
 
 from sn_agent import ontology
@@ -12,8 +18,6 @@ log = logging.getLogger(__name__)
 
 
 # Tests
-
-# Test performance of services - all of them
 def test_jobs():
     print()
     setup_logging()

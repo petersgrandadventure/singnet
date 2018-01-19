@@ -1,6 +1,7 @@
+#
 # tests/test_tensorflow_mnist_adapter.py - unit test for the tensorflow MNIST adapter.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

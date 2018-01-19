@@ -1,6 +1,7 @@
+#
 # tests/test_tensorflow_imagenet_adapter.py - unit test for the tensorflow ImageNet adapter.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
@@ -36,43 +37,25 @@ def app():
 def test_tensorflow_imagenet_adapter(app):
     setup_logging()
     log.debug("Testing Tensorflow ImageNet Adapter")
+    
+    # images to be tested
+    images = ["bucket.jpg", "cup.jpg", "bowtie.png"]
+    encoded_images = []
+    image_types = []
 
-    # Load the bucket JPEG image and encode it base 64.
-    image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "bucket.jpg")
-    image_file = open(image_path, 'rb')
-    image_bytes = image_file.read()
-    bucket_image_encoded = base64.b64encode(image_bytes)
+    for image in images:
+        # Load each image and encode it base 64.
+        image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", image)
+        image_file = open(image_path, 'rb')
+        image_bytes = image_file.read()
+        encoded_images.append(base64.b64encode(image_bytes))
+        image_types.append(image.split('.')[1])
 
-    # Load the cup JPEG image and encode it base 64.
-    image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "cup.jpg")
-    image_file = open(image_path, 'rb')
-    image_bytes = image_file.read()
-    cup_image_encoded = base64.b64encode(image_bytes)
-
-    # Load the bowtie PNG image and encode it base 64.
-    image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "bowtie.png")
-    image_file = open(image_path, 'rb')
-    image_bytes = image_file.read()
-    bowtie_image_encoded = base64.b64encode(image_bytes)
-
-    # # Load the clock BMP image and encode it base 64.
-    # image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "clock.bmp")
-    # image_file = open(image_path, 'rb')
-    # image_bytes = image_file.read()
-    # clock_image_encoded = base64.b64encode(image_bytes)
-    #
-    # # Load the coffeepot GIF image and encode it base 64.
-    # image_path = os.path.join(TEST_DIRECTORY, "data", "imagenet", "coffeepot.gif")
-    # image_file = open(image_path, 'rb')
-    # image_bytes = image_file.read()
-    # coffeepot_image_encoded = base64.b64encode(image_bytes)
-
-    # Setup a test job for classifying a test images. We are going to test two images, a bucket
-    # adnd a cup.
+    # Setup a test job for classifying the test images.
     job_parameters = {  'input_type': 'attached',
                         'input_data': {
-                            'images': [bucket_image_encoded, cup_image_encoded, bowtie_image_encoded],
-                            'image_types': ['jpg','jpeg','png']
+                            'images': encoded_images,
+                            'image_types': image_types
                         },
                         'output_type': 'attached',
                     }

@@ -1,7 +1,7 @@
 #
 # tests/test_app.py - unit test for the app.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
