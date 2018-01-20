@@ -27,7 +27,7 @@ class NetworkSettings(SettingsBase):
         self.SSL_CERTIFICATE_FILE = None
         self.SSL_KEYFILE = None
 
-        self.AGENT_URL_LOOKUP_FILE = os.path.join(THIS_DIR, 'data', 'agent_to_url_lookup.json')
+        self.AGENT_URL_LOOKUP_FILE = os.path.join(THIS_DIR,'ethereum', 'data', 'agent_to_url_lookup.json')
 
         super().__init__(**custom_settings)
 
