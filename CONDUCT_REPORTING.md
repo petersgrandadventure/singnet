@@ -1,6 +1,6 @@
 # Conduct Violation Reporting and Grievance Policy
 
-These are the policies followed by SincularityNET's Code of Conduct Committee. It's used when we respond to a reported Code of Conduct violation to make sure we're consistent and fair. This type of document is normally an internal document, but we're publishing it publicly in the interests of transparency.
+These are the policies followed by SingularityNET's Code of Conduct Committee. It's used when we respond to a reported Code of Conduct violation to make sure we're consistent and fair. This type of document is normally an internal document, but we're publishing it publicly in the interests of transparency.
 
 ## The Code of Conduct Committee
 All responses to reports of conduct violations will be managed by a Code of Conduct Committee ("the committee").

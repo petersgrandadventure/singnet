@@ -1,5 +1,5 @@
-All of us in the SingularitNET Community are working very hard to build an amazing global complex software system with many 
-moving parts. So we really appreciate your help reporting issues you encounter.
+All of us in the SingularityNET Community are working very hard to build an amazing global complex software system with many 
+moving parts. We really appreciate your help reporting issues you encounter.
 
 Please consider supplying the following information with any issue reports:
 
@@ -13,9 +13,9 @@ Please consider supplying the following information with any issue reports:
  - **Enhancement Request** - Is there something not already in our public plans that will make SingularityNET better?
 
 ## Bug Reports
-Bugs are very sensitive to the specific software you are using. When possible please provide specifics about::
+Bugs are very sensitive to the specific software you are using. When possible please provide specifics about:
 
- - The OS and hardware your are using including version numbers of relevant software.
+ - The OS and hardware you are using including version numbers of relevant software.
  - The specific browser you are using if it is a web interface that exhibits the problem.
  - Installed software packages (Python, Node, C++ where applicable)
 

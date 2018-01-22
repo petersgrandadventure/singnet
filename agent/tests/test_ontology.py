@@ -1,3 +1,11 @@
+#
+# tests/test_ontology.py - unit test for the ontology.
+#
+# Copyright (c) 2018 SingularityNET
+#
+# Distributed under the MIT software license, see LICENSE file.
+#
+
 import logging
 import os
 from pathlib import Path
@@ -32,7 +40,7 @@ def test_ontology(app):
     service_name = app_ontology.get_service_name(tests.DOCUMENT_SUMMARIZER_ID)
     assert (service_name == 'Document Summarizer')
     service_name = app_ontology.get_service_name(tests.WORD_SENSE_DISAMBIGUATER_ID)
-    assert (service_name == 'Word Sense Disamnbiguater')
+    assert (service_name == 'Word Sense Disambiguater')
     service_name = app_ontology.get_service_name(tests.FACE_RECOGNIZER_ID)
     assert (service_name == 'Face Recognizer')
     service_name = app_ontology.get_service_name(tests.TEXT_SUMMARIZER_ID)

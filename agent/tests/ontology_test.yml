@@ -6,5 +6,5 @@ services:
 
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000002
-  name: Word Sense Disamnbiguater
+  name: Word Sense Disambiguater
   description: Differentiates between different possible grammatical word senses using context
