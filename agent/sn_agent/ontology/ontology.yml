@@ -13,7 +13,7 @@ services:
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000003
   name: Face Recognizer
-  description: Recognizes personds present in images from a list of persons reference images
+  description: Recognizes people present in images from a list of reference images
 
 - service:
   ontology_node_id: deadbeef-aaaa-bbbb-cccc-000000000004

@@ -2,7 +2,7 @@
 # agent/adapters/aigents/__init__.py - adapter integrating different sub-services of Aigents web service,
 # such as RSS feeding, social graph discovery, summarizing text extraction by pattern and entity attribution
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

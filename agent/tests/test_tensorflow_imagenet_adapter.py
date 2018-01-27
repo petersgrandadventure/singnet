@@ -98,8 +98,8 @@ def test_tensorflow_imagenet_adapter(app):
     # Check our results for format and content.
     assert len(results) == 1
     assert results[0]['predictions'] == [['bucket, pail'],['cup','coffee mug'],['bow tie, bow-tie, bowtie']]
-    assert results[0]['confidences'][0][0] > 0.9600 and results[0]['confidences'][2][0] < 1.0
-    assert results[0]['confidences'][1][0] > 0.4000 and results[0]['confidences'][1][1] < 0.4200
+    assert results[0]['confidences'][0][0] > 0.9600 and results[0]['confidences'][0][0] < 1.0
+    assert results[0]['confidences'][1][0] > 0.4000 and results[0]['confidences'][1][0] < 0.4200
     assert results[0]['confidences'][1][1] > 0.4000 and results[0]['confidences'][1][1] < 0.4100
     assert results[0]['confidences'][2][0] > 0.9990 and results[0]['confidences'][2][0] < 1.0
 

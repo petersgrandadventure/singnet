@@ -3,7 +3,7 @@
 # communication with block-chain implementations through connections with
 # smart contracts and block-chain messaging systems.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
