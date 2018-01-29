@@ -3,7 +3,7 @@
 # communication with block-chain implementations through connections with
 # smart contracts and block-chain messaging systems.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
@@ -31,7 +31,7 @@ class NetworkABC(ABC):
     @abstractmethod
     def join_network(self) -> bool:
         """
-        Agent calls this the first time to connect to the network. An Private and Public key
+        Agent calls this the first time to connect to the network. A Private and Public key
         should be returned
         """
         pass
@@ -53,7 +53,7 @@ class NetworkABC(ABC):
     @abstractmethod
     def logoff_network(self) -> bool:
         """
-        Agent calls this to loff off the network after calling network operations
+        Agent calls this to log off the network after calling network operations
         """
         pass
 

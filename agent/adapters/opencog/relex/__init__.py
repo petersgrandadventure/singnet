@@ -1,7 +1,7 @@
 #
 # adapters/opencog/relex/__init__.py - an AI adapter that integrates the relex natural language parser...
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

@@ -1,7 +1,7 @@
 #
 # word_sense_disambiguater/__init__.py - demo agent service adapter...
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

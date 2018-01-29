@@ -1,7 +1,7 @@
 #
 # adapters/tensorflow/imagenet/__init__.py - a service adapter for the tensorflow ImageNet pre-trained graph
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

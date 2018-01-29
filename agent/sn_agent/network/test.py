@@ -14,7 +14,7 @@ class TestNetwork(NetworkABC):
 
     def join_network(self) -> bool:
         """
-        Agent calls this the first time to connect to the network. An Private and Public key
+        Agent calls this the first time to connect to the network. A Private and Public key
         should be returned
         """
         pass
@@ -33,7 +33,7 @@ class TestNetwork(NetworkABC):
 
     def logoff_network(self) -> bool:
         """
-        Agent calls this to loff off the network after calling network operations
+        Agent calls this to log off the network after calling network operations
         """
         pass
 

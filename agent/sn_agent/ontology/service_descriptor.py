@@ -1,12 +1,11 @@
 #
 # service_descriptor.py - implementation of abstract class defining API for service specs.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
 
-# Duration constants - durations are in milliseconds
 
 import logging
 from abc import ABC
@@ -16,6 +15,7 @@ from sn_agent.ontology import Ontology
 
 logger = logging.getLogger(__name__)
 
+# Duration constants - durations are in milliseconds
 ONE_SECOND = timedelta(seconds=1)
 ONE_MINUTE = ONE_SECOND * 60
 ONE_HOUR = ONE_MINUTE * 60

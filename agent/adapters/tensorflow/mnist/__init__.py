@@ -1,7 +1,7 @@
 #
 # adapters/tensorflow/mnist/__init__.py - a service adapter for the tensorflow MNIST tutorial graph and dataset...
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

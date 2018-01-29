@@ -1,7 +1,7 @@
 #
 # sn_agent/accounting/__init__.py - manages AGI token payment processing,
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

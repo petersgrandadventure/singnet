@@ -1,7 +1,7 @@
 #
 # sn_agent/enum.py - defines common enumerations for singNET.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #

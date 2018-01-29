@@ -1,7 +1,7 @@
 #
 # job_descriptor.py - implementation of abstract class defining API for service specs.
 #
-# Copyright (c) 2017 SingularityNET
+# Copyright (c) 2018 SingularityNET
 #
 # Distributed under the MIT software license, see LICENSE file.
 #
